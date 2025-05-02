@@ -1,8 +1,10 @@
-# nextjs-notion-blog-kit
+![nextjs notion blog kit](https://github.com/user-attachments/assets/7809ed89-91c7-42b2-946d-a7781ebd8389)
+
+# Nextjs Notion Blog Kit
 
 [English](README.md) | 한국어
 
-Next.js와 Notion API를 활용한 블로그 키트입니다. Notion을 CMS로 사용하여 콘텐츠를 관리하고 Next.js로 서빙하는 간편한 블로그 솔루션입니다.
+Next.js와 Notion API를 활용한 블로그 키트입니다. Notion을 CMS로 사용하여 콘텐츠를 관리하고 Next.js와 Vercel로 서빙하는 간편한 블로그 솔루션입니다.
 
 ## 주요 기능
 
