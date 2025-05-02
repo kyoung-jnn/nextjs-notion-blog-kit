@@ -1,4 +1,6 @@
-# nextjs-notion-blog-kit
+![nextjs notion blog kit (1)](https://github.com/user-attachments/assets/7809ed89-91c7-42b2-946d-a7781ebd8389)
+
+# Nextjs Notion Blog Kit
 
 English | [한국어](README.ko.md)
 
