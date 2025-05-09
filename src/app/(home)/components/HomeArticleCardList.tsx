@@ -1,14 +1,12 @@
 import { getPosts } from '@/api/notion';
 import ArticleCardList from '@/components/ArticleCardList';
-
+import { HOME_POSTS } from '@/constants';
 
 import * as styles from './HomeArticleCardList.css';
 
-const TOTAL_POST = 7;
-
 async function HomeArticleCardList() {
   const posts = await getPosts();
-  const latestPosts = posts.slice(0, TOTAL_POST);
+  const latestPosts = posts.slice(0, HOME_POSTS);
 
   return (
     <div className={styles.wrapper}>

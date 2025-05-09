@@ -2,8 +2,7 @@ import { MetadataRoute } from 'next';
 
 import { getPosts } from '@/api/notion';
 import SITE_CONFIG from '@/config/siteConfig';
-
-import { POSTS_PER_PAGE } from './posts/page/[pageNum]/page';
+import { POSTS_PER_PAGE } from '@/constants';
 
 const DEFAULT_PATH = ['', 'gallery'] as const;
 

@@ -12,11 +12,9 @@ import {
   METADATA_TWITTER,
 } from '@/config/metadataConfig';
 import SITE_CONFIG from '@/config/siteConfig';
-
+import { POSTS_PER_PAGE } from '@/constants';
 
 import * as styles from './page.css';
-
-export const POSTS_PER_PAGE = 8;
 
 type Params = { pageNum: string };
 
