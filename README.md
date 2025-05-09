@@ -1,4 +1,4 @@
-![nextjs notion blog kit](https://github.com/user-attachments/assets/7809ed89-91c7-42b2-946d-a7781ebd8389)
+![nextjs notion blog kit](https://github.com/user-attachments/assets/dbfdd093-6637-4fa2-b4ea-9201ad8c2c49)
 
 # Nextjs Notion Blog Kit · ![mit](https://img.shields.io/badge/license-MIT-FF0000)
 
