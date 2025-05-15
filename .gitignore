@@ -40,4 +40,7 @@ next-env.d.ts
 # environment variables
 .env
 
+# cursor
+.cursor
+
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
