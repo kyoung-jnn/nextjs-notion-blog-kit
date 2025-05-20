@@ -25,48 +25,48 @@ A blog kit utilizing Next.js and Notion API. This simple blog solution uses Noti
 - [pnpm](https://pnpm.io/) (10.x or higher)
 - Notion account and integration setup
 
+### Notion Setup
+
+1. Visit the Notion blog template page: [Nextjs Notion Blog Kit Template](https://kyoung-jnn.notion.site/1f4d55b8837780519a27c4f1f7e4b1a9?v=1f4d55b8837781328546000cc33d2d96)
+2. Click the "Duplicate" button in the top-right corner to copy the template to your own Notion workspace.
+3. Once duplicated, get your Notion page ID from the URL:
+   - Look at the URL of your duplicated page.
+   - The page ID is the string before the "?v=" part.
+   - Example: In `https://your-workspace.notion.site/1f4d55b8837780519a27c4f1f7e4b1a9?v=1f4d55b8837781328546000cc33d2d96`, the page ID is `1f4d55b8837780519a27c4f1f7e4b1a9`.
+4. Set this page ID as the `NOTION_PAGE` environment variable in your `.env` file.
+
 ### Installation
 
-1. Clone the repository:
+1. Fork the repository:
+
+   - Visit the [GitHub repository](https://github.com/kyoung-jnn/nextjs-notion-blog-kit)
+   - Click the "Fork" button in the top-right corner
+   - This will create a copy of the repository in your GitHub account
+
+2. Clone your forked repository:
 
    ```bash
    git clone https://github.com/yourusername/nextjs-notion-blog-kit.git
    cd nextjs-notion-blog-kit
    ```
 
-2. Install dependencies:
+3. Install dependencies:
 
    ```bash
    pnpm install
    ```
 
-3. Set up environment variables:
+4. Set up environment variables:
    Create a `.env` file in the root directory and add the following:
 
    ```
    NOTION_PAGE=your_notion_page_id
    ```
 
-4. Run the development server:
+5. Run the development server:
    ```bash
    pnpm dev
    ```
-
-## Notion Setup
-
-### Integration Configuration
-
-1. Create a new page in Notion and set up a database.
-2. Add the following properties to the database:
-
-   - `title`: Post title
-   - `slug`: URL slug
-   - `date`: Publication date
-   - `summary`: Summary
-   - `thumbnail`: Thumbnail image URL
-   - `status`: Publication status (publish, draft)
-
-3. Set the database ID in the environment variables.
 
 ## Deployment
 

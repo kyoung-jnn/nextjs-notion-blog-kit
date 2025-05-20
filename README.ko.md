@@ -25,48 +25,48 @@ Next.js와 Notion API를 활용한 블로그 키트입니다. Notion을 CMS로 �
 - [pnpm](https://pnpm.io/) (10.x 이상)
 - Notion 계정 및 통합 설정
 
+### Notion 설정하기
+
+1. Notion 블로그 템플릿 페이지 방문하기: [Nextjs Notion Blog Kit 템플릿](https://kyoung-jnn.notion.site/1f4d55b8837780519a27c4f1f7e4b1a9?v=1f4d55b8837781328546000cc33d2d96)
+2. 우측 상단의 "복제" 버튼을 클릭하여 템플릿을 자신의 Notion 워크스페이스에 복제합니다.
+3. 복제 후, URL에서 Notion 페이지 ID를 확인합니다:
+   - 복제된 페이지의 URL을 확인합니다.
+   - 페이지 ID는 "?v=" 부분 앞에 있는 문자열입니다.
+   - 예시: `https://your-workspace.notion.site/1f4d55b8837780519a27c4f1f7e4b1a9?v=1f4d55b8837781328546000cc33d2d96`에서 페이지 ID는 `1f4d55b8837780519a27c4f1f7e4b1a9`입니다.
+4. 이 페이지 ID를 `.env` 파일의 `NOTION_PAGE` 환경변수로 설정합니다.
+
 ### 설치 방법
 
-1. 레포지토리 클론하기:
+1. 저장소 Fork하기:
+
+   - [GitHub 저장소](https://github.com/kyoung-jnn/nextjs-notion-blog-kit)를 방문합니다
+   - 우측 상단의 "Fork" 버튼을 클릭합니다
+   - 이렇게 하면 자신의 GitHub 계정에 저장소의 복사본이 생성됩니다
+
+2. Fork한 저장소 클론하기:
 
    ```bash
    git clone https://github.com/yourusername/nextjs-notion-blog-kit.git
    cd nextjs-notion-blog-kit
    ```
 
-2. 의존성 설치:
+3. 의존성 설치:
 
    ```bash
    pnpm install
    ```
 
-3. 환경 변수 설정:
+4. 환경 변수 설정:
    `.env` 파일을 루트 디렉토리에 생성하고 다음 내용을 추가합니다:
 
    ```
    NOTION_PAGE=your_notion_page_id
    ```
 
-4. 개발 서버 실행:
+5. 개발 서버 실행:
    ```bash
    pnpm dev
    ```
-
-## Notion 설정하기
-
-### Notion 통합 설정
-
-1. Notion에서 새로운 페이지를 만들고 데이터베이스를 생성합니다.
-2. 데이터베이스에 다음 속성들을 추가합니다:
-
-   - `title`: 게시물 제목
-   - `slug`: URL 슬러그
-   - `date`: 게시일
-   - `summary`: 요약
-   - `thumbnail`: 썸네일 이미지 URL
-   - `status`: 게시 상태 (publish, draft)
-
-3. 데이터베이스 ID를 환경 변수에 설정합니다.
 
 ## 배포하기
 
