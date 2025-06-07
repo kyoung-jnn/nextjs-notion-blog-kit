@@ -2,8 +2,6 @@ import Link from 'next/link';
 
 import IconButton from './IconButton';
 
-import { wrapper } from './Pagination.css';
-
 interface Props {
   totalPage: number;
   currentPage: number;
@@ -15,7 +13,7 @@ function Pagination({ totalPage, currentPage }: Props) {
   }
 
   return (
-    <nav className={wrapper}>
+    <nav className="col-start-2 col-end-3 flex items-center justify-between p-[12px] text-[14px]">
       {currentPage !== 1 ? (
         <Link href={`/posts/page/${currentPage - 1}`}>
           <IconButton name="ArrowLeft" aria-label="prev page button" />

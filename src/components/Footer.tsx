@@ -1,10 +1,8 @@
 import SITE_CONFIG from '@/config/siteConfig';
 
-import * as styles from './Footer.css';
-
 function Footer() {
   return (
-    <footer className={styles.wrapper}>
+    <footer className="flex justify-center py-[40px] text-[14px]">
       {SITE_CONFIG.author.enName + ` © 2025`}
     </footer>
   );

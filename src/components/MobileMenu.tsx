@@ -8,8 +8,6 @@ import { MENU_LIST } from '@/app/(home)/components/Menu';
 
 import IconButton from './IconButton';
 
-import * as styles from './MobileMenu.css';
-
 function MobileMenu() {
   const [hasNav, setHasNav] = useState(false);
 
@@ -28,7 +26,7 @@ function MobileMenu() {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className="tablet:hidden block">
       <IconButton
         name="Menu"
         aria-label="Toggle Menu Button"
@@ -36,12 +34,17 @@ function MobileMenu() {
       />
 
       {hasNav && (
-        <div className={styles.navContainer}>
-          <div className={styles.background} />
-          <section className={styles.menuContainer} onClick={handleClick}>
+        <div className="fixed top-0 left-0 z-[100] animate-[fade-left_0.5s_ease-in-out]">
+          <div className="absolute top-0 left-0 h-dvh w-dvw bg-gray-400 opacity-80" />
+          <section
+            className="absolute z-[10] flex h-dvh w-dvw flex-col items-center justify-center"
+            onClick={handleClick}
+          >
             {MENU_LIST.map(({ name, href }) => (
               <Link key={name} href={href}>
-                <button className={styles.menuItem}>{name}</button>
+                <button className="font-size-[24px] text-gray-12 w-full cursor-pointer p-[30px] text-center font-bold">
+                  {name}
+                </button>
               </Link>
             ))}
           </section>

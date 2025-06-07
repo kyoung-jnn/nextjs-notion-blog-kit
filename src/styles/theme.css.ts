@@ -1,6 +1,4 @@
-import { gray, grayDark } from '@radix-ui/colors';
-import { createGlobalThemeContract, createTheme } from '@vanilla-extract/css';
-
+import { createGlobalThemeContract } from '@vanilla-extract/css';
 
 export const vars = createGlobalThemeContract({
   colors: {
@@ -16,17 +14,5 @@ export const vars = createGlobalThemeContract({
     gray10: 'gray10',
     gray11: 'gray11',
     gray12: 'gray12',
-  },
-});
-
-export const lightTheme = createTheme(vars, {
-  colors: {
-    ...gray,
-  },
-});
-
-export const darkTheme = createTheme(vars, {
-  colors: {
-    ...grayDark,
   },
 });

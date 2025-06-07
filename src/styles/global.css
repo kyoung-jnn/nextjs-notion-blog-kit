@@ -1,0 +1,123 @@
+@import 'tailwindcss';
+
+@import '@radix-ui/colors/gray.css';
+@import '@radix-ui/colors/gray-dark.css';
+
+@theme {
+  --color-gray-50: var(--gray-1);
+  --color-gray-100: var(--gray-2);
+  --color-gray-200: var(--gray-3);
+  --color-gray-300: var(--gray-4);
+  --color-gray-400: var(--gray-5);
+  --color-gray-500: var(--gray-6);
+  --color-gray-600: var(--gray-7);
+  --color-gray-700: var(--gray-8);
+  --color-gray-800: var(--gray-9);
+  --color-gray-900: var(--gray-11);
+  --color-gray-950: var(--gray-12);
+}
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+}
+
+@theme {
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+
+  @keyframes fade-left {
+    from {
+      opacity: 0;
+      transform: translateX(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+  }
+
+  @keyframes rotate-sun {
+    0% {
+      opacity: 0;
+      transform: rotate(-45deg);
+    }
+    60% {
+      opacity: 1;
+      transform: rotate(20deg);
+    }
+    100% {
+      opacity: 1;
+      transform: rotate(0);
+    }
+  }
+
+  @keyframes rotate-moon {
+    0% {
+      opacity: 0;
+      transform: rotate(45deg);
+    }
+    60% {
+      opacity: 1;
+      transform: rotate(-20deg);
+    }
+    100% {
+      opacity: 1;
+      transform: rotate(0);
+    }
+  }
+}
+
+:root {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-5) transparent;
+}
+
+body {
+  font-family:
+    'Pretendard Variable',
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    'Helvetica Neue',
+    'Segoe UI',
+    'Apple SD Gothic Neo',
+    'Noto Sans KR',
+    'Malgun Gothic',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: var(--gray-12);
+  background-color: var(--gray-3);
+}
+
+a {
+  color: var(--gray-12);
+}
+
+ul,
+li {
+  list-style: none;
+  padding: 0;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--gray-10);
+}

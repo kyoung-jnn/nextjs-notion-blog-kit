@@ -16,7 +16,7 @@ import { ExtendedRecordMap } from 'notion-types';
 
 import { THEME } from './ThemeSwitch';
 
-import * as styles from './NotionRender.css';
+import './NotionRender.css';
 
 // https://github.com/NotionX/react-notion-x/blob/master/examples/full/components/NotionPage.tsx
 const Code = dynamic(() =>
@@ -97,7 +97,7 @@ function NotionRenderer({ recordMap }: Props) {
 
   return (
     <_NotionRenderer
-      className={styles.parent}
+      className="notion-render-parent"
       recordMap={recordMap}
       darkMode={init ? true : theme === THEME.dark}
       components={{
