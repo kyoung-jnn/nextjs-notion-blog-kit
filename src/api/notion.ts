@@ -38,7 +38,6 @@ export const getPageProperty = (
     value: { properties },
   } = blockMap[id];
 
-   
   Object.entries(properties).forEach(([key, value]: any) => {
     const type = schema[key].type;
     const name = schema[key].name;

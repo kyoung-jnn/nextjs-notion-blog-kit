@@ -9,7 +9,6 @@ import ThemeProvider from '@/components/ThemeProvider';
 import SITE_CONFIG from '@/config/siteConfig';
 
 import '@/styles/global.css';
-import '@/styles/theme.css';
 
 function RootLayout({ children }: { children: ReactNode }) {
   return (

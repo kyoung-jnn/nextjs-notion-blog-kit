@@ -1,7 +1,9 @@
-import { base } from './loading.css';
-
 function loading() {
-  return <div className={base}>Loading...⏳</div>;
+  return (
+    <div className="flex h-[800px] items-center justify-center">
+      Loading...⏳
+    </div>
+  );
 }
 
 export default loading;

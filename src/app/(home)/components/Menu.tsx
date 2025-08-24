@@ -3,8 +3,6 @@ import Link from 'next/link';
 import IconButton from '@/components/IconButton';
 import SITE_CONFIG from '@/config/siteConfig';
 
-import * as styles from './Menu.css';
-
 export const MENU_LIST = [
   {
     href: '/posts/page/1',
@@ -15,8 +13,8 @@ export const MENU_LIST = [
 
 function Menu() {
   return (
-    <div className={styles.wrapper}>
-      <section className={styles.contactSection}>
+    <div className="relative max-w-[640px] px-3 py-9">
+      <section className="animate-fade-left flex gap-2.5">
         <Link href={`mailto:${SITE_CONFIG.author.contacts.email}`}>
           <IconButton name="Mail" />
         </Link>
@@ -27,13 +25,15 @@ function Menu() {
           <IconButton name="BrandLinkedIn" />
         </Link>
       </section>
-      <nav className={styles.menuSection}>
+      <nav className="animate-fade-left-delayed mt-9 grid grid-cols-3 opacity-0">
         {MENU_LIST.map(({ href, name, description }) => (
           <div key={href}>
             <Link href={href}>
-              <p className={styles.menuLink}>{name}</p>
+              <p className="underline decoration-gray-600 underline-offset-[5px] transition-colors duration-400 hover:decoration-gray-600">
+                {name}
+              </p>
             </Link>
-            <p className={styles.menuDescription}>{description}</p>
+            <p className="mt-2.5 text-xs">{description}</p>
           </div>
         ))}
       </nav>

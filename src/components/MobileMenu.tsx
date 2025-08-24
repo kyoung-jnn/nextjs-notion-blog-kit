@@ -26,7 +26,7 @@ function MobileMenu() {
   };
 
   return (
-    <div className="tablet:hidden block">
+    <div className="block tablet:hidden">
       <IconButton
         name="Menu"
         aria-label="Toggle Menu Button"
@@ -42,7 +42,7 @@ function MobileMenu() {
           >
             {MENU_LIST.map(({ name, href }) => (
               <Link key={name} href={href}>
-                <button className="font-size-[24px] text-gray-12 w-full cursor-pointer p-[30px] text-center font-bold">
+                <button className="font-size-[24px] w-full cursor-pointer p-[30px] text-center font-bold text-gray-950">
                   {name}
                 </button>
               </Link>

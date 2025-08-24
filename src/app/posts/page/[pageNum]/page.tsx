@@ -14,8 +14,6 @@ import {
 import SITE_CONFIG from '@/config/siteConfig';
 import { POSTS_PER_PAGE } from '@/constants';
 
-import * as styles from './page.css';
-
 type Params = { pageNum: string };
 
 export async function generateMetadata(props: {
@@ -67,10 +65,10 @@ export default async function PostListPage(props: { params: Promise<Params> }) {
   );
 
   return (
-    <div className={styles.wrapper}>
+    <div className="relative mt-[60px] flex flex-col gap-2.5 tablet:grid tablet:grid-cols-[180px_664px_180px] tablet:items-start tablet:justify-center">
       <Sidebar />
-      <div className={styles.content}>
-        <h1 className={styles.title}>Articles</h1>
+      <div className="tablet:col-start-2 tablet:col-end-3">
+        <h1 className="m-0 px-3 text-2xl">Articles</h1>
         <ArticleCardList posts={pagePosts} />
       </div>
       <Pagination totalPage={totalPage} currentPage={currentPage} />
