@@ -9,7 +9,7 @@ interface Props extends ComponentProps<'button'> {
 function IconButton({ name, ...attributes }: Props) {
   return (
     <button
-      className="flex w-fit h-fit p-[3px] rounded-[3px] cursor-pointer transition-all duration-400 hover:bg-gray-500"
+      className="flex h-fit w-fit cursor-pointer rounded-[3px] p-[3px] transition-all duration-400 hover:bg-gray-400"
       {...attributes}
     >
       <Icon name={name} />

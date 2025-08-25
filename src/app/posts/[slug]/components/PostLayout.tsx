@@ -39,18 +39,18 @@ function PostLayout({
   };
 
   return (
-    <div className="relative mt-[60px] flex flex-col gap-2.5 tablet:grid tablet:grid-cols-[192px_640px_192px] tablet:items-start tablet:justify-center">
+    <div className="tablet:grid tablet:grid-cols-[192px_640px_192px] tablet:items-start tablet:justify-center relative mt-[60px] flex flex-col gap-2.5">
       {/* TOC sidebar */}
       <Sidebar>
         <TOC />
-        <div className="flex animate-[fadeLeft_0.4s_0.2s_forwards] gap-1.5 opacity-0">
+        <div className="flex animate-[fade-left_0.4s_0.2s_forwards] gap-1.5 opacity-0">
           <IconButton name="ArrowUp" onClick={handleScrollToTop} />
           <IconButton name="Messages" onClick={handleScrollToComment} />
         </div>
       </Sidebar>
 
       {/* post content */}
-      <div className="animate-[fadeUp_0.5s_forwards] tablet:col-start-2 tablet:col-end-3">
+      <div className="tablet:col-start-2 tablet:col-end-3 animate-[fade-up_0.5s_forwards]">
         <header className="mb-5 text-left">
           <h1 className="text-[30px]">{title}</h1>
           <time
@@ -70,7 +70,7 @@ function PostLayout({
 
       {/* post footer */}
       <footer
-        className="border-gray-9 mt-6 border-t pt-6 text-lg tablet:col-start-2 tablet:col-end-3"
+        className="border-gray-9 tablet:col-start-2 tablet:col-end-3 mt-6 border-t pt-6 text-lg"
         ref={commentContainerRef}
       >
         <Comment />

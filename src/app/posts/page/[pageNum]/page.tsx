@@ -65,7 +65,7 @@ export default async function PostListPage(props: { params: Promise<Params> }) {
   );
 
   return (
-    <div className="relative mt-[60px] flex flex-col gap-2.5 tablet:grid tablet:grid-cols-[180px_664px_180px] tablet:items-start tablet:justify-center">
+    <div className="tablet:grid tablet:grid-cols-[180px_664px_180px] tablet:items-start tablet:justify-center relative mt-[60px] flex flex-col gap-2.5">
       <Sidebar />
       <div className="tablet:col-start-2 tablet:col-end-3">
         <h1 className="m-0 px-3 text-2xl">Articles</h1>

@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-
 import { getPost, getPosts } from '@/api/notion';
 import PostLayout from '@/app/posts/[slug]/components/PostLayout';
 import NotionRenderer from '@/components/NotionRender';

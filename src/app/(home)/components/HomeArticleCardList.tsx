@@ -7,7 +7,7 @@ async function HomeArticleCardList() {
   const latestPosts = posts.slice(0, HOME_POSTS);
 
   return (
-    <div className="animate-fade-left-more-delayed opacity-0">
+    <div className="animate-[fade-left_0.4s_0.2s_forwards] opacity-0">
       <ArticleCardList posts={latestPosts} />
     </div>
   );

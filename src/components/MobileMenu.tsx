@@ -26,7 +26,7 @@ function MobileMenu() {
   };
 
   return (
-    <div className="block tablet:hidden">
+    <div className="tablet:hidden block">
       <IconButton
         name="Menu"
         aria-label="Toggle Menu Button"

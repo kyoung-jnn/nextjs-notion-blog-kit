@@ -75,7 +75,7 @@ function TOC() {
   if (!tables.length) return <></>;
 
   return (
-    <nav className="grid animate-[fadeLeft_0.4s_forwards] gap-2.5 border-l border-gray-800 py-1 pl-2.5">
+    <nav className="grid animate-[fade-left_0.4s_forwards] gap-2.5 border-l border-gray-800 py-1 pl-2.5">
       {tables.map(({ tableElement, highlightTag }, index) => {
         const isActive =
           currentTable === tableElement.innerHTML.replace(/\s/g, '-');

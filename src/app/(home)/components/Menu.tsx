@@ -14,7 +14,7 @@ export const MENU_LIST = [
 function Menu() {
   return (
     <div className="relative max-w-[640px] px-3 py-9">
-      <section className="animate-fade-left flex gap-2.5">
+      <section className="flex animate-[fade-left] gap-2.5">
         <Link href={`mailto:${SITE_CONFIG.author.contacts.email}`}>
           <IconButton name="Mail" />
         </Link>
@@ -25,11 +25,11 @@ function Menu() {
           <IconButton name="BrandLinkedIn" />
         </Link>
       </section>
-      <nav className="animate-fade-left-delayed mt-9 grid grid-cols-3 opacity-0">
+      <nav className="mt-9 grid animate-[fade-left_0.4s_0.2s_forwards] grid-cols-3 opacity-0">
         {MENU_LIST.map(({ href, name, description }) => (
           <div key={href}>
             <Link href={href}>
-              <p className="underline decoration-gray-600 underline-offset-[5px] transition-colors duration-400 hover:decoration-gray-600">
+              <p className="underline decoration-gray-600 underline-offset-[5px] transition-colors duration-400 hover:decoration-gray-800">
                 {name}
               </p>
             </Link>
