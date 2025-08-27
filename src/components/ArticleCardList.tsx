@@ -9,7 +9,7 @@ interface Props {
 
 function ArticleCardList({ posts }: Props) {
   return (
-    <ul className="grid gap-[10px]">
+    <ul className="mt-4 mb-4 grid gap-[10px]">
       {!posts.length && '포스팅이 존재하지 않습니다. 🥹'}
       {posts.map(({ title, date, slug }) => {
         return (

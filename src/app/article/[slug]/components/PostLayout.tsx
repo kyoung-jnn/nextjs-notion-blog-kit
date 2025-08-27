@@ -52,11 +52,8 @@ function PostLayout({
       {/* post content */}
       <div className="tablet:col-start-2 tablet:col-end-3 animate-[fade-up_0.5s_forwards]">
         <header className="mb-5 text-left">
-          <h1 className="text-[30px]">{title}</h1>
-          <time
-            dateTime={updatedAt}
-            className="mt-2 block text-base text-gray-950"
-          >
+          <h1 className="text-[30px] font-bold">{title}</h1>
+          <time dateTime={updatedAt} className="block text-base text-gray-800">
             {updatedAt}
           </time>
           {thumbnail && (
