@@ -5,7 +5,7 @@ import SITE_CONFIG from '@/config/siteConfig';
 
 export const MENU_LIST = [
   {
-    href: '/posts/page/1',
+    href: '/article/list/1',
     name: 'articles',
     description: 'menu description',
   },

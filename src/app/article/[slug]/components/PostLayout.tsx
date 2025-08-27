@@ -4,7 +4,7 @@ import { PropsWithChildren, useRef } from 'react';
 
 import Image from 'next/image';
 
-import Comment from '@/app/posts/[slug]/components/Comment';
+import Comment from '@/app/article/[slug]/components/Comment';
 import IconButton from '@/components/IconButton';
 import Sidebar from '@/components/Sidebar';
 import { dateToFormat } from '@/utils/time';

@@ -25,7 +25,7 @@ export async function GET() {
     feed.item({
       title: post.title,
       description: post.summary,
-      url: `${SITE_CONFIG.siteUrl}/posts/${post.slug}`,
+      url: `${SITE_CONFIG.siteUrl}/article/${post.slug}`,
       author: SITE_CONFIG.author.localeName,
       date: new Date(post.date),
     });

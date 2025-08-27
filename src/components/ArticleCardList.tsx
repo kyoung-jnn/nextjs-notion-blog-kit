@@ -14,7 +14,7 @@ function ArticleCardList({ posts }: Props) {
       {posts.map(({ title, date, slug }) => {
         return (
           <li key={slug}>
-            <Link href={`/posts/${slug}`}>
+            <Link href={`/article/${slug}`}>
               <ArticleCard title={title} date={date} />
             </Link>
           </li>

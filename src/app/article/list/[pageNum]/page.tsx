@@ -28,7 +28,7 @@ export async function generateMetadata(props: {
     title: `Articles | ${SITE_CONFIG.author.enName}`,
     openGraph: {
       ...OPEN_GRAPH,
-      url: `${SITE_CONFIG.siteUrl}/posts/page/${pageNum}`,
+      url: `${SITE_CONFIG.siteUrl}/article/list/${pageNum}`,
     },
     twitter: { ...METADATA_TWITTER },
   };

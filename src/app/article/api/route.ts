@@ -19,13 +19,13 @@ export async function GET(request: NextRequest) {
   // main page
   revalidatePath('/');
   // post list page
-  revalidatePath('/posts/page/[pageNum]', 'page');
+  revalidatePath('/article/list/[pageNum]', 'page');
   // post detail page
-  revalidatePath('/posts/[slug]', 'page');
+  revalidatePath('/article/[slug]', 'page');
 
   return NextResponse.json({
     revalidated: true,
-    message: 'Success Posts Revalidate',
+    message: 'Success article Revalidate',
     time: Date(),
   });
 }
