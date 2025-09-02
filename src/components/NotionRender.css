@@ -1,0 +1,139 @@
+/* NotionRender CSS Styles */
+.notion-render-parent {
+  position: relative;
+  width: 100%;
+  padding: 0;
+}
+
+/* Font */
+.notion-render-parent * {
+  font-family: inherit;
+}
+
+/* Headings */
+.notion-render-parent h1,
+.notion-render-parent h2,
+.notion-render-parent h3,
+.notion-render-parent h4,
+.notion-render-parent h5,
+.notion-render-parent h6 {
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.notion-render-parent h2 {
+  font-size: 28px;
+  margin-top: 22px;
+}
+
+.notion-render-parent h3 {
+  font-size: 25px;
+  margin-top: 18px;
+}
+
+.notion-render-parent h4 {
+  font-size: 22px;
+  margin-top: 14px;
+}
+
+/* Paragraph */
+.notion-render-parent div {
+  line-height: 1.7;
+}
+
+/* Link */
+.notion-render-parent a {
+  transition: opacity 0.4s;
+}
+
+/* Bold text */
+.notion-render-parent strong,
+.notion-render-parent b {
+  font-weight: 600;
+}
+
+/* Blockquote */
+.notion-render-parent blockquote {
+  font-size: 16px;
+  margin: 4px 0;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode blockquote */
+[data-theme='dark'] .notion-render-parent blockquote {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* List */
+.notion-render-parent ul,
+.notion-render-parent ol {
+  padding-inline-start: 1.2rem;
+  font-size: 15px;
+}
+
+.notion-render-parent li {
+  padding: 3px 0px;
+}
+
+.notion-render-parent ul > li {
+  list-style: disc;
+}
+
+.notion-render-parent ol > li {
+  list-style: decimal;
+}
+
+/* Table */
+.notion-render-parent table {
+  width: 100%;
+}
+
+.notion-render-parent .notion-simple-table {
+  width: auto;
+  margin: 10px 20px;
+}
+
+.notion-render-parent .notion-simple-table td {
+  padding: 6px;
+}
+
+/* Notion Custom Classes */
+.notion-render-parent .notion-callout {
+  background-color: transparent;
+}
+
+.notion-render-parent .notion-inline-code {
+  font-size: 0.95rem;
+  border-radius: 3px;
+  color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 2px 4px;
+}
+
+/* Dark mode inline code */
+[data-theme='dark'] .notion-render-parent .notion-inline-code {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.notion-render-parent .notion-code {
+  background-color: #202020;
+  overflow-y: hidden;
+}
+
+.notion-render-parent .notion-code code {
+  font-size: 12px;
+}
+
+.notion-render-parent .notion-external {
+  margin: 10px 0px;
+}
+
+.notion-render-parent .notion-asset-caption {
+  padding-top: 2px;
+  padding-bottom: 0px;
+}
+
+.notion-render-parent .notion-collection-page-properties {
+  display: none !important;
+}

@@ -2,8 +2,6 @@
 
 import _ProgressBar from 'nextjs-progressbar';
 
-import { vars } from '@/styles/theme.css';
-
 function ProgressBar() {
   return (
     <_ProgressBar
@@ -15,7 +13,7 @@ function ProgressBar() {
       transformCSS={() => {
         return (
           <style>
-            {`#nprogress .bar { background: ${vars.colors.gray8}; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 2px; }`}
+            {`#nprogress .bar { background: var(--color-gray-800); position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 2px; }`}
           </style>
         );
       }}

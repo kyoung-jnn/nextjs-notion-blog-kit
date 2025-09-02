@@ -2,8 +2,6 @@ import Image, { StaticImageData } from 'next/image';
 
 import GalleryCaption from './GalleryCaption';
 
-import * as styles from './GalleryPhoto.css';
-
 interface Props {
   src: StaticImageData;
   alt: string;
@@ -11,8 +9,8 @@ interface Props {
 
 function GalleryPhoto({ src, alt }: Props) {
   return (
-    <figure className={styles.figure}>
-      <article className={styles.photo}>
+    <figure className="all-unset">
+      <article className="relative h-[600px] w-full overflow-hidden rounded">
         <Image
           src={src}
           fill

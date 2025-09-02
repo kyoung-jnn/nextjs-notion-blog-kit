@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-
 import { getPost, getPosts } from '@/api/notion';
-import PostLayout from '@/app/posts/[slug]/components/PostLayout';
+import PostLayout from '@/app/article/[slug]/components/PostLayout';
 import NotionRenderer from '@/components/NotionRender';
 import {
   METADATA,
@@ -26,7 +25,7 @@ export async function generateMetadata(props: {
 
   if (!post) return {};
 
-  const url = `${SITE_CONFIG.siteUrl}/posts/${currentSlug}`;
+  const url = `${SITE_CONFIG.siteUrl}/article/${currentSlug}`;
   const { title, date, thumbnail, summary } = post;
 
   return {

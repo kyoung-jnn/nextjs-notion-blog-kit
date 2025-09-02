@@ -4,14 +4,12 @@ import { PropsWithChildren, useRef } from 'react';
 
 import Image from 'next/image';
 
-import Comment from '@/app/posts/[slug]/components/Comment';
+import Comment from '@/app/article/[slug]/components/Comment';
 import IconButton from '@/components/IconButton';
 import Sidebar from '@/components/Sidebar';
 import { dateToFormat } from '@/utils/time';
 
 import TOC from './TOC';
-
-import * as styles from './PostLayout.css';
 
 interface Props {
   title: string;
@@ -41,25 +39,25 @@ function PostLayout({
   };
 
   return (
-    <div className={styles.mainFrame}>
+    <div className="tablet:grid tablet:grid-cols-[192px_640px_192px] tablet:items-start tablet:justify-center relative mt-[60px] flex flex-col gap-2.5">
       {/* TOC sidebar */}
       <Sidebar>
         <TOC />
-        <div className={styles.buttonContainer}>
+        <div className="flex animate-[fade-left_0.4s_0.2s_forwards] gap-1.5 opacity-0">
           <IconButton name="ArrowUp" onClick={handleScrollToTop} />
           <IconButton name="Messages" onClick={handleScrollToComment} />
         </div>
       </Sidebar>
 
       {/* post content */}
-      <div className={styles.postFrame}>
-        <header className={styles.postHeader}>
-          <h1 className={styles.postTitle}>{title}</h1>
-          <time dateTime={updatedAt} className={styles.postTime}>
+      <div className="tablet:col-start-2 tablet:col-end-3 animate-[fade-up_0.5s_forwards]">
+        <header className="mb-5 text-left">
+          <h1 className="text-[30px] font-bold">{title}</h1>
+          <time dateTime={updatedAt} className="block text-base text-gray-800">
             {updatedAt}
           </time>
           {thumbnail && (
-            <figure className={styles.postThumbnail}>
+            <figure className="m-0 mt-2.5">
               <Image src={thumbnail} alt="post thumbnail" fill priority />
             </figure>
           )}
@@ -68,7 +66,10 @@ function PostLayout({
       </div>
 
       {/* post footer */}
-      <footer className={styles.postFooter} ref={commentContainerRef}>
+      <footer
+        className="border-gray-9 tablet:col-start-2 tablet:col-end-3 mt-6 border-t pt-6 text-lg"
+        ref={commentContainerRef}
+      >
         <Comment />
       </footer>
     </div>

@@ -1,9 +1,7 @@
 import { PropsWithChildren } from 'react';
 
-import * as styles from './GalleryCaption.css';
-
 function GalleryCaption({ children }: PropsWithChildren) {
-  return <figcaption className={styles.wrapper}>{children}</figcaption>;
+  return <figcaption className="mt-1.5 text-xs italic">{children}</figcaption>;
 }
 
 export default GalleryCaption;

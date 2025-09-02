@@ -8,8 +8,6 @@ import {
   useState,
 } from 'react';
 
-import * as styles from './TOC.css';
-
 function TOC() {
   const [currentTable, setCurrentTable] = useState<string>('');
   const [tables, setTables] = useState<
@@ -77,21 +75,21 @@ function TOC() {
   if (!tables.length) return <></>;
 
   return (
-    <nav className={styles.wrapper}>
+    <nav className="grid animate-[fade-left_0.4s_forwards] gap-2.5 border-l border-gray-800 py-1 pl-2.5">
       {tables.map(({ tableElement, highlightTag }, index) => {
         const isActive =
           currentTable === tableElement.innerHTML.replace(/\s/g, '-');
         const getDepthStyle = () => {
-          if (highlightTag === 'H3') return styles.depthH3;
-          if (highlightTag === 'H4') return styles.depthH4;
-          return styles.depthH2;
+          if (highlightTag === 'H3') return 'ml-2.5';
+          if (highlightTag === 'H4') return 'ml-5';
+          return '';
         };
 
         return (
           <a
             href={'#' + tableElement.innerHTML.replace(/\s/g, '-')}
             key={index}
-            className={`${styles.baseTableItem} ${isActive ? styles.activeTableItem : styles.inactiveTableItem} ${getDepthStyle()}`}
+            className={`text-xs transition-colors duration-200 ${isActive ? 'font-semibold text-gray-950' : 'text-gray-800'} ${getDepthStyle()}`}
           >
             {tableElement.innerHTML}
           </a>

@@ -123,7 +123,6 @@ nextjs-notion-blog-kit/
 - [React](https://reactjs.org/) (18.x)
 - [TypeScript](https://www.typescriptlang.org/)
 - [notion-client](https://github.com/NotionX/react-notion-x)
-- [Vanilla Extract CSS](https://vanilla-extract.style/)
 
 ## License
 

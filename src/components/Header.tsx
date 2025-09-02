@@ -9,20 +9,18 @@ import MobileMenu from '@/components/MobileMenu';
 import ThemeSwitch from '@/components/ThemeSwitch';
 import SITE_CONFIG from '@/config/siteConfig';
 
-import * as styles from './Header.css';
-
 function Header() {
   const pathname = usePathname();
 
   return (
-    <header className={styles.header}>
-      <nav className={styles.nav}>
+    <header className="sticky top-0 z-[100] h-[44px] backdrop-blur-[3px]">
+      <nav className="mx-auto flex max-w-[664px] items-center justify-between px-[12px] py-[10px]">
         <Link href="/" aria-label="home link">
-          <p className={styles.leftNav}>
+          <p className="flex items-center justify-between text-[14px] font-normal">
             {pathname !== '/' && SITE_CONFIG.author.enName}
           </p>
         </Link>
-        <div className={styles.rightNav}>
+        <div className="flex items-center gap-[6px] text-[16px] font-semibold">
           <ThemeSwitch />
           <MobileMenu />
         </div>

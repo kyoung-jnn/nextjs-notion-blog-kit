@@ -7,8 +7,6 @@ import { useTheme } from 'next-themes';
 
 import Icon from './Icon';
 
-import * as styles from './ThemeSwitch.css';
-
 export const THEME = {
   light: 'light',
   dark: 'dark',
@@ -25,7 +23,7 @@ const ThemeSwitch = () => {
   };
 
   return (
-    <button className={styles.button} onClick={handleClick}>
+    <button className="h-[24px] w-[24px] cursor-pointer" onClick={handleClick}>
       {!mounted ? (
         <Image
           alt="theme-placeholder"
@@ -36,9 +34,9 @@ const ThemeSwitch = () => {
           height={40}
         />
       ) : theme === THEME.light ? (
-        <Icon name="Sun" className={styles.lightTheme} />
+        <Icon name="Sun" className="animate-[rotate-sun_1s]" />
       ) : (
-        <Icon name="Moon" className={styles.darkTheme} />
+        <Icon name="Moon" className="animate-[rotate-moon_1s]" />
       )}
     </button>
   );

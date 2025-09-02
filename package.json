@@ -7,7 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "pnpm eslint . --fix"
+    "lint": "pnpm eslint . --fix",
+    "format": "prettier --write ."
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
@@ -18,18 +19,20 @@
   "dependencies": {
     "@giscus/react": "^3.1.0",
     "@radix-ui/colors": "^3.0.0",
-    "@vanilla-extract/css": "^1.17.1",
-    "next": "15.3.2",
+    "@tailwindcss/postcss": "^4.1.8",
+    "next": "^14.2.2",
     "next-themes": "^0.4.6",
     "nextjs-progressbar": "^0.0.16",
-    "notion-client": "^7.3.0",
-    "notion-types": "^7.3.0",
-    "notion-utils": "^7.3.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-notion-x": "^7.3.0",
+    "notion-client": "^7.4.3",
+    "notion-types": "^7.4.3",
+    "notion-utils": "^7.4.3",
+    "postcss": "^8.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-notion-x": "^7.4.3",
     "rss": "^1.2.2",
-    "sharp": "^0.34.1"
+    "sharp": "^0.34.1",
+    "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",
@@ -41,7 +44,6 @@
     "@types/rss": "^0.0.32",
     "@typescript-eslint/eslint-plugin": "8.32.0",
     "@typescript-eslint/parser": "8.32.0",
-    "@vanilla-extract/next-plugin": "^2.4.0",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "eslint": "9.26.0",
@@ -54,6 +56,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.12",
     "typescript": "^5.8.2"
   },
   "pnpm": {
