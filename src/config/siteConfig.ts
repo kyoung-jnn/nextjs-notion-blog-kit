@@ -6,17 +6,17 @@ const SITE_CONFIG = {
   description: 'blog description',
   keywords:
     'blog, personal blog, tech blog, developer blog, self-development, frontend, React, Next.js, JavaScript, TypeScript',
-  locale: 'ko',
+  locale: 'ko', // ko, en
   siteUrl: '',
   siteLogo: '',
   siteBanner: '',
   author: {
-    localeName: '노경진',
-    enName: 'KyoungJin, Roh',
-    bio: 'Frontend Engineer In Seoul, South Korea',
+    localeName: 'Author Locale Name',
+    enName: 'Author En Name',
+    bio: 'Write a brief introduction about yourself',
     contacts: {
-      email: 'rudwls468@gmail.com',
-      github: 'https://github.com/kyoung-jnn',
+      email: 'your-email@example.com',
+      github: 'https://github.com/your-username',
       rss: '',
       linkedin: 'https://www.linkedin.com/in/노경진/',
       twitter: '',
