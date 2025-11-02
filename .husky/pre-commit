@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+if ! pnpm lint-staged; then
+  echo "❌ lint-staged failed. Please fix the errors before committing."
+  exit 1
+fi
+
+if ! pnpm type-check; then
+  echo "❌ Type check failed. Please fix the errors before committing."
+  exit 1
+fi

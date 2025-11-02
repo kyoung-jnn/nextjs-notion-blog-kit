@@ -8,12 +8,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "pnpm eslint . --fix",
-    "format": "prettier --write ."
+    "prettier": "prettier --write .",
+    "type-check": "tsc --noEmit"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "eslint",
-      "prettier --write"
+      "prettier --write",
+      "eslint --fix"
     ]
   },
   "dependencies": {
