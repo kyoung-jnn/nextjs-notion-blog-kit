@@ -7,7 +7,7 @@ import Image from 'next/image';
 import Comment from '@/app/article/[slug]/components/Comment';
 import IconButton from '@/components/IconButton';
 import Sidebar from '@/components/Sidebar';
-import { dateToFormat } from '@/utils/time';
+import { dateToStringWithDash } from '@/utils/dateToFormat';
 
 import TOC from './TOC';
 
@@ -23,7 +23,7 @@ function PostLayout({
   thumbnail,
   children,
 }: PropsWithChildren<Props>) {
-  const updatedAt = dateToFormat(date);
+  const updatedAt = dateToStringWithDash(date);
   const commentContainerRef = useRef<HTMLDivElement>(null);
 
   const handleScrollToTop = () => {

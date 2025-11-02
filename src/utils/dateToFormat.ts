@@ -2,7 +2,7 @@
  * @param date
  * @returns YYYY-MM-DD
  */
-export const dateToFormat = (date: string | Date) => {
+export const dateToStringWithDash = (date: string | Date) => {
   if (typeof date === 'string') {
     date = new Date(date);
   }
