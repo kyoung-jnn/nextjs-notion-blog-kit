@@ -5,10 +5,10 @@ import { getPost, getPosts } from '@/api/notion';
 import PostLayout from '@/app/article/[slug]/components/PostLayout';
 import NotionRenderer from '@/components/NotionRender';
 import {
-  METADATA,
-  OPEN_GRAPH,
-  METADATA_TWITTER,
+  METADATA_CONFIG,
+  METADATA_TWITTER_CONFIG,
 } from '@/config/metadataConfig';
+import { OPEN_GRAPH_CONFIG } from '@/config/openGraphConfig';
 import SITE_CONFIG from '@/config/siteConfig';
 
 import JsonLD from './components/JsonLD';
@@ -29,11 +29,11 @@ export async function generateMetadata(props: {
   const { title, date, thumbnail, summary } = post;
 
   return {
-    ...METADATA,
+    ...METADATA_CONFIG,
     title,
     description: summary,
     openGraph: {
-      ...OPEN_GRAPH,
+      ...OPEN_GRAPH_CONFIG,
       url,
       title,
       description: summary,
@@ -43,7 +43,7 @@ export async function generateMetadata(props: {
       ...(thumbnail && { images: thumbnail }),
     },
     twitter: {
-      ...METADATA_TWITTER,
+      ...METADATA_TWITTER_CONFIG,
       title,
       description: summary,
       ...(thumbnail && { images: [thumbnail] }),
@@ -60,13 +60,14 @@ export async function generateStaticParams() {
   return slugs;
 }
 
-export default async function PostDetailPage(props: {
+export default async function PostDetailPage({
+  params,
+}: {
   params: Promise<Params>;
 }) {
-  const params = await props.params;
-  const currentSlug = params.slug;
+  const { slug } = await params;
   const posts = await getPosts();
-  const post = posts?.find(({ slug }) => slug === currentSlug);
+  const post = posts?.find(({ s }) => s === slug);
 
   if (!post) notFound();
 
@@ -76,7 +77,7 @@ export default async function PostDetailPage(props: {
   return (
     <>
       <JsonLD
-        slug={currentSlug}
+        slug={slug}
         title={title}
         description={summary}
         date={date}

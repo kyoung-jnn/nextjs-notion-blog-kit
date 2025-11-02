@@ -6,10 +6,10 @@ import ArticleCardList from '@/components/ArticleCardList';
 import Pagination from '@/components/Pagination';
 import Sidebar from '@/components/Sidebar';
 import {
-  METADATA,
-  METADATA_TWITTER,
-  OPEN_GRAPH,
+  METADATA_CONFIG,
+  METADATA_TWITTER_CONFIG,
 } from '@/config/metadataConfig';
+import { OPEN_GRAPH_CONFIG } from '@/config/openGraphConfig';
 import SITE_CONFIG from '@/config/siteConfig';
 import { POSTS_PER_PAGE } from '@/constants';
 
@@ -23,13 +23,13 @@ export async function generateMetadata(props: {
   const { pageNum } = params;
 
   return {
-    ...METADATA,
+    ...METADATA_CONFIG,
     title: `Articles | ${SITE_CONFIG.author.enName}`,
     openGraph: {
-      ...OPEN_GRAPH,
+      ...OPEN_GRAPH_CONFIG,
       url: `${SITE_CONFIG.siteUrl}/article/list/${pageNum}`,
     },
-    twitter: { ...METADATA_TWITTER },
+    twitter: { ...METADATA_TWITTER_CONFIG },
   };
 }
 
