@@ -2,12 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      'avatars.githubusercontent.com',
-      'prod-files-secure.s3.us-west-2.amazonaws.com', // notion image
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
+      },
     ],
-    imageSizes: [32, 96, 128],
-    deviceSizes: [768, 1280, 1920],
   },
   turbopack: {
     rules: {
@@ -16,13 +20,6 @@ const nextConfig = {
         loaders: ['@svgr/webpack'],
       },
     },
-  },
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/i,
-      use: ['@svgr/webpack'],
-    });
-    return config;
   },
 };
 

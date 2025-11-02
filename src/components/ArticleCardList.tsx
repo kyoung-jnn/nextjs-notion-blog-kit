@@ -11,9 +11,9 @@ function ArticleCardList({ posts }: Props) {
   return (
     <ul className="mt-4 mb-4 grid gap-[10px]">
       {!posts.length && '포스팅이 존재하지 않습니다. 🥹'}
-      {posts.map(({ title, date, slug }) => {
+      {posts.map(({ title, date, slug }, index) => {
         return (
-          <li key={slug}>
+          <li key={`${slug}-${index}`}>
             <Link href={`/article/${slug}`}>
               <ArticleCard title={title} date={date} />
             </Link>

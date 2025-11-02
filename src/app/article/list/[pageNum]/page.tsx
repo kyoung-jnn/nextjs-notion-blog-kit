@@ -1,6 +1,5 @@
-import React from 'react';
-
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 import { getPosts } from '@/api/notion';
 import ArticleCardList from '@/components/ArticleCardList';
@@ -8,8 +7,8 @@ import Pagination from '@/components/Pagination';
 import Sidebar from '@/components/Sidebar';
 import {
   METADATA,
-  OPEN_GRAPH,
   METADATA_TWITTER,
+  OPEN_GRAPH,
 } from '@/config/metadataConfig';
 import SITE_CONFIG from '@/config/siteConfig';
 import { POSTS_PER_PAGE } from '@/constants';
@@ -39,24 +38,25 @@ export async function generateStaticParams() {
 
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const paths = Array.from({ length: totalPages }, (_, index) => ({
-    page: (index + 1).toString(),
+    pageNum: (index + 1).toString(),
   }));
 
-  return paths;
+  return paths.length > 0 ? paths : [{ pageNum: '1' }];
 }
 
-export default async function PostListPage(props: { params: Promise<Params> }) {
-  const params = await props.params;
-
-  const { pageNum } = params;
-
+export default async function PostListPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { pageNum } = await params;
   const allPosts = await getPosts();
 
   const totalPage = Math.ceil(allPosts.length / POSTS_PER_PAGE);
   const currentPage = parseInt(pageNum);
 
   if (isNaN(currentPage) || currentPage <= 0 || currentPage > totalPage) {
-    return { notFound: true };
+    notFound();
   }
 
   const pagePosts = allPosts.slice(
