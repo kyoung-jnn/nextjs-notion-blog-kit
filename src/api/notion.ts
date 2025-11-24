@@ -52,7 +52,13 @@ export const getPageProperty = (
         break;
       }
       default: {
-        results[name] = getTextContent(value);
+        const textContent = getTextContent(value);
+        // Convert slug field to URL-friendly format
+        if (name === 'slug') {
+          results[name] = textContent.trim().replace(/\s+/g, '-');
+        } else {
+          results[name] = textContent;
+        }
         break;
       }
     }
