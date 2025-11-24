@@ -20,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pageSitemap: MetadataRoute.Sitemap = Array.from(
     { length: totalPageCount },
     (_, index) => ({
-      url: `${SITE_CONFIG.siteUrl}/posts/page/${index + 1}`,
+      url: `${SITE_CONFIG.siteUrl}/article/list/${index + 1}`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
@@ -28,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
 
   const postSitemap: MetadataRoute.Sitemap = posts.map(({ slug, date }) => ({
-    url: `${SITE_CONFIG.siteUrl}/posts/${slug}`,
+    url: `${SITE_CONFIG.siteUrl}/article/${slug}`,
     lastModified: new Date(date),
     changeFrequency: 'weekly',
     priority: 1,

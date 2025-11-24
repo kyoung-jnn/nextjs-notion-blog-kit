@@ -17,7 +17,7 @@ function JsonLD({
   date,
   updatedAt,
 }: Props) {
-  const url = `${SITE_CONFIG.siteUrl}/posts/${slug}`;
+  const url = `${SITE_CONFIG.siteUrl}/article/${slug}`;
 
   const publishedAt = new Date(date).toISOString();
   const modifiedAt = new Date(updatedAt || date).toISOString();

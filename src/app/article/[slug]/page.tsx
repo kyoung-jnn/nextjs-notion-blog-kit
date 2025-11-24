@@ -53,11 +53,7 @@ export async function generateMetadata(props: {
 
 export async function generateStaticParams() {
   const posts = await getPosts();
-  const slugs = posts.filter(({ slug }) => {
-    slug;
-  });
-
-  return slugs;
+  return posts.map(({ slug }) => ({ slug }));
 }
 
 export default async function PostDetailPage({
@@ -67,7 +63,7 @@ export default async function PostDetailPage({
 }) {
   const { slug } = await params;
   const posts = await getPosts();
-  const post = posts?.find(({ s }) => s === slug);
+  const post = posts?.find(({ slug: postSlug }) => postSlug === slug);
 
   if (!post) notFound();
 
