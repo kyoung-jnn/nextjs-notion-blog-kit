@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "pnpm eslint . --fix",
     "prettier": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "deploy": "vercel --prod",
+    "deploy:setup": "bash scripts/setup.sh"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
