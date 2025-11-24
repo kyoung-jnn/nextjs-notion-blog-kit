@@ -1,135 +1,329 @@
 ![nextjs notion blog kit](https://github.com/user-attachments/assets/dbfdd093-6637-4fa2-b4ea-9201ad8c2c49)
 
-# Nextjs Notion Blog Kit · ![mit](https://img.shields.io/badge/license-MIT-FF0000)
+# Next.js Notion Blog Kit
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6)](https://www.typescriptlang.org/)
 
 English | [한국어](README.ko.md)
 
-A blog kit utilizing Next.js and Notion API. This simple blog solution uses Notion as a CMS to manage content and serves it with Next.js and Vercel.
+> 🔲 Write in Notion. Customize everything. Deploy in minutes.
 
-## Key Features
+Focus on writing. Manage with Notion. Build and serve your own blog. Experience the joy of owning something truly yours.
 
-- 🚀 **Next.js App Router** based design
-- 📝 **Notion** as CMS (Content Management System)
-- 🔍 **SEO** optimization (metadata, sitemap, RSS feed)
-- 🎨 **Responsive design** support
-- 🌓 **Dark mode** support
-- 💬 **Comment system** (Giscus) integration
-- 📊 **Vercel Analytics** support
-- 📱 **Mobile-friendly** interface
+## ✨ Features
 
-## Getting Started
+- 📝 **Notion as CMS** - Write in Notion, publish instantly. No need to learn a new CMS
+- 🎨 **Beautiful UI** - Clean, responsive design that looks great on all devices
+- 🌓 **Dark Mode** - Automatic theme switching with system preference support
+- 🔍 **SEO Optimized** - Automatic sitemap, RSS feed, and structured data (JSON-LD)
+- ⚡ **Fast Performance** - Static generation with ISR for optimal loading speed
+- 💬 **Comments** - Built-in Giscus integration for GitHub-based comments
+- 📊 **Analytics Ready** - Vercel Analytics support out of the box
+- 🎯 **TypeScript** - Fully typed for better developer experience
+- 🎨 **Tailwind CSS 4** - Latest Tailwind for rapid styling
+- 🚀 **Next.js 16 App Router** - Leveraging the latest Next.js features with React Server Components
 
-### Prerequisites
+## 🚀 Get Started
 
-- [Node.js](https://nodejs.org/) (18.x or higher)
-- [pnpm](https://pnpm.io/) (10.x or higher)
-- Notion account and integration setup
+Ready to launch your blog in minutes? Follow these simple steps:
 
-### Notion Setup
+### Step 1: Create Your Notion CMS 📝
 
-1. Visit the Notion blog template page: [Nextjs Notion Blog Kit Template](https://kyoung-jnn.notion.site/1f4d55b8837780519a27c4f1f7e4b1a9?v=1f4d55b8837781328546000cc33d2d96)
-2. Click the "Duplicate" button in the top-right corner to copy the template to your own Notion workspace.
-3. Once duplicated, get your Notion page ID from the URL:
-   - Look at the URL of your duplicated page.
-   - The page ID is the string before the "?v=" part.
-   - Example: In `https://your-workspace.notion.site/1f4d55b8837780519a27c4f1f7e4b1a9?v=1f4d55b8837781328546000cc33d2d96`, the page ID is `1f4d55b8837780519a27c4f1f7e4b1a9`.
-4. Set this page ID as the `NOTION_PAGE` environment variable in your `.env` file.
+First, set up your content management system in Notion:
 
-### Installation
+1. **Visit the template**: [Notion Blog Template](https://kyoung-jnn.notion.site/1f4d55b8837780519a27c4f1f7e4b1a9?v=1f4d55b8837781328546000cc33d2d96)
+2. **Duplicate it**: Click **"Duplicate"** in the top-right corner
+3. **Make it public**:
+   - Click **"Share"** in the top-right
+   - Toggle **"Share to web"** ON
+4. **Save your Page ID**:
+   - Copy the URL from browser address bar (⌘+L on Mac, Ctrl+L on Windows)
+   - Example URL: `https://notion.site/1f4d55b8837780519a27c4f1f7e4b1a9?v=...`
+   - Your Page ID is the part before `?v=`: `1f4d55b8837780519a27c4f1f7e4b1a9`
 
-1. Fork the repository:
+> 💡 Keep this Page ID handy—you'll need it in Step 3!
 
-   - Visit the [GitHub repository](https://github.com/kyoung-jnn/nextjs-notion-blog-kit)
-   - Click the "Fork" button in the top-right corner
-   - This will create a copy of the repository in your GitHub account
+### Step 2: Use This Template 🎨
 
-2. Clone your forked repository:
+Create your own repository from this template:
 
-   ```bash
-   git clone https://github.com/yourusername/nextjs-notion-blog-kit.git
-   cd nextjs-notion-blog-kit
-   ```
+1. Click the **"Use this template"** button at the top of this page
+2. Choose a repository name (e.g., `my-awesome-blog`)
+3. Select public or private
+4. Click **"Create repository"**
 
-3. Install dependencies:
+### Step 3: Run the Setup CLI 🔲
 
-   ```bash
-   pnpm install
-   ```
+Clone your new repository and run our magical setup script:
 
-4. Set up environment variables:
-   Create a `.env` file in the root directory and add the following:
+```bash
+# Clone your repository
+git clone https://github.com/yourusername/your-blog-repo.git
+cd your-blog-repo
 
-   ```
-   NOTION_PAGE=your_notion_page_id
-   ```
+# Run the setup wizard 🧙‍♂️
+pnpm deploy:setup
+```
 
-5. Run the development server:
-   ```bash
-   pnpm dev
-   ```
+The setup wizard will:
 
-## Deployment
+- ✅ Configure your environment variables (including your Notion Page ID)
+- ✅ Install all dependencies
+- ✅ Connect to your Vercel account
+- ✅ Link your GitHub repository to Vercel
 
-### Deploy to Vercel
+Just follow the prompts and answer a few questions!
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fnextjs-notion-blog-kit)
+### Step 4: Deploy! 🚀
 
-1. Click the button above or create a new project in the Vercel dashboard.
-2. Connect your GitHub repository.
-3. Set the environment variable `NOTION_PAGE`.
-4. Deploy!
+After the setup completes, you're ready to go live:
 
-## Customization
+```bash
+pnpm deploy
+```
 
-### Modify Site Configuration
+That's it! Your blog is now live on Vercel. 🔲🎉
 
-Edit the `database/config.ts` file to change site title, description, author information, etc.:
+---
+
+### Want to customize first?
+
+Before deploying, you might want to personalize your blog:
+
+**Edit `src/config/siteConfig.ts`**:
 
 ```typescript
 const SITE_CONFIG = {
-  title: 'Your Blog Name',
-  description: 'Blog description',
+  title: 'Your Blog Title',
+  description: 'Your blog description',
+  siteUrl: 'https://yourdomain.com',
   author: {
-    name: 'Your Name',
-    // ...other information
+    localeName: 'Your Name',
+    bio: 'A brief introduction about yourself',
+    contacts: {
+      email: 'your-email@example.com',
+      github: 'https://github.com/yourusername',
+    },
   },
-  // ...other configurations
 };
 ```
 
-### Customize Design
+**Test locally**:
 
-Styles are managed in the `styles` directory. You can customize styles using Vanilla Extract CSS.
+```bash
+pnpm dev
+```
 
-## Structure
+Open [http://localhost:3000](http://localhost:3000) to preview your blog!
+
+## 📊 Notion Database Schema
+
+Your Notion database should have the following properties:
+
+| Property      | Type         | Required | Description                                                      |
+| ------------- | ------------ | -------- | ---------------------------------------------------------------- |
+| **title**     | Title        | ✅       | Post title                                                       |
+| **slug**      | Text         | ✅       | URL slug (auto-formatted to lowercase with hyphens)              |
+| **date**      | Date         | ✅       | Publication date                                                 |
+| **status**    | Select       | ✅       | `publish` or `draft` (only published posts appear in production) |
+| **summary**   | Text         | ✅       | Short description for SEO and preview                            |
+| **thumbnail** | Files        | ❌       | Featured image                                                   |
+| **tags**      | Multi-select | ❌       | Post categories/tags                                             |
+
+> **Note**: The slug field automatically converts spaces to hyphens and converts to lowercase.
+
+## 🎨 Customization
+
+### Theme & Styling
+
+- **Colors**: Edit CSS variables in `src/styles/global.css`
+- **Components**: All React components are in `src/components/`
+- **Layouts**: Modify page layouts in `src/app/`
+
+### Comments (Giscus)
+
+To enable comments, update `src/config/giscusConfig.ts`:
+
+```typescript
+export const GISCUS_CONFIG = {
+  repo: 'yourusername/your-repo',
+  repoId: 'your_repo_id',
+  category: 'General',
+  categoryId: 'your_category_id',
+};
+```
+
+Get your IDs from [Giscus](https://giscus.app/).
+
+### Analytics
+
+To enable Vercel Analytics, add to `src/app/layout.tsx`:
+
+```tsx
+import { Analytics } from '@vercel/analytics/react';
+
+// In your layout component:
+<Analytics />;
+```
+
+## 🚢 Deployment
+
+### Option 1: Deploy with Vercel CLI (Recommended)
+
+The easiest way to deploy is using the Vercel CLI, which automatically connects to your Vercel account:
+
+1. **Install Vercel CLI** (if not already installed):
+
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Link your project to Vercel**:
+
+   ```bash
+   vercel link
+   ```
+
+   This will:
+
+   - Authenticate with your Vercel account
+   - Link the project to a new or existing Vercel project
+   - Set up your deployment configuration
+
+3. **Add environment variables**:
+
+   ```bash
+   vercel env add NOTION_PAGE
+   ```
+
+   Enter your Notion page ID when prompted. The variable will be automatically added to your Vercel project.
+
+4. **Deploy to production**:
+
+   ```bash
+   pnpm deploy
+   ```
+
+   Or for a preview deployment:
+
+   ```bash
+   pnpm deploy:preview
+   ```
+
+> **Note**: If you ran `pnpm setup`, you may have already completed steps 1-2!
+
+### Option 2: Deploy via Vercel Dashboard
+
+1. Push your code to GitHub
+2. Import your repository on [Vercel](https://vercel.com)
+3. Add environment variables:
+   - `NOTION_PAGE`: Your Notion page ID
+   - `TOKEN_FOR_REVALIDATE`: (Optional) Secret token for on-demand revalidation
+4. Deploy!
+
+### On-Demand Revalidation
+
+After deploying, you can revalidate your blog content:
+
+```bash
+curl -X POST https://yourdomain.com/article/api?token=YOUR_TOKEN_FOR_REVALIDATE
+```
+
+This will fetch the latest content from Notion without redeploying.
+
+## 📁 Project Structure
 
 ```
 nextjs-notion-blog-kit/
-├── app/                  # Next.js App Router
-│   ├── (home)/           # Homepage
-│   ├── posts/            # Blog posts
-│   └── ...
-├── components/           # React components
-├── database/             # Site configuration and metadata
-├── api/                  # Notion API integration
-├── styles/               # Style definitions
-├── types/                # TypeScript type definitions
-└── ...
+├── src/
+│   ├── api/                    # Notion API integration
+│   │   └── notion.ts          # Fetch posts and pages from Notion
+│   ├── app/                   # Next.js App Router
+│   │   ├── (home)/           # Home page with article list
+│   │   ├── article/          # Article detail pages
+│   │   │   ├── [slug]/       # Dynamic article routes
+│   │   │   └── api/          # Revalidation API route
+│   │   ├── gallery/          # Gallery page
+│   │   ├── layout.tsx        # Root layout
+│   │   └── sitemap.ts        # Auto-generated sitemap
+│   ├── components/           # Reusable React components
+│   │   ├── ArticleCard/     # Article preview cards
+│   │   ├── Header/          # Site header & navigation
+│   │   ├── NotionRender/    # Notion content renderer
+│   │   └── ...
+│   ├── config/              # Configuration files
+│   │   ├── siteConfig.ts   # Main site configuration
+│   │   ├── giscusConfig.ts # Comments configuration
+│   │   └── ...
+│   ├── constants/           # App constants
+│   ├── styles/             # Global styles
+│   ├── types/              # TypeScript type definitions
+│   └── utils/              # Utility functions
+├── public/                 # Static assets
+├── .env.example           # Environment variables template
+├── next.config.mjs        # Next.js configuration
+├── tailwind.config.ts     # Tailwind CSS configuration
+└── tsconfig.json          # TypeScript configuration
 ```
 
-## Tech Stack
+## 🛠 Tech Stack
 
-- [Next.js](https://nextjs.org/) (14.x)
-- [React](https://reactjs.org/) (18.x)
-- [TypeScript](https://www.typescriptlang.org/)
-- [notion-client](https://github.com/NotionX/react-notion-x)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **UI Library**: [React 19](https://react.dev/)
+- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **CMS**: [Notion API](https://developers.notion.com/)
+- **Notion Renderer**: [react-notion-x](https://github.com/NotionX/react-notion-x)
+- **Comments**: [Giscus](https://giscus.app/)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-## License
+## 🐛 Troubleshooting
 
-MIT © [kyoung-jnn](https://github.com/kyoung-jnn)
+### Posts not showing up?
 
-## References and Acknowledgements
+1. Make sure your Notion database is **shared to web**
+2. Check that your `NOTION_PAGE` environment variable is correct
+3. Verify that posts have `status: publish` in production
+4. Check the browser console for errors
 
-This project was inspired by the following open source projects:
+### Slug contains spaces?
 
-- [react-notion-x](https://github.com/NotionX/react-notion-x)
+The slug field is automatically formatted to be URL-friendly:
+
+- Spaces are converted to hyphens
+- Text is converted to lowercase
+
+### Images not loading?
+
+Add your image domains to `next.config.mjs`:
+
+```javascript
+images: {
+  domains: ['your-image-domain.com'],
+}
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+This project was inspired by and built with:
+
+- [react-notion-x](https://github.com/NotionX/react-notion-x) - Notion renderer
+- [Next.js](https://nextjs.org/) - The React framework
+- [Vercel](https://vercel.com/) - Deployment platform
