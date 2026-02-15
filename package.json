@@ -7,11 +7,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "setup": "bash scripts/setup.sh",
+    "deploy:prod": "bash scripts/deploy.sh prod",
+    "deploy:preview": "bash scripts/deploy.sh preview",
     "lint": "pnpm eslint . --fix",
     "prettier": "prettier --write .",
-    "type-check": "tsc --noEmit",
-    "deploy": "vercel --prod",
-    "deploy:setup": "bash scripts/setup.sh"
+    "type-check": "tsc --noEmit"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
@@ -26,15 +27,14 @@
     "katex": "^0.16.25",
     "next": "16.0.1",
     "next-themes": "^0.4.6",
-    "nextjs-progressbar": "^0.0.16",
-    "notion-client": "^7.7.1",
-    "notion-types": "^7.7.1",
-    "notion-utils": "^7.7.1",
+    "notion-client": "^7.8.1",
+    "notion-types": "^7.8.1",
+    "notion-utils": "^7.8.1",
     "postcss": "^8.5.4",
     "prismjs": "^1.30.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-notion-x": "^7.7.1",
+    "react-notion-x": "^7.8.1",
     "rss": "^1.2.2",
     "sharp": "^0.34.1",
     "tailwindcss": "^4.1.8"

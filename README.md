@@ -65,15 +65,16 @@ git clone https://github.com/yourusername/your-blog-repo.git
 cd your-blog-repo
 
 # Run the setup wizard 🧙‍♂️
-pnpm deploy:setup
+pnpm setup
 ```
 
 The setup wizard will:
 
 - ✅ Configure your environment variables (including your Notion Page ID)
+- ✅ Set up your site configuration (blog title, author name, site URL)
 - ✅ Install all dependencies
 - ✅ Connect to your Vercel account
-- ✅ Link your GitHub repository to Vercel
+- ✅ Push environment variables to Vercel
 
 Just follow the prompts and answer a few questions!
 
@@ -82,7 +83,7 @@ Just follow the prompts and answer a few questions!
 After the setup completes, you're ready to go live:
 
 ```bash
-pnpm deploy
+pnpm deploy:prod
 ```
 
 That's it! Your blog is now live on Vercel. 🔲🎉
@@ -171,49 +172,28 @@ import { Analytics } from '@vercel/analytics/react';
 
 ## 🚢 Deployment
 
-### Option 1: Deploy with Vercel CLI (Recommended)
+### Option 1: Deploy with CLI (Recommended)
 
-The easiest way to deploy is using the Vercel CLI, which automatically connects to your Vercel account:
+The deploy script automatically checks your project status before deploying:
 
-1. **Install Vercel CLI** (if not already installed):
+```bash
+# Production deployment
+pnpm deploy:prod
 
-   ```bash
-   npm install -g vercel
-   ```
+# Preview deployment
+pnpm deploy:preview
+```
 
-2. **Link your project to Vercel**:
+The deploy script will:
 
-   ```bash
-   vercel link
-   ```
+- Check that `.env` and `NOTION_PAGE` are configured
+- Verify `siteUrl` is set (warns if empty)
+- Ensure dependencies are installed
+- Warn about uncommitted git changes
+- Build the project
+- Deploy to Vercel
 
-   This will:
-
-   - Authenticate with your Vercel account
-   - Link the project to a new or existing Vercel project
-   - Set up your deployment configuration
-
-3. **Add environment variables**:
-
-   ```bash
-   vercel env add NOTION_PAGE
-   ```
-
-   Enter your Notion page ID when prompted. The variable will be automatically added to your Vercel project.
-
-4. **Deploy to production**:
-
-   ```bash
-   pnpm deploy
-   ```
-
-   Or for a preview deployment:
-
-   ```bash
-   pnpm deploy:preview
-   ```
-
-> **Note**: If you ran `pnpm setup`, you may have already completed steps 1-2!
+> **Note**: Vercel CLI is not required to be installed globally. The script automatically falls back to `npx vercel` if the global CLI is not found.
 
 ### Option 2: Deploy via Vercel Dashboard
 
@@ -226,13 +206,15 @@ The easiest way to deploy is using the Vercel CLI, which automatically connects 
 
 ### On-Demand Revalidation
 
-After deploying, you can revalidate your blog content:
+After deploying, you can revalidate your blog content by sending a POST request:
 
 ```bash
-curl -X POST https://yourdomain.com/article/api?token=YOUR_TOKEN_FOR_REVALIDATE
+curl -X POST "https://yourdomain.com/article/api?token=YOUR_TOKEN_FOR_REVALIDATE"
 ```
 
 This will fetch the latest content from Notion without redeploying.
+
+> **Note**: The revalidation endpoint only accepts `POST` requests. The `token` parameter must match your `TOKEN_FOR_REVALIDATE` environment variable.
 
 ## 📁 Project Structure
 
