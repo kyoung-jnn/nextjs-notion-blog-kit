@@ -60,7 +60,7 @@
 }
 
 /* Dark mode blockquote */
-[data-theme='dark'] .notion-render-parent blockquote {
+.dark .notion-render-parent blockquote {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
@@ -111,7 +111,7 @@
 }
 
 /* Dark mode inline code */
-[data-theme='dark'] .notion-render-parent .notion-inline-code {
+.dark .notion-render-parent .notion-inline-code {
   color: rgba(255, 255, 255, 0.9);
   background-color: rgba(255, 255, 255, 0.05);
 }

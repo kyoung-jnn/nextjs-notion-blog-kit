@@ -1,19 +1,23 @@
 @import 'tailwindcss';
 
+@import '@radix-ui/colors/gray.css';
 @import '@radix-ui/colors/gray-dark.css';
 
-@theme {
-  --color-gray-50: #fcfcfc;
-  --color-gray-100: #f9f9f9;
-  --color-gray-200: #f0f0f0;
-  --color-gray-300: #e8e8e8;
-  --color-gray-400: #e0e0e0;
-  --color-gray-500: #d9d9d9;
-  --color-gray-600: #cecece;
-  --color-gray-700: #bbbbbb;
-  --color-gray-800: #8d8d8d;
-  --color-gray-900: #646464;
-  --color-gray-950: #202020;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-gray-1: var(--gray-1);
+  --color-gray-2: var(--gray-2);
+  --color-gray-3: var(--gray-3);
+  --color-gray-4: var(--gray-4);
+  --color-gray-5: var(--gray-5);
+  --color-gray-6: var(--gray-6);
+  --color-gray-7: var(--gray-7);
+  --color-gray-8: var(--gray-8);
+  --color-gray-9: var(--gray-9);
+  --color-gray-10: var(--gray-10);
+  --color-gray-11: var(--gray-11);
+  --color-gray-12: var(--gray-12);
 }
 
 @theme {
@@ -81,7 +85,7 @@
   :root {
     scroll-behavior: smooth;
     scrollbar-width: thin;
-    scrollbar-color: var(--color-gray-400) transparent;
+    scrollbar-color: var(--color-gray-5) transparent;
   }
 
   body {
@@ -103,12 +107,15 @@
       sans-serif;
     font-weight: 400;
     letter-spacing: -0.2px;
-    color: var(--color-gray-950);
-    background-color: var(--color-gray-200);
+    color: var(--color-gray-12);
+    background-color: var(--color-gray-3);
+    transition:
+      color 0.3s,
+      background-color 0.3s;
   }
 
   a {
-    color: var(--color-gray-950);
+    color: var(--color-gray-12);
   }
 
   ul,
@@ -119,6 +126,6 @@
 
   hr {
     border: none;
-    border-top: 1px solid var(--color-gray-950);
+    border-top: 1px solid var(--color-gray-12);
   }
 }
