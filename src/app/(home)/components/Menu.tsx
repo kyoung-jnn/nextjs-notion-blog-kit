@@ -1,15 +1,8 @@
 import Link from 'next/link';
 
 import IconButton from '@/components/IconButton';
+import { MENU_LIST } from '@/config/navigationConfig';
 import SITE_CONFIG from '@/config/siteConfig';
-
-export const MENU_LIST = [
-  {
-    href: '/article/list/1',
-    name: 'articles',
-    description: 'menu description',
-  },
-] as const;
 
 function Menu() {
   return (
@@ -30,7 +23,7 @@ function Menu() {
         {MENU_LIST.map(({ href, name, description }) => (
           <div key={href}>
             <Link href={href}>
-              <p className="underline decoration-gray-600 underline-offset-[5px] transition-colors duration-400 hover:decoration-gray-800">
+              <p className="decoration-gray-7 hover:decoration-gray-9 dark:decoration-gray-7 dark:hover:decoration-gray-11 underline underline-offset-[5px] transition-colors duration-400">
                 {name}
               </p>
             </Link>

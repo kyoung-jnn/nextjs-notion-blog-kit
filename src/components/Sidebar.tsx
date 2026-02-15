@@ -1,20 +1,14 @@
-'use client';
+import { PropsWithChildren } from 'react';
 
-import { PropsWithChildren, memo } from 'react';
-
-import { useRouter } from 'next/navigation';
-
-import IconButton from './IconButton';
+import BackButton from './BackButton';
 
 function Sidebar({ children }: PropsWithChildren) {
-  const router = useRouter();
-
   return (
     <aside className="desktop:sticky desktop:grid desktop:gap-[20px] desktop:top-[90px] hidden">
-      <IconButton name="ArrowUpLeft" onClick={() => router.back()} />
+      <BackButton />
       {children}
     </aside>
   );
 }
 
-export default memo(Sidebar);
+export default Sidebar;

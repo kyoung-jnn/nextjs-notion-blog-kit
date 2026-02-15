@@ -13,7 +13,7 @@ function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-[100] h-[44px] backdrop-blur-[3px]">
+    <header className="dark:text-gray-12 sticky top-0 z-[100] h-[44px] backdrop-blur-[3px]">
       <nav className="mx-auto flex max-w-[664px] items-center justify-between px-[12px] py-[10px]">
         <Link href="/" aria-label="home link">
           <p className="flex items-center justify-between text-[14px] font-normal">
