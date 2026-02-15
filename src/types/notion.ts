@@ -1,14 +1,14 @@
 import { ExtendedRecordMap } from 'notion-types';
 
-export type Status = 'publish' | 'unpublish';
+export type Status = 'publish' | 'draft';
 
 export interface PostProperty {
-  [key: string]: string | undefined | ExtendedRecordMap;
   id: string;
   date: string;
   slug: string;
   status: Status;
   summary: string;
+  tags?: string;
   thumbnail?: string;
   title: string;
 }

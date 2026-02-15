@@ -1,20 +1,34 @@
+import { cache } from 'react';
+
 import { NotionAPI } from 'notion-client';
 import {
+  Block,
   BlockMap,
+  Collection,
   CollectionPropertySchemaMap,
   ExtendedRecordMap,
   ID,
 } from 'notion-types';
-import { getDateValue, getTextContent } from 'notion-utils';
+import { getBlockValue, getDateValue, getTextContent } from 'notion-utils';
 
-import { PostProperty } from '@/types/notion';
+import { PostProperty, Status } from '@/types/notion';
 
 const notionAPI = new NotionAPI();
 
-export const getPageIds = (response: ExtendedRecordMap) => {
+const DEFAULT_POST_PROPERTY: PostProperty = {
+  id: '',
+  date: '',
+  slug: '',
+  status: 'draft',
+  summary: '',
+  title: '',
+};
+
+export const getPageIds = (response: ExtendedRecordMap): ID[] => {
   const results: ID[] = [];
 
   const collectionQuery = Object.values(response.collection_query)[0];
+  if (!collectionQuery) return results;
 
   Object.values(collectionQuery).forEach((view) => {
     view?.collection_group_results?.blockIds?.forEach((id: ID) =>
@@ -25,70 +39,115 @@ export const getPageIds = (response: ExtendedRecordMap) => {
   return results;
 };
 
+const VALID_STATUSES: Status[] = ['publish', 'draft'];
+
 export const getPageProperty = (
   id: string,
   blockMap: BlockMap,
   schema: CollectionPropertySchemaMap,
-) => {
-  const results = {
-    id,
-  } as PostProperty;
+): PostProperty => {
+  const block = getBlockValue<Block>(blockMap[id]);
+  const properties = block?.properties;
 
-  const {
-    value: { properties },
-  } = blockMap[id];
+  if (!properties) {
+    return { ...DEFAULT_POST_PROPERTY, id };
+  }
 
-  Object.entries(properties).forEach(([key, value]: any) => {
-    const type = schema[key].type;
-    const name = schema[key].name;
+  const result: PostProperty = { ...DEFAULT_POST_PROPERTY, id };
+
+  Object.entries(properties).forEach(([key, value]) => {
+    const schemaItem = schema[key];
+    if (!schemaItem) return;
+
+    const { type, name } = schemaItem;
 
     switch (type) {
       case 'file': {
         break;
       }
       case 'date': {
-        const dateProperty = getDateValue(value);
-        results[name] = dateProperty?.start_date as PostProperty['date'];
+        const dateProperty = getDateValue(
+          value as Parameters<typeof getDateValue>[0],
+        );
+        if (name === 'date') {
+          result.date = dateProperty?.start_date ?? '';
+        }
         break;
       }
       default: {
-        const textContent = getTextContent(value);
-        // Convert slug field to URL-friendly format
+        const textContent = getTextContent(
+          value as Parameters<typeof getTextContent>[0],
+        );
         if (name === 'slug') {
-          results[name] = textContent.trim().replace(/\s+/g, '-');
-        } else {
-          results[name] = textContent;
+          result.slug = textContent.trim().replace(/\s+/g, '-');
+        } else if (name === 'status') {
+          result.status = VALID_STATUSES.includes(textContent as Status)
+            ? (textContent as Status)
+            : 'draft';
+        } else if (name === 'summary') {
+          result.summary = textContent;
+        } else if (name === 'title') {
+          result.title = textContent;
+        } else if (name === 'tags') {
+          result.tags = textContent;
+        } else if (name === 'thumbnail') {
+          result.thumbnail = textContent;
         }
         break;
       }
     }
   });
 
-  return results;
+  return result;
 };
 
-export const getPosts = async () => {
-  const response = await notionAPI.getPage(process.env.NOTION_PAGE as string);
+const _getPosts = async (): Promise<PostProperty[]> => {
+  const notionPageId = process.env.NOTION_PAGE;
+  if (!notionPageId) {
+    console.warn('NOTION_PAGE environment variable is not configured');
+    return [];
+  }
 
-  const blockMap = response.block;
-  const collection = Object.values(response.collection)[0]?.value;
-  const schema = collection?.schema;
+  try {
+    const response = await notionAPI.getPage(notionPageId);
 
-  const pageIds = getPageIds(response);
-  const properties = pageIds.map((id) => {
-    return getPageProperty(id, blockMap, schema);
-  });
+    const blockMap = response.block;
+    const collection = getBlockValue<Collection>(
+      Object.values(response.collection)[0],
+    );
+    const schema = collection?.schema;
 
-  // In Production, Publish 'publish' page's status
-  const publishedPosts = properties.filter((page) =>
-    process.env.NODE_ENV === 'production' ? page?.status === 'publish' : true,
-  );
-  return publishedPosts;
+    if (!schema) {
+      console.warn('Failed to retrieve Notion database schema');
+      return [];
+    }
+
+    const pageIds = getPageIds(response);
+    const properties = pageIds.map((id) => {
+      return getPageProperty(id, blockMap, schema);
+    });
+
+    const publishedPosts = properties.filter((page) =>
+      process.env.NODE_ENV === 'production' ? page.status === 'publish' : true,
+    );
+    return publishedPosts;
+  } catch (error) {
+    console.error(
+      `Failed to fetch posts from Notion: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
+    return [];
+  }
 };
 
-export const getPost = async (pageId: ID) => {
-  const notion = new NotionAPI();
-  const recordMap = await notion.getPage(pageId);
+export const getPosts = cache(_getPosts);
 
-  return recordMap;
+export const getPost = async (pageId: ID): Promise<ExtendedRecordMap> => {
+  try {
+    const recordMap = await notionAPI.getPage(pageId);
+    return recordMap;
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch post "${pageId}": ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
+  }
 };
