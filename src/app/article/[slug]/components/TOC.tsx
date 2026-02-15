@@ -12,7 +12,8 @@ function TOC() {
   const [currentTable, setCurrentTable] = useState<string>('');
   const [tables, setTables] = useState<
     {
-      tableElement: Element;
+      id: string;
+      text: string;
       highlightTag: string;
     }[]
   >([]);
@@ -52,21 +53,24 @@ function TOC() {
   useEffect(() => {
     const observer = getObserver(setCurrentTable);
 
-    // 본문의 h 태그를 가져온다
     const elements = Array.from(
       document.querySelectorAll('h2 span span, h3 span span, h4 span span'),
     ).map((tableElement) => {
-      tableElement['id'] = tableElement.innerHTML.replace(/\s/g, '-');
+      const text = tableElement.textContent ?? '';
+      const id = text.replace(/\s/g, '-');
+      tableElement.id = id;
       return {
-        tableElement,
-        highlightTag: tableElement.parentNode?.parentNode?.nodeName as string,
+        id,
+        text,
+        highlightTag: tableElement.parentNode?.parentNode?.nodeName ?? '',
       };
     });
 
     setTables(elements);
 
-    for (const { tableElement } of elements) {
-      observer.observe(tableElement);
+    for (const { id } of elements) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
     }
 
     return () => observer.disconnect();
@@ -75,10 +79,9 @@ function TOC() {
   if (!tables.length) return <></>;
 
   return (
-    <nav className="grid animate-[fade-left_0.4s_forwards] gap-2.5 border-l border-gray-800 py-1 pl-2.5">
-      {tables.map(({ tableElement, highlightTag }, index) => {
-        const isActive =
-          currentTable === tableElement.innerHTML.replace(/\s/g, '-');
+    <nav className="border-gray-9 dark:border-gray-7 grid animate-[fade-left_0.4s_forwards] gap-2.5 border-l py-1 pl-2.5">
+      {tables.map(({ id, text, highlightTag }) => {
+        const isActive = currentTable === id;
         const getDepthStyle = () => {
           if (highlightTag === 'H3') return 'ml-2.5';
           if (highlightTag === 'H4') return 'ml-5';
@@ -87,11 +90,11 @@ function TOC() {
 
         return (
           <a
-            href={'#' + tableElement.innerHTML.replace(/\s/g, '-')}
-            key={index}
-            className={`text-xs transition-colors duration-200 ${isActive ? 'font-semibold text-gray-950' : 'text-gray-800'} ${getDepthStyle()}`}
+            href={`#${id}`}
+            key={id}
+            className={`text-xs transition-colors duration-200 ${isActive ? 'text-gray-12 dark:text-gray-12 font-semibold' : 'text-gray-9 dark:text-gray-11'} ${getDepthStyle()}`}
           >
-            {tableElement.innerHTML}
+            {text}
           </a>
         );
       })}

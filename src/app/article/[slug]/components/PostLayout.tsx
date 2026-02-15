@@ -1,14 +1,12 @@
-'use client';
-
-import { PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren } from 'react';
 
 import Image from 'next/image';
 
-import Comment from '@/app/article/[slug]/components/Comment';
-import IconButton from '@/components/IconButton';
 import Sidebar from '@/components/Sidebar';
-import { dateToStringWithDash } from '@/utils/dateToFormat';
+import { dateToStringWithDash } from '@/utils/dateToStringWithDash';
 
+import PostActions from './PostActions';
+import PostFooter from './PostFooter';
 import TOC from './TOC';
 
 interface Props {
@@ -24,36 +22,23 @@ function PostLayout({
   children,
 }: PropsWithChildren<Props>) {
   const updatedAt = dateToStringWithDash(date);
-  const commentContainerRef = useRef<HTMLDivElement>(null);
-
-  const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleScrollToComment = () => {
-    if (commentContainerRef.current)
-      commentContainerRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-      });
-  };
 
   return (
     <div className="tablet:grid tablet:grid-cols-[192px_640px_192px] tablet:items-start tablet:justify-center relative mt-[60px] flex flex-col gap-2.5">
       {/* TOC sidebar */}
       <Sidebar>
         <TOC />
-        <div className="flex animate-[fade-left_0.4s_0.2s_forwards] gap-1.5 opacity-0">
-          <IconButton name="ArrowUp" onClick={handleScrollToTop} />
-          <IconButton name="Messages" onClick={handleScrollToComment} />
-        </div>
+        <PostActions />
       </Sidebar>
 
       {/* post content */}
       <div className="tablet:col-start-2 tablet:col-end-3 animate-[fade-up_0.5s_forwards]">
         <header className="mb-5 text-left">
           <h1 className="text-[30px] font-bold">{title}</h1>
-          <time dateTime={updatedAt} className="block text-base text-gray-800">
+          <time
+            dateTime={updatedAt}
+            className="text-gray-9 dark:text-gray-11 block text-base"
+          >
             {updatedAt}
           </time>
           {thumbnail && (
@@ -66,12 +51,7 @@ function PostLayout({
       </div>
 
       {/* post footer */}
-      <footer
-        className="border-gray-9 tablet:col-start-2 tablet:col-end-3 mt-6 border-t pt-6 text-lg"
-        ref={commentContainerRef}
-      >
-        <Comment />
-      </footer>
+      <PostFooter />
     </div>
   );
 }

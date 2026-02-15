@@ -1,4 +1,4 @@
-function loading() {
+function Loading() {
   return (
     <div className="flex h-[800px] items-center justify-center">
       Loading...⏳
@@ -6,4 +6,4 @@ function loading() {
   );
 }
 
-export default loading;
+export default Loading;
