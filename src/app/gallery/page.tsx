@@ -12,7 +12,7 @@ import GALLERY_LIST from './database';
 export const metadata: Metadata = {
   ...METADATA_CONFIG,
   title: `Gallery • ${SITE_CONFIG.title}`,
-  description: `일상 및 여행 사진 • ${SITE_CONFIG.description}`,
+  description: `Gallery • ${SITE_CONFIG.description}`,
   openGraph: OPEN_GRAPH_CONFIG,
 };
 

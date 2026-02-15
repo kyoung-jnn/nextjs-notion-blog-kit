@@ -18,7 +18,7 @@ const SITE_CONFIG = {
       email: 'your-email@example.com',
       github: 'https://github.com/your-username',
       rss: '',
-      linkedin: 'https://www.linkedin.com/in/노경진/',
+      linkedin: 'https://www.linkedin.com/in/your-linkedin/',
       twitter: '',
     },
   },

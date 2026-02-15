@@ -21,11 +21,8 @@ function RootLayout({ children }: { children: ReactNode }) {
           crossOrigin="anonymous"
           href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/variable/pretendardvariable-dynamic-subset.min.css"
         />
-        {/* Naver */}
-        <meta
-          name="naver-site-verification"
-          content="90fde3e7dfdfe8af10193837b23f5a11239155ba"
-        />
+        {/* Search Engine Verification - Replace with your own verification code */}
+        {/* <meta name="naver-site-verification" content="your-verification-code" /> */}
         {/* RSS */}
         <link
           rel="alternate"

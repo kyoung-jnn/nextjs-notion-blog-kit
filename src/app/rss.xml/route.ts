@@ -16,7 +16,7 @@ export async function GET() {
     image_url: `${SITE_CONFIG.siteBanner}`,
     language: SITE_CONFIG.locale,
     categories: ['Technologies'],
-    copyright: 'All rights reserved 2025 Your Name',
+    copyright: `All rights reserved ${new Date().getFullYear()} ${SITE_CONFIG.author.localeName}`,
     generator: 'nextjs-notion-blog-rss-generate',
     pubDate: new Date(),
   });
