@@ -3,6 +3,9 @@
   position: relative;
   width: 100%;
   padding: 0;
+  font-size: 16px;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* Font */
@@ -19,26 +22,30 @@
 .notion-render-parent h6 {
   font-weight: 600;
   letter-spacing: -0.2px;
+  scroll-margin-top: 56px;
 }
 
 .notion-render-parent h2 {
-  font-size: 28px;
-  margin-top: 22px;
+  font-size: 26px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 .notion-render-parent h3 {
-  font-size: 25px;
-  margin-top: 18px;
+  font-size: 22px;
+  margin-top: 24px;
+  margin-bottom: 6px;
 }
 
 .notion-render-parent h4 {
-  font-size: 22px;
-  margin-top: 14px;
+  font-size: 18px;
+  margin-top: 18px;
+  margin-bottom: 4px;
 }
 
 /* Paragraph */
 .notion-render-parent div {
-  line-height: 1.7;
+  line-height: 1.8;
 }
 
 /* Link */
@@ -55,24 +62,27 @@
 /* Blockquote */
 .notion-render-parent blockquote {
   font-size: 16px;
-  margin: 4px 0;
-  background-color: rgba(0, 0, 0, 0.05);
+  margin: 16px 0;
+  padding: 12px 20px;
+  border-left: 3px solid var(--color-gray-8);
+  background-color: transparent;
 }
 
 /* Dark mode blockquote */
 .dark .notion-render-parent blockquote {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: transparent;
 }
 
 /* List */
 .notion-render-parent ul,
 .notion-render-parent ol {
-  padding-inline-start: 1.2rem;
-  font-size: 15px;
+  padding-inline-start: 1.5rem;
+  font-size: inherit;
 }
 
 .notion-render-parent li {
-  padding: 3px 0px;
+  padding: 4px 0;
+  line-height: 1.7;
 }
 
 .notion-render-parent ul > li {
@@ -122,18 +132,33 @@
 }
 
 .notion-render-parent .notion-code code {
-  font-size: 12px;
+  font-size: 13.5px;
+  line-height: 1.6;
 }
 
 .notion-render-parent .notion-external {
-  margin: 10px 0px;
+  margin: 24px 0;
 }
 
 .notion-render-parent .notion-asset-caption {
-  padding-top: 2px;
-  padding-bottom: 0px;
+  padding-top: 8px;
+  padding-bottom: 0;
+  font-size: 14px;
+  color: var(--color-gray-9);
+}
+
+/* Horizontal Rule */
+.notion-render-parent hr {
+  margin: 40px 0;
+  border-color: var(--color-gray-6);
 }
 
 .notion-render-parent .notion-collection-page-properties {
   display: none !important;
+}
+
+/* Math */
+.notion-equation:active,
+.notion-equation:focus {
+  background: var(--color-gray-6);
 }

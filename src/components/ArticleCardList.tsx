@@ -10,7 +10,11 @@ interface Props {
 function ArticleCardList({ posts }: Props) {
   return (
     <ul className="mt-4 mb-4 grid gap-[10px]">
-      {!posts.length && 'No posts found.'}
+      {!posts.length && (
+        <li className="text-gray-11 flex items-center justify-center py-16 text-sm">
+          No posts found.
+        </li>
+      )}
       {posts.map(({ title, date, slug }, index) => {
         return (
           <li key={`${slug}-${index}`}>
