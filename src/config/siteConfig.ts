@@ -4,8 +4,6 @@
 const SITE_CONFIG = {
   title: `blog title`,
   description: 'blog description',
-  keywords:
-    'blog, personal blog, tech blog, developer blog, self-development, frontend, React, Next.js, JavaScript, TypeScript',
   locale: 'ko', // ko, en
   siteUrl: '',
   siteLogo: '',

@@ -1,4 +1,4 @@
-import SITE_CONFIG from '@/config/siteConfig';
+import { SITE_CONFIG } from '@/config';
 
 type Props = {
   slug: string;
@@ -9,49 +9,67 @@ type Props = {
   updatedAt: string;
 };
 
-function JsonLD({ slug, title, description, image: _image, date, updatedAt }: Props) {
+function JsonLD({ slug, title, description, image, date, updatedAt }: Props) {
   const url = `${SITE_CONFIG.siteUrl}/article/${slug}`;
-
   const publishedAt = new Date(date).toISOString();
   const modifiedAt = new Date(updatedAt || date).toISOString();
 
-  const image = _image ?? SITE_CONFIG.siteBanner;
-
-  const structuredData = {
+  const articleJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': url,
-    },
+    '@type': 'BlogPosting',
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     headline: title,
-    description: description,
-    image: image,
+    description,
+    ...(image && { image }),
     datePublished: publishedAt,
     dateModified: modifiedAt,
-    author: [
-      {
-        '@type': 'Person',
-        name: SITE_CONFIG.author.localeName,
-      },
-    ],
+
+    author: [{ '@type': 'Person', name: SITE_CONFIG.author.localeName }],
     publisher: {
       '@type': 'Organization',
       name: SITE_CONFIG.author.localeName,
-      logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_CONFIG.siteLogo}`,
-      },
+      ...(SITE_CONFIG.siteLogo && {
+        logo: { '@type': 'ImageObject', url: SITE_CONFIG.siteLogo },
+      }),
     },
   };
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: SITE_CONFIG.siteUrl || undefined,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Articles',
+        item: SITE_CONFIG.siteUrl ? `${SITE_CONFIG.siteUrl}/article/list/1` : undefined,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: title,
+        item: url,
+      },
+    ],
+  };
+
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(structuredData, null, 2),
-      }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+    </>
   );
 }
 

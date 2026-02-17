@@ -5,21 +5,19 @@ import { getPosts } from '@/api/notion';
 import ArticleCardList from '@/components/ArticleCardList';
 import Pagination from '@/components/Pagination';
 import Sidebar from '@/components/Sidebar';
-import { METADATA_CONFIG, METADATA_TWITTER_CONFIG } from '@/config/metadataConfig';
-import { OPEN_GRAPH_CONFIG } from '@/config/openGraphConfig';
-import SITE_CONFIG from '@/config/siteConfig';
+import { METADATA_CONFIG, METADATA_TWITTER_CONFIG, OPEN_GRAPH_CONFIG, SITE_CONFIG } from '@/config';
 import { POSTS_PER_PAGE } from '@/constants';
 
 type Params = { pageNum: string };
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
   const params = await props.params;
-
   const { pageNum } = params;
 
   return {
     ...METADATA_CONFIG,
-    title: `Articles | ${SITE_CONFIG.author.enName}`,
+    title: 'Articles',
+    alternates: { canonical: `/article/list/${pageNum}` },
     openGraph: {
       ...OPEN_GRAPH_CONFIG,
       url: `${SITE_CONFIG.siteUrl}/article/list/${pageNum}`,
