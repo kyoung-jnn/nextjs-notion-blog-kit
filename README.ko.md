@@ -86,10 +86,9 @@ https://yourdomain.com/article/api?token=YOUR_TOKEN
 | 속성          | 타입      | 필수 | 설명                 |
 | ------------- | --------- | ---- | -------------------- |
 | **title**     | 제목      | Yes  | 포스트 제목          |
-| **slug**      | 텍스트    | Yes  | URL 슬러그           |
+| **slug**      | 텍스트    | No   | 커스텀 URL 슬러그 (비어있으면 제목에서 자동 생성) |
 | **date**      | 날짜      | Yes  | 게시 날짜            |
 | **status**    | 선택      | Yes  | `publish` or `draft` |
-| **summary**   | 텍스트    | Yes  | SEO용 짧은 설명      |
 | **thumbnail** | 파일      | No   | 대표 이미지          |
 | **tags**      | 다중 선택 | No   | 포스트 카테고리/태그 |
 

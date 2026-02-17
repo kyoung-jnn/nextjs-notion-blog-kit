@@ -12,6 +12,7 @@ import {
 import { getBlockValue, getDateValue, getTextContent } from 'notion-utils';
 
 import { PostProperty, Status } from '@/types/notion';
+import { slugify } from '@/utils';
 
 const notionAPI = new NotionAPI();
 
@@ -20,7 +21,6 @@ const DEFAULT_POST_PROPERTY: PostProperty = {
   date: '',
   slug: '',
   status: 'draft',
-  summary: '',
   title: '',
 };
 
@@ -72,18 +72,14 @@ export const getPageProperty = (
       }
       default: {
         const textContent = getTextContent(value as Parameters<typeof getTextContent>[0]);
-        if (name === 'slug') {
-          result.slug = textContent.trim().replace(/\s+/g, '-');
-        } else if (name === 'status') {
+        if (name === 'status') {
           result.status = VALID_STATUSES.includes(textContent as Status)
             ? (textContent as Status)
             : 'draft';
-        } else if (name === 'summary') {
-          result.summary = textContent;
         } else if (name === 'title') {
           result.title = textContent;
-        } else if (name === 'tags') {
-          result.tags = textContent;
+        } else if (name === 'slug') {
+          result.slug = textContent.trim();
         } else if (name === 'thumbnail') {
           result.thumbnail = textContent;
         }
@@ -91,6 +87,8 @@ export const getPageProperty = (
       }
     }
   });
+
+  result.slug = result.slug || slugify(result.title);
 
   return result;
 };
@@ -133,7 +131,7 @@ const _getPosts = async (): Promise<PostProperty[]> => {
 
 export const getPosts = cache(_getPosts);
 
-export const getPost = async (pageId: ID): Promise<ExtendedRecordMap> => {
+const _getPost = async (pageId: ID): Promise<ExtendedRecordMap> => {
   try {
     const recordMap = await notionAPI.getPage(pageId);
     return recordMap;
@@ -143,3 +141,5 @@ export const getPost = async (pageId: ID): Promise<ExtendedRecordMap> => {
     );
   }
 };
+
+export const getPost = cache(_getPost);

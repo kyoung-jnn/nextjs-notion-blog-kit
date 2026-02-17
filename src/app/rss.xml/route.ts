@@ -1,7 +1,8 @@
 import RSS from 'rss';
 
-import { getPosts } from '@/api/notion';
-import SITE_CONFIG from '@/config/siteConfig';
+import { getPost, getPosts } from '@/api/notion';
+import { SITE_CONFIG } from '@/config';
+import { extractDescription } from '@/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,10 +22,17 @@ export async function GET() {
     pubDate: new Date(),
   });
 
-  posts.forEach((post) => {
+  const postDescriptions = await Promise.all(
+    posts.map(async (post) => {
+      const recordMap = await getPost(post.id);
+      return extractDescription(recordMap) || post.title;
+    }),
+  );
+
+  posts.forEach((post, index) => {
     feed.item({
       title: post.title,
-      description: post.summary,
+      description: postDescriptions[index],
       url: `${SITE_CONFIG.siteUrl}/article/${post.slug}`,
       author: SITE_CONFIG.author.localeName,
       date: new Date(post.date),

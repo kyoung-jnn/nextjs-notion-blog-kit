@@ -83,15 +83,14 @@ Now you can update your blog directly from Notion — write a post, then click t
 
 ## Notion Database Schema
 
-| Property      | Type         | Required | Description               |
-| ------------- | ------------ | -------- | ------------------------- |
-| **title**     | Title        | Yes      | Post title                |
-| **slug**      | Text         | Yes      | URL slug                  |
-| **date**      | Date         | Yes      | Publication date          |
-| **status**    | Select       | Yes      | `publish` or `draft`      |
-| **summary**   | Text         | Yes      | Short description for SEO |
-| **thumbnail** | Files        | No       | Featured image            |
-| **tags**      | Multi-select | No       | Post categories/tags      |
+| Property      | Type         | Required | Description          |
+| ------------- | ------------ | -------- | -------------------- |
+| **title**     | Title        | Yes      | Post title           |
+| **slug**      | Text         | No       | Custom URL slug (auto-generated from title if empty) |
+| **date**      | Date         | Yes      | Publication date     |
+| **status**    | Select       | Yes      | `publish` or `draft` |
+| **thumbnail** | Files        | No       | Featured image       |
+| **tags**      | Multi-select | No       | Post categories/tags |
 
 ## Deployment
 

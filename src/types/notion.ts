@@ -7,8 +7,6 @@ export interface PostProperty {
   date: string;
   slug: string;
   status: Status;
-  summary: string;
-  tags?: string;
   thumbnail?: string;
   title: string;
 }
