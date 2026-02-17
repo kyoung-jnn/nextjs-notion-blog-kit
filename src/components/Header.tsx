@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 
 import MobileMenu from '@/components/MobileMenu';
 import ThemeSwitch from '@/components/ThemeSwitch';
-import SITE_CONFIG from '@/config/siteConfig';
+import { SITE_CONFIG } from '@/config';
 
 function Header() {
   const pathname = usePathname();

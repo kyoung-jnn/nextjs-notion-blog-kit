@@ -4,7 +4,7 @@ import { useState, MouseEvent, useEffect } from 'react';
 
 import Link from 'next/link';
 
-import { MENU_LIST } from '@/config/navigationConfig';
+import { MENU_LIST } from '@/config';
 
 import IconButton from './IconButton';
 

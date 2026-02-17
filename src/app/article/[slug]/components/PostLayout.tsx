@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react';
 import Image from 'next/image';
 
 import Sidebar from '@/components/Sidebar';
-import { dateToStringWithDash } from '@/utils/dateToStringWithDash';
+import { dateToStringWithDash } from '@/utils';
 
 import PostActions from './PostActions';
 import PostFooter from './PostFooter';

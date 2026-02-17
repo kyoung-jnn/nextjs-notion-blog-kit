@@ -1,4 +1,4 @@
-import SITE_CONFIG from '@/config/siteConfig';
+import { SITE_CONFIG } from '@/config';
 
 function Profile() {
   return (

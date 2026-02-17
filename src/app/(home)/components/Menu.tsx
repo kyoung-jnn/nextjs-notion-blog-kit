@@ -1,8 +1,7 @@
 import Link from 'next/link';
 
 import IconButton from '@/components/IconButton';
-import { MENU_LIST } from '@/config/navigationConfig';
-import SITE_CONFIG from '@/config/siteConfig';
+import { MENU_LIST, SITE_CONFIG } from '@/config';
 
 function Menu() {
   return (
