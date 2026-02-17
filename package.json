@@ -7,9 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "setup": "bash scripts/setup.sh",
-    "deploy:prod": "bash scripts/deploy.sh prod",
-    "deploy:preview": "bash scripts/deploy.sh preview",
+    "blog:setup": "bash scripts/setup.sh",
+    "blog:deploy": "bash scripts/deploy.sh prod",
+    "blog:deploy:preview": "bash scripts/deploy.sh preview",
     "lint": "pnpm eslint . --fix",
     "prettier": "prettier --write .",
     "type-check": "tsc --noEmit"

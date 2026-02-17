@@ -70,7 +70,7 @@ success "Vercel CLI: $VERCEL_CMD"
 
 # 2. .env exists and NOTION_PAGE is configured
 if [ ! -f .env ]; then
-    fail ".env file not found. Run 'pnpm setup' first."
+    fail ".env file not found. Run 'pnpm blog:setup' first."
     ERRORS=$((ERRORS + 1))
 elif grep -q "NOTION_PAGE=your_notion_page_id_here" .env 2>/dev/null; then
     fail "NOTION_PAGE is not configured in .env"
