@@ -31,9 +31,7 @@ export const getPageIds = (response: ExtendedRecordMap): ID[] => {
   if (!collectionQuery) return results;
 
   Object.values(collectionQuery).forEach((view) => {
-    view?.collection_group_results?.blockIds?.forEach((id: ID) =>
-      results.push(id),
-    );
+    view?.collection_group_results?.blockIds?.forEach((id: ID) => results.push(id));
   });
 
   return results;
@@ -66,18 +64,14 @@ export const getPageProperty = (
         break;
       }
       case 'date': {
-        const dateProperty = getDateValue(
-          value as Parameters<typeof getDateValue>[0],
-        );
+        const dateProperty = getDateValue(value as Parameters<typeof getDateValue>[0]);
         if (name === 'date') {
           result.date = dateProperty?.start_date ?? '';
         }
         break;
       }
       default: {
-        const textContent = getTextContent(
-          value as Parameters<typeof getTextContent>[0],
-        );
+        const textContent = getTextContent(value as Parameters<typeof getTextContent>[0]);
         if (name === 'slug') {
           result.slug = textContent.trim().replace(/\s+/g, '-');
         } else if (name === 'status') {
@@ -112,9 +106,7 @@ const _getPosts = async (): Promise<PostProperty[]> => {
     const response = await notionAPI.getPage(notionPageId);
 
     const blockMap = response.block;
-    const collection = getBlockValue<Collection>(
-      Object.values(response.collection)[0],
-    );
+    const collection = getBlockValue<Collection>(Object.values(response.collection)[0]);
     const schema = collection?.schema;
 
     if (!schema) {

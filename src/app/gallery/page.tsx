@@ -21,9 +21,7 @@ export default function GalleryPage() {
     <>
       {GALLERY_LIST?.map(({ type, src, alt }, index) => {
         if (type === 'image') {
-          return (
-            <GalleryPhoto key={index} src={src as StaticImageData} alt={alt} />
-          );
+          return <GalleryPhoto key={index} src={src as StaticImageData} alt={alt} />;
         }
         return <GalleryVideo key={index} src={src as string} alt={alt} />;
       })}

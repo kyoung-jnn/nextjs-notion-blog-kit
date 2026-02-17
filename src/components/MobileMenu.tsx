@@ -29,11 +29,7 @@ function MobileMenu() {
 
   return (
     <div className="tablet:hidden block">
-      <IconButton
-        name="Menu"
-        aria-label="Toggle Menu Button"
-        onClick={handleClick}
-      />
+      <IconButton name="Menu" aria-label="Toggle Menu Button" onClick={handleClick} />
 
       {hasNav && (
         <div className="fixed top-0 left-0 z-[100] animate-[fade-left_0.5s_ease-in-out]">

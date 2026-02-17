@@ -9,14 +9,7 @@ type Props = {
   updatedAt: string;
 };
 
-function JsonLD({
-  slug,
-  title,
-  description,
-  image: _image,
-  date,
-  updatedAt,
-}: Props) {
+function JsonLD({ slug, title, description, image: _image, date, updatedAt }: Props) {
   const url = `${SITE_CONFIG.siteUrl}/article/${slug}`;
 
   const publishedAt = new Date(date).toISOString();

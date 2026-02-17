@@ -64,33 +64,33 @@ https://yourdomain.com/article/api?token=YOUR_TOKEN
 
 ## 스크립트
 
-| 명령어                     | 설명              |
-| -------------------------- | ----------------- |
-| `pnpm dev`                 | 개발 서버 시작    |
-| `pnpm build`               | 프로덕션 빌드     |
+| 명령어                     | 설명               |
+| -------------------------- | ------------------ |
+| `pnpm dev`                 | 개발 서버 시작     |
+| `pnpm build`               | 프로덕션 빌드      |
 | `pnpm blog:setup`          | 대화형 설정 마법사 |
-| `pnpm blog:deploy`         | 프로덕션 배포     |
-| `pnpm blog:deploy:preview` | 프리뷰 배포       |
+| `pnpm blog:deploy`         | 프로덕션 배포      |
+| `pnpm blog:deploy:preview` | 프리뷰 배포        |
 
 ## 설정
 
-| 파일                          | 용도                                                                  |
-| ----------------------------- | --------------------------------------------------------------------- |
-| `.env`                        | `NOTION_PAGE` (필수), `TOKEN_FOR_REVALIDATE` (선택)                    |
-| `src/config/siteConfig.ts`    | 제목, 작성자, URL, 소셜 링크                                          |
-| `src/config/commentConfig.ts` | Giscus 댓글 ID ([giscus.app](https://giscus.app/))                    |
-| `src/styles/global.css`       | 테마 색상 ([Radix UI Gray](https://www.radix-ui.com/colors) 스케일)    |
+| 파일                          | 용도                                                                |
+| ----------------------------- | ------------------------------------------------------------------- |
+| `.env`                        | `NOTION_PAGE` (필수), `TOKEN_FOR_REVALIDATE` (선택)                 |
+| `src/config/siteConfig.ts`    | 제목, 작성자, URL, 소셜 링크                                        |
+| `src/config/commentConfig.ts` | Giscus 댓글 ID ([giscus.app](https://giscus.app/))                  |
+| `src/styles/global.css`       | 테마 색상 ([Radix UI Gray](https://www.radix-ui.com/colors) 스케일) |
 
 ## Notion 데이터베이스 스키마
 
-| 속성          | 타입      | 필수 | 설명               |
-| ------------- | --------- | ---- | ------------------ |
-| **title**     | 제목      | Yes  | 포스트 제목        |
-| **slug**      | 텍스트    | Yes  | URL 슬러그         |
-| **date**      | 날짜      | Yes  | 게시 날짜          |
+| 속성          | 타입      | 필수 | 설명                 |
+| ------------- | --------- | ---- | -------------------- |
+| **title**     | 제목      | Yes  | 포스트 제목          |
+| **slug**      | 텍스트    | Yes  | URL 슬러그           |
+| **date**      | 날짜      | Yes  | 게시 날짜            |
 | **status**    | 선택      | Yes  | `publish` or `draft` |
-| **summary**   | 텍스트    | Yes  | SEO용 짧은 설명    |
-| **thumbnail** | 파일      | No   | 대표 이미지        |
+| **summary**   | 텍스트    | Yes  | SEO용 짧은 설명      |
+| **thumbnail** | 파일      | No   | 대표 이미지          |
 | **tags**      | 다중 선택 | No   | 포스트 카테고리/태그 |
 
 ## 배포

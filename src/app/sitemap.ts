@@ -17,15 +17,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 1,
   }));
 
-  const pageSitemap: MetadataRoute.Sitemap = Array.from(
-    { length: totalPageCount },
-    (_, index) => ({
-      url: `${SITE_CONFIG.siteUrl}/article/list/${index + 1}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    }),
-  );
+  const pageSitemap: MetadataRoute.Sitemap = Array.from({ length: totalPageCount }, (_, index) => ({
+    url: `${SITE_CONFIG.siteUrl}/article/list/${index + 1}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
 
   const postSitemap: MetadataRoute.Sitemap = posts.map(({ slug, date }) => ({
     url: `${SITE_CONFIG.siteUrl}/article/${slug}`,

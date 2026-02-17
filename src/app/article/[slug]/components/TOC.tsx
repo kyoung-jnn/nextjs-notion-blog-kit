@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 
 function TOC() {
   const [currentTable, setCurrentTable] = useState<string>('');
@@ -18,37 +12,34 @@ function TOC() {
     }[]
   >([]);
 
-  const getObserver = useCallback(
-    (setCurrentTable: Dispatch<SetStateAction<string>>) => {
-      let direction = '';
-      let prevYposition = 0;
+  const getObserver = useCallback((setCurrentTable: Dispatch<SetStateAction<string>>) => {
+    let direction = '';
+    let prevYposition = 0;
 
-      const getScrollDirection = (prevY: number) => {
-        if (window.scrollY === 0 && prevY === 0) return;
-        else if (window.scrollY > prevY) direction = 'down';
-        else direction = 'up';
+    const getScrollDirection = (prevY: number) => {
+      if (window.scrollY === 0 && prevY === 0) return;
+      else if (window.scrollY > prevY) direction = 'down';
+      else direction = 'up';
 
-        prevYposition = window.scrollY;
-      };
+      prevYposition = window.scrollY;
+    };
 
-      return new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            getScrollDirection(prevYposition);
+    return new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          getScrollDirection(prevYposition);
 
-            if (
-              (direction === 'down' && !entry.isIntersecting) ||
-              (direction === 'up' && entry.isIntersecting)
-            ) {
-              setCurrentTable(entry.target.id);
-            }
-          });
-        },
-        { threshold: 1 },
-      );
-    },
-    [],
-  );
+          if (
+            (direction === 'down' && !entry.isIntersecting) ||
+            (direction === 'up' && entry.isIntersecting)
+          ) {
+            setCurrentTable(entry.target.id);
+          }
+        });
+      },
+      { threshold: 1 },
+    );
+  }, []);
 
   useEffect(() => {
     const observer = getObserver(setCurrentTable);

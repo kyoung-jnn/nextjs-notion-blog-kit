@@ -9,8 +9,7 @@ import { COMMENT_CONFIG } from '@/config/commentConfig';
 function Comment() {
   const { theme } = useTheme();
 
-  const commentTheme: Theme =
-    theme === 'dark' ? 'noborder_dark' : 'noborder_light';
+  const commentTheme: Theme = theme === 'dark' ? 'noborder_dark' : 'noborder_light';
 
   return (
     <Giscus

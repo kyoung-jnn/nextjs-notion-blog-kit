@@ -15,12 +15,7 @@ interface Props {
   thumbnail?: string;
 }
 
-function PostLayout({
-  title,
-  date,
-  thumbnail,
-  children,
-}: PropsWithChildren<Props>) {
+function PostLayout({ title, date, thumbnail, children }: PropsWithChildren<Props>) {
   const updatedAt = dateToStringWithDash(date);
 
   return (
@@ -35,10 +30,7 @@ function PostLayout({
       <div className="tablet:col-start-2 tablet:col-end-3 animate-[fade-up_0.5s_forwards]">
         <header className="mb-5 text-left">
           <h1 className="text-[30px] font-bold">{title}</h1>
-          <time
-            dateTime={updatedAt}
-            className="text-gray-9 dark:text-gray-11 block text-base"
-          >
+          <time dateTime={updatedAt} className="text-gray-9 dark:text-gray-11 block text-base">
             {updatedAt}
           </time>
           {thumbnail && (

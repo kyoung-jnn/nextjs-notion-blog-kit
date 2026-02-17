@@ -5,19 +5,14 @@ import { getPosts } from '@/api/notion';
 import ArticleCardList from '@/components/ArticleCardList';
 import Pagination from '@/components/Pagination';
 import Sidebar from '@/components/Sidebar';
-import {
-  METADATA_CONFIG,
-  METADATA_TWITTER_CONFIG,
-} from '@/config/metadataConfig';
+import { METADATA_CONFIG, METADATA_TWITTER_CONFIG } from '@/config/metadataConfig';
 import { OPEN_GRAPH_CONFIG } from '@/config/openGraphConfig';
 import SITE_CONFIG from '@/config/siteConfig';
 import { POSTS_PER_PAGE } from '@/constants';
 
 type Params = { pageNum: string };
 
-export async function generateMetadata(props: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
   const params = await props.params;
 
   const { pageNum } = params;
@@ -44,11 +39,7 @@ export async function generateStaticParams() {
   return paths.length > 0 ? paths : [{ pageNum: '1' }];
 }
 
-export default async function PostListPage({
-  params,
-}: {
-  params: Promise<Params>;
-}) {
+export default async function PostListPage({ params }: { params: Promise<Params> }) {
   const { pageNum } = await params;
   const allPosts = await getPosts();
 

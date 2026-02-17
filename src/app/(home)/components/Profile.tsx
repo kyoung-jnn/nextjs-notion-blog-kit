@@ -6,9 +6,7 @@ function Profile() {
       <h1 className="text-gray-12 dark:text-gray-12 text-2xl font-bold">
         {SITE_CONFIG.author.enName} • {SITE_CONFIG.author.localeName}
       </h1>
-      <p className="text-gray-9 dark:text-gray-11 text-sm font-medium">
-        {SITE_CONFIG.description}
-      </p>
+      <p className="text-gray-9 dark:text-gray-11 text-sm font-medium">{SITE_CONFIG.description}</p>
     </section>
   );
 }

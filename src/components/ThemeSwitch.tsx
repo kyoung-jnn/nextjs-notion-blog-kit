@@ -27,9 +27,7 @@ const ThemeSwitch = () => {
       {!mounted ? (
         <Image
           alt="theme-placeholder"
-          src={
-            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-          }
+          src={'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'}
           width={40}
           height={40}
         />
