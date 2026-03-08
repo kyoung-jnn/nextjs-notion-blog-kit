@@ -1,34 +1,7 @@
 #!/bin/bash
 
-# Colors for output
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
-BOLD='\033[1m'
-
-# ─── Helper Functions ────────────────────────────────────────────────
-
-success() { echo -e "${GREEN}✓${NC} $1"; }
-warn()    { echo -e "${YELLOW}⚠${NC} $1"; }
-fail()    { echo -e "${RED}✗${NC} $1"; }
-
-# Resolve vercel command (global → npx fallback)
-resolve_vercel() {
-    if command -v vercel &> /dev/null; then
-        VERCEL_CMD="vercel"
-    elif command -v npx &> /dev/null; then
-        VERCEL_CMD="npx vercel"
-    else
-        fail "Neither vercel CLI nor npx found."
-        echo ""
-        echo "  Install one of these:"
-        echo "    npm install -g vercel"
-        echo "    npm install -g npx"
-        exit 1
-    fi
-}
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/lib/common.sh"
 
 # ─── Parse Arguments ─────────────────────────────────────────────────
 
@@ -48,13 +21,7 @@ else
     VERCEL_FLAGS=""
 fi
 
-# ─── Banner ──────────────────────────────────────────────────────────
-
-echo ""
-echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║   Deploy: $DEPLOY_LABEL $(printf '%-*s' $((24 - ${#DEPLOY_LABEL})) '')║${NC}"
-echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
-echo ""
+banner "Deploy: $DEPLOY_LABEL"
 
 # ─── Pre-flight Checks ──────────────────────────────────────────────
 
@@ -66,25 +33,38 @@ WARNINGS=0
 
 # 1. Vercel CLI
 resolve_vercel
-success "Vercel CLI: $VERCEL_CMD"
+if [ -n "$VERCEL_CMD" ]; then
+    success "Vercel CLI: $VERCEL_CMD"
+else
+    fail "Neither vercel CLI nor npx found."
+    echo ""
+    echo "  Install one of these:"
+    echo "    npm install -g vercel"
+    echo "    npm install -g npx"
+    exit 1
+fi
 
 # 2. .env exists and NOTION_PAGE is configured
 if [ ! -f .env ]; then
     fail ".env file not found. Run 'pnpm blog:setup' first."
     ERRORS=$((ERRORS + 1))
-elif grep -q "NOTION_PAGE=your_notion_page_id_here" .env 2>/dev/null; then
-    fail "NOTION_PAGE is not configured in .env"
-    ERRORS=$((ERRORS + 1))
 else
-    success "NOTION_PAGE is configured"
+    NOTION_VAL=$(get_env_var "NOTION_PAGE")
+    if [ -z "$NOTION_VAL" ] || [ "$NOTION_VAL" = "your_notion_page_id_here" ]; then
+        fail "NOTION_PAGE is not configured in .env"
+        ERRORS=$((ERRORS + 1))
+    else
+        success "NOTION_PAGE is configured"
+    fi
 fi
 
 # 3. siteUrl check
-if grep -q "siteUrl: ''" src/config/siteConfig.ts 2>/dev/null; then
-    warn "siteUrl is empty in siteConfig.ts (SEO will be affected)"
+SITE_URL=$(get_env_var "NEXT_PUBLIC_SITE_URL")
+if [ -z "$SITE_URL" ]; then
+    warn "NEXT_PUBLIC_SITE_URL is empty (SEO will be affected)"
     WARNINGS=$((WARNINGS + 1))
 else
-    success "siteUrl is configured"
+    success "Site URL is configured: $SITE_URL"
 fi
 
 # 4. Dependencies installed
@@ -116,9 +96,9 @@ fi
 
 # Confirm on warnings
 if [ "$WARNINGS" -gt 0 ]; then
-    read -p "$(echo -e "${YELLOW}$WARNINGS warning(s) found. Continue anyway? (y/n):${NC} ")" confirm
+    read -p "$(echo -e "  ${YELLOW}$WARNINGS warning(s) found. Continue anyway? (y/n):${NC} ")" confirm
     if [[ ! $confirm =~ ^[Yy]$ ]]; then
-        echo "Deploy cancelled."
+        echo "  Deploy cancelled."
         exit 0
     fi
     echo ""
@@ -146,7 +126,7 @@ echo ""
 if $VERCEL_CMD $VERCEL_FLAGS; then
     echo ""
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${GREEN}✓ $DEPLOY_LABEL deploy complete!${NC}"
+    echo -e "${GREEN}  ✓ $DEPLOY_LABEL deploy complete!${NC}"
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
 else
