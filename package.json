@@ -8,8 +8,12 @@
     "build": "next build",
     "start": "next start",
     "blog:setup": "bash scripts/setup.sh",
+    "blog:doctor": "bash scripts/doctor.sh",
     "blog:deploy": "bash scripts/deploy.sh prod",
     "blog:deploy:preview": "bash scripts/deploy.sh preview",
+    "blog:env:push": "bash scripts/sync-env.sh push",
+    "blog:env:pull": "bash scripts/sync-env.sh pull",
+    "blog:env:diff": "bash scripts/sync-env.sh diff",
     "lint": "pnpm eslint . --fix",
     "prettier": "prettier --write .",
     "type-check": "tsc --noEmit"
