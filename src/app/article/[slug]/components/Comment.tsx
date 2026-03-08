@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTheme } from 'next-themes';
 
-import Giscus, { Theme } from '@giscus/react';
+import Giscus, { Repo, Theme } from '@giscus/react';
 
 import { COMMENT_CONFIG } from '@/config';
 
@@ -45,7 +45,7 @@ function Comment() {
     <div ref={containerRef}>
       <Giscus
         id="comments"
-        repo={COMMENT_CONFIG.repo}
+        repo={COMMENT_CONFIG.repo as Repo}
         repoId={COMMENT_CONFIG.repoId}
         category={COMMENT_CONFIG.category}
         categoryId={COMMENT_CONFIG.categoryId}

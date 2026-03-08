@@ -277,8 +277,6 @@ echo ""
 read -p "Do you want to configure Giscus comments? (y/n): " setup_giscus
 
 if [[ $setup_giscus =~ ^[Yy]$ ]]; then
-    COMMENT_CONFIG="src/config/commentConfig.ts"
-
     # Try to auto-detect GitHub repo from git remote
     DETECTED_REPO=""
     if command -v git &> /dev/null && git remote get-url origin &> /dev/null; then
@@ -311,18 +309,18 @@ if [[ $setup_giscus =~ ^[Yy]$ ]]; then
     read -p "Enter categoryId: " giscus_category_id
 
     if [ -n "$giscus_repo" ]; then
-        update_file "$COMMENT_CONFIG" "repo: 'your-github-username/your-blog-repo-name'" "repo: '$giscus_repo'"
+        update_file ".env" "NEXT_PUBLIC_GISCUS_REPO=.*" "NEXT_PUBLIC_GISCUS_REPO=$giscus_repo"
     fi
 
     if [ -n "$giscus_repo_id" ]; then
-        update_file "$COMMENT_CONFIG" "repoId: ''" "repoId: '$giscus_repo_id'"
+        update_file ".env" "NEXT_PUBLIC_GISCUS_REPO_ID=.*" "NEXT_PUBLIC_GISCUS_REPO_ID=$giscus_repo_id"
     fi
 
     if [ -n "$giscus_category_id" ]; then
-        update_file "$COMMENT_CONFIG" "categoryId: ''" "categoryId: '$giscus_category_id'"
+        update_file ".env" "NEXT_PUBLIC_GISCUS_CATEGORY_ID=.*" "NEXT_PUBLIC_GISCUS_CATEGORY_ID=$giscus_category_id"
     fi
 
-    success "Updated commentConfig.ts"
+    success "Updated Giscus settings in .env"
 else
     echo "  Skipped. You can configure comments later in src/config/commentConfig.ts"
 fi
@@ -413,9 +411,9 @@ else
     success "siteUrl is configured"
 fi
 
-# Check commentConfig
-if grep -q "repoId: ''" src/config/commentConfig.ts 2>/dev/null; then
-    warn "Giscus comments are not configured (commentConfig.ts)"
+# Check Giscus config in .env
+if grep -q "NEXT_PUBLIC_GISCUS_REPO_ID=$" .env 2>/dev/null; then
+    warn "Giscus comments are not configured (.env)"
     WARNINGS=$((WARNINGS + 1))
 else
     success "Comment system is configured"
