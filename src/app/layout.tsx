@@ -2,6 +2,9 @@ import { ReactNode } from 'react';
 
 import { Metadata } from 'next';
 
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import ProgressBar from '@/components/ProgressBar';
@@ -61,6 +64,8 @@ function RootLayout({ children }: { children: ReactNode }) {
           <main>{children}</main>
           <Footer />
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
