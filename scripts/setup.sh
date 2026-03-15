@@ -1,476 +1,189 @@
 #!/bin/bash
+# ─── Obsidian Blog Kit — Zero-config setup ───────────────────────────
+#
+# Usage:  pnpm blog:setup
+#
+# Auto-detects git config, generates blog.config.ts, initializes vault.
+# Edit blog.config.ts to customize.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/lib/common.sh"
 
-TOTAL_STEPS=6
+banner "Obsidian Blog Kit"
 
-# ─── Banner ──────────────────────────────────────────────────────────
+# ─── 1. Environment ─────────────────────────────────────────────────
 
-banner "Next.js Notion Blog Kit Setup"
-
-# ─── Pre-flight Checks ──────────────────────────────────────────────
-
-echo -e "${BOLD}Pre-flight checks...${NC}"
-echo ""
-
-# Check Node.js
-if command -v node &> /dev/null; then
-    NODE_VERSION=$(node -v | sed 's/v//')
-    NODE_MAJOR=$(echo "$NODE_VERSION" | cut -d. -f1)
-    if [ "$NODE_MAJOR" -lt 18 ]; then
-        warn "Node.js v$NODE_VERSION detected. v18+ is recommended."
-    else
-        success "Node.js v$NODE_VERSION"
-    fi
-else
-    fail "Node.js is not installed. Please install Node.js v18+ first."
-    echo "   https://nodejs.org/"
+if ! command -v node &> /dev/null; then
+    fail "Node.js not found — install v18+ from https://nodejs.org"
     exit 1
 fi
+NODE_MAJOR=$(node -v | sed 's/v//' | cut -d. -f1)
+[ "$NODE_MAJOR" -lt 18 ] && warn "Node.js $(node -v) — v18+ recommended" || success "Node.js $(node -v)"
 
-# Check pnpm
-if command -v pnpm &> /dev/null; then
-    PNPM_VERSION=$(pnpm -v)
-    success "pnpm v$PNPM_VERSION"
-else
-    fail "pnpm is not installed."
-    echo ""
-    echo "  Install pnpm with one of these commands:"
-    echo "    corepack enable && corepack prepare pnpm@latest --activate"
-    echo "    npm install -g pnpm"
+if ! command -v pnpm &> /dev/null; then
+    fail "pnpm not found — run: corepack enable && corepack prepare pnpm@latest --activate"
     exit 1
 fi
+success "pnpm v$(pnpm -v)"
 
-# Check .env.example
-if [ ! -f .env.example ]; then
-    fail ".env.example not found! Are you in the project root?"
-    exit 1
+# ─── 2. Dependencies ────────────────────────────────────────────────
+
+if [ ! -d node_modules ] || [ package.json -nt node_modules ]; then
+    echo -e "\n  ${BLUE}Installing dependencies...${NC}"
+    pnpm install --silent 2>/dev/null
+fi
+success "Dependencies ready"
+
+# ─── 3. Auto-detect ─────────────────────────────────────────────────
+
+GIT_USER=$(git config user.name 2>/dev/null || echo "")
+GIT_EMAIL=$(git config user.email 2>/dev/null || echo "")
+GITHUB_REPO=""
+GITHUB_USER=""
+GISCUS_REPO_ID=""
+GISCUS_CAT_ID=""
+
+if command -v git &> /dev/null && git remote get-url origin &> /dev/null 2>&1; then
+    REMOTE_URL=$(git remote get-url origin)
+    GITHUB_REPO=$(echo "$REMOTE_URL" | sed 's|\.git$||' | awk -F '[/:]' '{print $(NF-1)"/"$NF}')
+    GITHUB_USER=$(echo "$GITHUB_REPO" | cut -d'/' -f1)
 fi
 
-# Check gh CLI
-if command -v gh &> /dev/null && gh auth status &> /dev/null; then
-    success "GitHub CLI (authenticated)"
-    GH_AVAILABLE=true
-else
-    warn "GitHub CLI not available — Giscus will require manual setup"
-    GH_AVAILABLE=false
-fi
+# Giscus auto-detection via GitHub CLI
+if [ -n "$GITHUB_REPO" ] && command -v gh &> /dev/null && gh auth status &> /dev/null 2>&1; then
+    OWNER=$(echo "$GITHUB_REPO" | cut -d'/' -f1)
+    REPO=$(echo "$GITHUB_REPO" | cut -d'/' -f2)
 
-# Check Vercel CLI
-resolve_vercel
-if [ -n "$VERCEL_CMD" ]; then
-    success "Vercel CLI: $VERCEL_CMD"
-else
-    warn "Vercel CLI not found — deployment setup will be skipped"
-fi
+    GRAPHQL=$(gh api graphql -f query='
+        query($o: String!, $r: String!) {
+            repository(owner: $o, name: $r) {
+                id
+                hasDiscussionsEnabled
+                discussionCategories(first: 20) { nodes { id name } }
+            }
+        }
+    ' -f o="$OWNER" -f r="$REPO" 2>/dev/null)
 
-success "Project structure verified"
-echo ""
-
-# ─── Prepare .env ────────────────────────────────────────────────────
-
-if [ ! -f .env ]; then
-    cp .env.example .env
-    success "Created .env from .env.example"
-else
-    success "Using existing .env file"
-fi
-
-# ─── Step 1: Notion Page ID ─────────────────────────────────────────
-
-print_step 1 $TOTAL_STEPS "Notion Page ID"
-
-CURRENT_NOTION=$(get_env_var "NOTION_PAGE")
-
-if [ "$CURRENT_NOTION" != "your_notion_page_id_here" ] && [ -n "$CURRENT_NOTION" ]; then
-    echo -e "  Current: ${YELLOW}$CURRENT_NOTION${NC}"
-    if ! confirm "Update Notion Page ID?"; then
-        success "Keeping existing NOTION_PAGE"
-        SKIP_NOTION=true
-    fi
-fi
-
-if [ "$SKIP_NOTION" != true ]; then
-    echo ""
-    echo "  How to get your Notion Database Page ID:"
-    echo ""
-    echo "  1. Visit the database template:"
-    echo "     https://kyoung-jnn.notion.site/256d55b883778070ab14e9ca4b56f037"
-    echo "  2. Click 'Duplicate' to copy the database to your workspace"
-    echo "  3. Open the duplicated page and click 'Share'"
-    echo "  4. Toggle 'Share to web' ON"
-    echo "  5. Copy the URL from browser address bar"
-    echo -e "     ${YELLOW}Tip:${NC} Press ⌘+L (Mac) or Ctrl+L (Windows) to select the URL"
-    echo "  6. Your page ID is the string before '?v='"
-    echo ""
-    echo -e "  ${YELLOW}Example URL:${NC} https://notion.site/256d55b883778070ab14e9ca4b56f037?v=..."
-    echo -e "  ${YELLOW}Page ID:${NC}     256d55b883778070ab14e9ca4b56f037"
-    echo ""
-
-    read -p "  Enter your Notion Page ID: " notion_page_id
-
-    if [ -z "$notion_page_id" ]; then
-        fail "Notion Page ID is required!"
-        exit 1
-    fi
-
-    # Sanitize input
-    notion_page_id=$(echo "$notion_page_id" | tr -cd '[:alnum:]')
-
-    if ! validate_notion_id "$notion_page_id"; then
-        fail "Invalid Notion Page ID format."
-        echo "  Expected: 32 hexadecimal characters (e.g., 1f4d55b8837780519a27c4f1f7e4b1a9)"
-        exit 1
-    fi
-
-    set_env_var "NOTION_PAGE" "$notion_page_id"
-    success "Updated NOTION_PAGE"
-fi
-
-# Optional: Revalidation token
-echo ""
-CURRENT_TOKEN=$(get_env_var "TOKEN_FOR_REVALIDATE")
-if [ "$CURRENT_TOKEN" = "your_secret_token_here" ] || [ -z "$CURRENT_TOKEN" ]; then
-    if confirm "Generate a revalidation token?"; then
-        random_token=$(openssl rand -hex 32)
-        set_env_var "TOKEN_FOR_REVALIDATE" "$random_token"
-        success "Generated TOKEN_FOR_REVALIDATE"
-    fi
-else
-    success "TOKEN_FOR_REVALIDATE already configured"
-fi
-
-# ─── Step 2: Site Configuration ─────────────────────────────────────
-
-print_step 2 $TOTAL_STEPS "Site Configuration"
-
-if confirm "Configure your site info?"; then
-    echo ""
-
-    val=$(prompt_with_default "Blog title" "$(get_env_var NEXT_PUBLIC_SITE_TITLE)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_SITE_TITLE" "$val"
-
-    val=$(prompt_with_default "Blog description" "$(get_env_var NEXT_PUBLIC_SITE_DESCRIPTION)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_SITE_DESCRIPTION" "$val"
-
-    val=$(prompt_with_default "Locale (ko/en)" "$(get_env_var NEXT_PUBLIC_SITE_LOCALE)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_SITE_LOCALE" "$val"
-
-    val=$(prompt_with_default "Author name (locale)" "$(get_env_var NEXT_PUBLIC_AUTHOR_LOCALE_NAME)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_AUTHOR_LOCALE_NAME" "$val"
-
-    val=$(prompt_with_default "Author name (English)" "$(get_env_var NEXT_PUBLIC_AUTHOR_EN_NAME)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_AUTHOR_EN_NAME" "$val"
-
-    val=$(prompt_with_default "Author bio" "$(get_env_var NEXT_PUBLIC_AUTHOR_BIO)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_AUTHOR_BIO" "$val"
-
-    val=$(prompt_with_default "Site URL (e.g., https://yourblog.vercel.app)" "$(get_env_var NEXT_PUBLIC_SITE_URL)")
-    if [ -n "$val" ]; then
-        if validate_url "$val"; then
-            set_env_var "NEXT_PUBLIC_SITE_URL" "$val"
-        else
-            warn "Invalid URL format: $val (skipped)"
-        fi
-    fi
-
-    val=$(prompt_with_default "Email" "$(get_env_var NEXT_PUBLIC_AUTHOR_EMAIL)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_AUTHOR_EMAIL" "$val"
-
-    val=$(prompt_with_default "GitHub URL" "$(get_env_var NEXT_PUBLIC_AUTHOR_GITHUB)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_AUTHOR_GITHUB" "$val"
-
-    val=$(prompt_with_default "LinkedIn URL (optional)" "$(get_env_var NEXT_PUBLIC_AUTHOR_LINKEDIN)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_AUTHOR_LINKEDIN" "$val"
-
-    val=$(prompt_with_default "Twitter/X URL (optional)" "$(get_env_var NEXT_PUBLIC_AUTHOR_TWITTER)")
-    [ -n "$val" ] && set_env_var "NEXT_PUBLIC_AUTHOR_TWITTER" "$val"
-
-    success "Updated site configuration in .env"
-else
-    echo "  Skipped. Edit .env directly to configure later."
-fi
-
-# ─── Step 3: Comment System (Giscus) ────────────────────────────────
-
-print_step 3 $TOTAL_STEPS "Comment System (Giscus)"
-
-echo "  Giscus provides GitHub-based comments for your blog."
-echo ""
-
-if confirm "Configure Giscus comments?"; then
-    # Detect repo from git remote
-    DETECTED_REPO=""
-    if command -v git &> /dev/null && git remote get-url origin &> /dev/null; then
-        REMOTE_URL=$(git remote get-url origin)
-        DETECTED_REPO=$(echo "$REMOTE_URL" | sed -E 's|.*github\.com[:/]([^/]+/[^/]+)(\.git)?/?$|\1|')
-    fi
-
-    CURRENT_REPO=$(get_env_var "NEXT_PUBLIC_GISCUS_REPO")
-    DEFAULT_REPO="${CURRENT_REPO:-$DETECTED_REPO}"
-
-    if [ -n "$DEFAULT_REPO" ] && [ "$DEFAULT_REPO" != "your-github-username/your-blog-repo-name" ]; then
-        giscus_repo=$(prompt_with_default "GitHub repo (owner/repo)" "$DEFAULT_REPO")
-    else
-        if [ -n "$DETECTED_REPO" ]; then
-            echo -e "  Detected repository: ${YELLOW}$DETECTED_REPO${NC}"
-            if confirm "Use this repository?"; then
-                giscus_repo="$DETECTED_REPO"
-            else
-                giscus_repo=$(prompt_with_default "GitHub repo (owner/repo)" "")
-            fi
-        else
-            giscus_repo=$(prompt_with_default "GitHub repo (owner/repo)" "")
-        fi
-    fi
-
-    if [ -n "$giscus_repo" ]; then
-        set_env_var "NEXT_PUBLIC_GISCUS_REPO" "$giscus_repo"
-
-        OWNER=$(echo "$giscus_repo" | cut -d'/' -f1)
-        REPO=$(echo "$giscus_repo" | cut -d'/' -f2)
-
-        # Try auto-detection via GitHub GraphQL API
-        if [ "$GH_AVAILABLE" = true ]; then
-            echo ""
-            echo -e "  ${BLUE}Fetching Giscus config via GitHub API...${NC}"
-
-            GRAPHQL_RESULT=$(gh api graphql -f query='
-                query($owner: String!, $repo: String!) {
-                    repository(owner: $owner, name: $repo) {
+    if [ $? -eq 0 ] && [ -n "$GRAPHQL" ]; then
+        HAS_DISC=$(echo "$GRAPHQL" | grep -o '"hasDiscussionsEnabled":[a-z]*' | cut -d':' -f2)
+        if [ "$HAS_DISC" = "false" ]; then
+            gh repo edit "$GITHUB_REPO" --enable-discussions 2>/dev/null
+            GRAPHQL=$(gh api graphql -f query='
+                query($o: String!, $r: String!) {
+                    repository(owner: $o, name: $r) {
                         id
-                        hasDiscussionsEnabled
-                        discussionCategories(first: 20) {
-                            nodes { id name }
-                        }
+                        discussionCategories(first: 20) { nodes { id name } }
                     }
                 }
-            ' -f owner="$OWNER" -f repo="$REPO" 2>/dev/null)
+            ' -f o="$OWNER" -f r="$REPO" 2>/dev/null)
+        fi
 
-            if [ $? -eq 0 ] && [ -n "$GRAPHQL_RESULT" ]; then
-                REPO_ID=$(echo "$GRAPHQL_RESULT" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
-                HAS_DISCUSSIONS=$(echo "$GRAPHQL_RESULT" | grep -o '"hasDiscussionsEnabled":[a-z]*' | cut -d':' -f2)
-
-                if [ "$HAS_DISCUSSIONS" = "false" ]; then
-                    warn "GitHub Discussions is not enabled on $giscus_repo"
-                    if confirm "Enable Discussions now?"; then
-                        gh repo edit "$giscus_repo" --enable-discussions 2>/dev/null
-                        if [ $? -eq 0 ]; then
-                            success "Enabled GitHub Discussions"
-                            # Re-fetch to get discussion categories
-                            GRAPHQL_RESULT=$(gh api graphql -f query='
-                                query($owner: String!, $repo: String!) {
-                                    repository(owner: $owner, name: $repo) {
-                                        id
-                                        discussionCategories(first: 20) {
-                                            nodes { id name }
-                                        }
-                                    }
-                                }
-                            ' -f owner="$OWNER" -f repo="$REPO" 2>/dev/null)
-                        else
-                            fail "Could not enable Discussions — please enable manually in repo settings"
-                        fi
-                    fi
-                fi
-
-                if [ -n "$REPO_ID" ]; then
-                    set_env_var "NEXT_PUBLIC_GISCUS_REPO_ID" "$REPO_ID"
-                    success "Auto-detected repoId: $REPO_ID"
-                fi
-
-                # Find "Comments" category (or first available)
-                CATEGORY_ID=$(echo "$GRAPHQL_RESULT" | python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-nodes = data.get('data', {}).get('repository', {}).get('discussionCategories', {}).get('nodes', [])
-for n in nodes:
-    if n['name'].lower() == 'comments':
-        print(n['id'])
-        sys.exit(0)
-# Fallback: use first category if 'Comments' not found
-if nodes:
-    print(nodes[0]['id'])
+        GISCUS_REPO_ID=$(echo "$GRAPHQL" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+        GISCUS_CAT_ID=$(echo "$GRAPHQL" | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+ns=d.get('data',{}).get('repository',{}).get('discussionCategories',{}).get('nodes',[])
+for n in ns:
+    if n['name'].lower()=='comments': print(n['id']);sys.exit(0)
+if ns: print(ns[0]['id'])
 " 2>/dev/null)
-
-                if [ -n "$CATEGORY_ID" ]; then
-                    set_env_var "NEXT_PUBLIC_GISCUS_CATEGORY_ID" "$CATEGORY_ID"
-                    success "Auto-detected categoryId: $CATEGORY_ID"
-                else
-                    warn "No discussion category found. Please create a 'Comments' category in GitHub Discussions."
-                fi
-
-                AUTO_GISCUS=true
-            else
-                warn "GitHub API query failed — falling back to manual setup"
-            fi
-        fi
-
-        # Manual fallback
-        if [ "$AUTO_GISCUS" != true ]; then
-            echo ""
-            echo "  To get your repoId and categoryId:"
-            echo "  1. Visit https://giscus.app/"
-            echo "  2. Enter your repository name"
-            echo "  3. Select 'Comments' as the Discussion Category"
-            echo "  4. Copy the repoId and categoryId from the generated script"
-            echo ""
-
-            CURRENT_REPO_ID=$(get_env_var "NEXT_PUBLIC_GISCUS_REPO_ID")
-            CURRENT_CAT_ID=$(get_env_var "NEXT_PUBLIC_GISCUS_CATEGORY_ID")
-
-            val=$(prompt_with_default "repoId" "$CURRENT_REPO_ID")
-            [ -n "$val" ] && set_env_var "NEXT_PUBLIC_GISCUS_REPO_ID" "$val"
-
-            val=$(prompt_with_default "categoryId" "$CURRENT_CAT_ID")
-            [ -n "$val" ] && set_env_var "NEXT_PUBLIC_GISCUS_CATEGORY_ID" "$val"
-        fi
-
-        success "Giscus configuration saved to .env"
     fi
-else
-    echo "  Skipped. Edit .env directly to configure later."
 fi
 
-# ─── Step 4: Install Dependencies ───────────────────────────────────
+# ─── 4. Generate blog.config.ts ─────────────────────────────────────
 
-print_step 4 $TOTAL_STEPS "Installing Dependencies"
+if [ ! -f src/config/blog.config.ts ]; then
+    # Escape single quotes for TypeScript string literals
+    AUTHOR_NAME=$(echo "${GIT_USER:-Author Name}" | sed "s/'/\\\\'/g")
+    AUTHOR_EMAIL=$(echo "${GIT_EMAIL}" | sed "s/'/\\\\'/g")
+    AUTHOR_GITHUB=""
+    [ -n "$GITHUB_USER" ] && AUTHOR_GITHUB="https://github.com/$GITHUB_USER"
+    GISCUS_REPO="${GITHUB_REPO}"
 
-echo "  Installing dependencies with pnpm..."
-pnpm install
-success "Dependencies installed"
+    cat > src/config/blog.config.ts << CONFIGEOF
+/**
+ * Blog Configuration
+ *
+ * Edit this file to customize your blog.
+ * Generated by \`pnpm blog:setup\`. Edit freely — setup won't overwrite this file.
+ */
+const config = {
+  // ─── Site ──────────────────────────────────────────────────────────
+  title: 'My Blog',
+  description: 'A blog about technology',
+  locale: 'ko',
+  siteUrl: '',
+  siteLogo: '',
+  siteBanner: '',
 
-# ─── Step 5: Vercel Deployment Setup ─────────────────────────────────
+  // ─── Author ────────────────────────────────────────────────────────
+  author: {
+    localeName: '${AUTHOR_NAME}',
+    enName: '${AUTHOR_NAME}',
+    bio: 'Write a brief introduction about yourself',
+    contacts: {
+      email: '${AUTHOR_EMAIL}',
+      github: '${AUTHOR_GITHUB}',
+      linkedin: '',
+      twitter: '',
+      rss: '',
+    },
+  },
 
-print_step 5 $TOTAL_STEPS "Vercel Deployment Setup"
+  // ─── Comments (https://giscus.app) ─────────────────────────────────
+  giscus: {
+    repo: '${GISCUS_REPO}',
+    repoId: '${GISCUS_REPO_ID}',
+    category: 'Comments',
+    categoryId: '${GISCUS_CAT_ID}',
+  },
 
-if [ -z "$VERCEL_CMD" ]; then
+  // ─── Navigation ────────────────────────────────────────────────────
+  navigation: [
+    { href: '/article/list/1', name: 'articles', description: 'all posts' },
+  ],
+};
+
+export default config;
+CONFIGEOF
+
     echo ""
-    if confirm "Install Vercel CLI globally?"; then
-        npm install -g vercel
-        VERCEL_CMD="vercel"
-        success "Vercel CLI installed"
-    else
-        echo ""
-        echo "  You can install it later with:"
-        echo "    npm install -g vercel"
-        echo "  Skipping Vercel setup."
-    fi
-fi
-
-if [ -n "$VERCEL_CMD" ]; then
-    echo ""
-    if confirm "Link this project to Vercel?"; then
-        echo ""
-        echo -e "  ${YELLOW}Please follow the prompts to link your project${NC}"
-        $VERCEL_CMD link
-
-        echo ""
-        if confirm "Push all environment variables to Vercel?"; then
-            vercel_env_push_all
-        fi
-
-        # Domain setup
-        SITE_URL=$(get_env_var "NEXT_PUBLIC_SITE_URL")
-        if [ -n "$SITE_URL" ] && validate_url "$SITE_URL"; then
-            DOMAIN=$(echo "$SITE_URL" | sed -E 's|https?://||' | sed 's|/.*||')
-            echo ""
-            echo -e "  Site URL domain: ${YELLOW}$DOMAIN${NC}"
-            if confirm "Add this domain to Vercel?"; then
-                $VERCEL_CMD domains add "$DOMAIN" 2>/dev/null
-                success "Domain add requested — check Vercel Dashboard for DNS instructions"
-            fi
-        fi
-    fi
-fi
-
-# ─── Step 6: Verification ───────────────────────────────────────────
-
-print_step 6 $TOTAL_STEPS "Verification"
-
-WARNINGS=0
-
-# Required checks
-NOTION_VAL=$(get_env_var "NOTION_PAGE")
-if [ -z "$NOTION_VAL" ] || [ "$NOTION_VAL" = "your_notion_page_id_here" ]; then
-    warn "NOTION_PAGE is not configured"
-    WARNINGS=$((WARNINGS + 1))
+    echo -e "  ${BOLD}Generated src/config/blog.config.ts:${NC}"
+    [ -n "$GIT_USER" ] && success "Author → $GIT_USER"
+    [ -n "$GIT_EMAIL" ] && success "Email → $GIT_EMAIL"
+    [ -n "$GITHUB_USER" ] && success "GitHub → https://github.com/$GITHUB_USER"
+    [ -n "$GISCUS_REPO_ID" ] && success "Giscus → $GITHUB_REPO"
 else
-    success "NOTION_PAGE is configured"
+    success "blog.config.ts exists (src/config/)"
 fi
 
-SITE_URL_VAL=$(get_env_var "NEXT_PUBLIC_SITE_URL")
-if [ -z "$SITE_URL_VAL" ]; then
-    warn "NEXT_PUBLIC_SITE_URL is not set (SEO will be affected)"
-    WARNINGS=$((WARNINGS + 1))
-else
-    success "Site URL is configured: $SITE_URL_VAL"
-fi
+# ─── 5. Obsidian vault ──────────────────────────────────────────────
 
-TITLE_VAL=$(get_env_var "NEXT_PUBLIC_SITE_TITLE")
-if [ "$TITLE_VAL" = "blog title" ]; then
-    warn "NEXT_PUBLIC_SITE_TITLE is still the default value"
-    WARNINGS=$((WARNINGS + 1))
-else
-    success "Site title is configured: $TITLE_VAL"
-fi
-
-GISCUS_REPO_ID=$(get_env_var "NEXT_PUBLIC_GISCUS_REPO_ID")
-if [ -z "$GISCUS_REPO_ID" ]; then
-    warn "Giscus comments are not configured"
-    WARNINGS=$((WARNINGS + 1))
-else
-    success "Comment system is configured"
-fi
-
-# Type check
 echo ""
-echo -e "  ${BLUE}Running type check...${NC}"
-if pnpm type-check &> /dev/null; then
-    success "TypeScript compilation passed"
+if [ -d "blog/📝 posts" ] && [ -d ".obsidian" ]; then
+    success "Obsidian vault ready"
 else
-    warn "TypeScript compilation failed — run 'pnpm type-check' for details"
-    WARNINGS=$((WARNINGS + 1))
+    QUIET=true bash "$SCRIPT_DIR/init-content.sh"
+    success "Obsidian vault created"
 fi
 
-# ─── Summary ─────────────────────────────────────────────────────────
+# ─── 6. First deploy (optional) ──────────────────────────────────────
+
+echo ""
+if confirm "Deploy to Vercel now?"; then
+    vercel_deploy "prod"
+fi
+
+# ─── Done ────────────────────────────────────────────────────────────
 
 echo ""
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-if [ "$WARNINGS" -eq 0 ]; then
-    echo -e "${GREEN}  ✓ Setup Complete!${NC}"
-else
-    echo -e "${GREEN}  ✓ Setup Complete!${NC} (${YELLOW}$WARNINGS warning(s)${NC})"
-fi
+echo -e "${GREEN}  ✓ Setup Complete!${NC}"
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo "  Next steps:"
+echo -e "  ${BLUE}pnpm dev${NC}               Start dev server"
+echo -e "  ${BLUE}pnpm blog:deploy${NC}       Deploy to Vercel"
+echo -e "  ${BLUE}Edit src/config/blog.config.ts${NC}  Customize your blog"
+echo -e "  ${BLUE}Open in Obsidian${NC}       This folder → install Dataview & Obsidian Git"
+echo -e "  ${BLUE}📊 Dashboard.md${NC}        Manage posts"
 echo ""
-echo -e "    1. Start the development server:"
-echo -e "       ${BLUE}pnpm dev${NC}"
-echo ""
-echo -e "    2. Deploy to production:"
-echo -e "       ${BLUE}pnpm blog:deploy${NC}"
-echo ""
-echo -e "    3. Run diagnostics anytime:"
-echo -e "       ${BLUE}pnpm blog:doctor${NC}"
-echo ""
-
-if [ "$WARNINGS" -gt 0 ]; then
-    echo -e "  ${YELLOW}Review the warnings above to complete your setup.${NC}"
-    echo ""
-fi
-
-# Offer to start dev server
-if confirm "Start the dev server now?"; then
-    echo ""
-    echo -e "  ${BLUE}Starting development server...${NC}"
-    echo -e "  ${YELLOW}Press Ctrl+C to stop the server${NC}"
-    echo ""
-    pnpm dev
-else
-    echo ""
-    echo -e "  ${BLUE}Happy blogging!${NC}"
-    echo ""
-fi

@@ -34,98 +34,75 @@ else
     ERRORS=$((ERRORS + 1))
 fi
 
-# ─── 2. Required env vars ───────────────────────────────────────────
+# ─── 2. Blog Configuration ──────────────────────────────────────────
 
 echo ""
-echo -e "${BOLD}Required Configuration${NC}"
+echo -e "${BOLD}Configuration${NC}"
 echo ""
 
-if [ ! -f .env ]; then
-    fail ".env file not found — run 'pnpm blog:setup'"
+if [ -f src/config/blog.config.ts ]; then
+    success "blog.config.ts exists"
+
+    # Check for default/placeholder values
+    if grep -q "'My Blog'" src/config/blog.config.ts; then
+        warn "Blog title is default — edit src/config/blog.config.ts"
+        WARNINGS=$((WARNINGS + 1))
+    else
+        TITLE=$(sed -n "s/.*title: '\([^']*\)'.*/\1/p" src/config/blog.config.ts | head -1)
+        success "Title: $TITLE"
+    fi
+
+    if grep -q "siteUrl: ''," src/config/blog.config.ts; then
+        warn "Site URL is empty (affects SEO, sitemap, RSS)"
+        WARNINGS=$((WARNINGS + 1))
+    else
+        URL=$(sed -n "s/.*siteUrl: '\([^']*\)'.*/\1/p" src/config/blog.config.ts | head -1)
+        success "URL: $URL"
+    fi
+
+    if grep -q "repoId: ''," src/config/blog.config.ts; then
+        warn "Giscus not configured — edit src/config/blog.config.ts"
+        WARNINGS=$((WARNINGS + 1))
+    else
+        success "Giscus configured"
+    fi
+else
+    fail "src/config/blog.config.ts not found — run 'pnpm blog:setup'"
     ERRORS=$((ERRORS + 1))
-else
-    # NOTION_PAGE
-    val=$(get_env_var "NOTION_PAGE")
-    if [ -z "$val" ] || [ "$val" = "your_notion_page_id_here" ]; then
-        fail "NOTION_PAGE is not configured"
-        ERRORS=$((ERRORS + 1))
-    else
-        success "NOTION_PAGE: ${val:0:8}..."
-
-        # Test Notion accessibility
-        HTTP_STATUS=$(curl -sf -o /dev/null -w "%{http_code}" \
-            "https://notion-api.splitbee.io/v1/table/$val" 2>/dev/null)
-        if [ "$HTTP_STATUS" = "200" ]; then
-            success "Notion page is accessible"
-        else
-            warn "Notion page may not be accessible (HTTP $HTTP_STATUS)"
-            WARNINGS=$((WARNINGS + 1))
-        fi
-    fi
-
-    # Site title
-    val=$(get_env_var "NEXT_PUBLIC_SITE_TITLE")
-    if [ -z "$val" ] || [ "$val" = "blog title" ]; then
-        warn "NEXT_PUBLIC_SITE_TITLE is default"
-        WARNINGS=$((WARNINGS + 1))
-    else
-        success "Site title: $val"
-    fi
-
-    # Site URL
-    val=$(get_env_var "NEXT_PUBLIC_SITE_URL")
-    if [ -z "$val" ]; then
-        warn "NEXT_PUBLIC_SITE_URL is empty (affects SEO, sitemap, RSS)"
-        WARNINGS=$((WARNINGS + 1))
-    else
-        success "Site URL: $val"
-
-        # DNS check
-        DOMAIN=$(echo "$val" | sed -E 's|https?://||' | sed 's|/.*||')
-        if dig +short "$DOMAIN" A &> /dev/null && [ -n "$(dig +short "$DOMAIN" A 2>/dev/null)" ]; then
-            success "Domain DNS resolves: $DOMAIN"
-        else
-            warn "Domain DNS not resolving: $DOMAIN"
-            WARNINGS=$((WARNINGS + 1))
-        fi
-    fi
-
-    # Author
-    val=$(get_env_var "NEXT_PUBLIC_AUTHOR_LOCALE_NAME")
-    if [ -z "$val" ] || [ "$val" = "Author Locale Name" ]; then
-        warn "Author name is default"
-        WARNINGS=$((WARNINGS + 1))
-    else
-        success "Author: $val"
-    fi
 fi
 
-# ─── 3. Optional configuration ──────────────────────────────────────
+# ─── 3. Blog Content ────────────────────────────────────────────────
 
 echo ""
-echo -e "${BOLD}Optional Configuration${NC}"
+echo -e "${BOLD}Content${NC}"
 echo ""
 
-val=$(get_env_var "TOKEN_FOR_REVALIDATE")
-if [ -z "$val" ] || [ "$val" = "your_secret_token_here" ]; then
-    warn "TOKEN_FOR_REVALIDATE not set (on-demand revalidation disabled)"
-    WARNINGS=$((WARNINGS + 1))
+if [ -d "blog/📝 posts" ]; then
+    POST_COUNT=$(find "blog/📝 posts" -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+    success "Posts: $POST_COUNT post(s)"
 else
-    success "Revalidation token configured"
+    fail "blog/📝 posts/ not found — run 'pnpm blog:setup'"
+    ERRORS=$((ERRORS + 1))
 fi
 
-val=$(get_env_var "NEXT_PUBLIC_GISCUS_REPO_ID")
-if [ -z "$val" ]; then
-    warn "Giscus comments not configured"
-    WARNINGS=$((WARNINGS + 1))
+if [ -d ".obsidian" ]; then
+    success "Obsidian vault configured"
 else
-    success "Giscus configured (repo: $(get_env_var NEXT_PUBLIC_GISCUS_REPO))"
+    warn ".obsidian/ not found"
+    WARNINGS=$((WARNINGS + 1))
+fi
+
+if [ -d "public/images" ]; then
+    success "Image directory (public/images/)"
+else
+    warn "public/images/ not found"
+    WARNINGS=$((WARNINGS + 1))
 fi
 
 # ─── 4. Vercel ───────────────────────────────────────────────────────
 
 echo ""
-echo -e "${BOLD}Vercel${NC}"
+echo -e "${BOLD}Deployment${NC}"
 echo ""
 
 resolve_vercel
@@ -133,24 +110,13 @@ if [ -n "$VERCEL_CMD" ]; then
     success "Vercel CLI: $VERCEL_CMD"
 
     if [ -f .vercel/project.json ]; then
-        success "Project is linked to Vercel"
-
-        # Compare env var count
-        VERCEL_ENV_COUNT=$($VERCEL_CMD env ls production 2>/dev/null | grep -cE "^[A-Z_]" || echo "0")
-        LOCAL_ENV_COUNT=$(grep -cE "^[A-Z]" .env 2>/dev/null || echo "0")
-
-        if [ "$VERCEL_ENV_COUNT" -gt 0 ]; then
-            success "Vercel has $VERCEL_ENV_COUNT env var(s) (local: $LOCAL_ENV_COUNT)"
-        else
-            warn "No env vars found on Vercel — run 'pnpm blog:env:push'"
-            WARNINGS=$((WARNINGS + 1))
-        fi
+        success "Project linked to Vercel"
     else
-        warn "Project not linked to Vercel — run 'pnpm blog:setup' step 5"
+        warn "Not linked — run 'pnpm blog:deploy'"
         WARNINGS=$((WARNINGS + 1))
     fi
 else
-    warn "Vercel CLI not available"
+    warn "Vercel CLI not installed"
     WARNINGS=$((WARNINGS + 1))
 fi
 
@@ -162,10 +128,9 @@ echo ""
 
 echo -e "  ${BLUE}Running type check...${NC}"
 if pnpm type-check &> /dev/null; then
-    success "TypeScript compilation passed"
+    success "TypeScript OK"
 else
-    fail "TypeScript compilation failed"
-    echo "    Run 'pnpm type-check' for details"
+    fail "TypeScript errors — run 'pnpm type-check'"
     ERRORS=$((ERRORS + 1))
 fi
 

@@ -92,12 +92,6 @@ validate_url() {
     [[ "$url" =~ ^https?://[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}(/.*)?$ ]]
 }
 
-validate_notion_id() {
-    local id="$1"
-    # 32-character hexadecimal
-    [[ "$id" =~ ^[a-f0-9]{32}$ ]]
-}
-
 # ─── Vercel CLI helpers ──────────────────────────────────────────────
 
 # Resolve vercel command (global → npx fallback). Sets VERCEL_CMD.
@@ -111,34 +105,93 @@ resolve_vercel() {
     fi
 }
 
-# Push a single env var to Vercel (production + preview).
-vercel_env_push() {
-    local key="$1" value="$2"
-    if [ -z "$VERCEL_CMD" ]; then return 1; fi
+# Ensure Vercel CLI is available. Offers to install if missing.
+# Returns 0 if available, 1 if not.
+ensure_vercel() {
+    resolve_vercel
+    if [ -n "$VERCEL_CMD" ]; then return 0; fi
 
-    # Remove existing then add (idempotent)
-    $VERCEL_CMD env rm "$key" production preview development -y 2>/dev/null
-    echo "$value" | $VERCEL_CMD env add "$key" production preview development 2>/dev/null
+    echo ""
+    if confirm "Vercel CLI not found. Install it?"; then
+        npm install -g vercel 2>/dev/null
+        VERCEL_CMD="vercel"
+        success "Vercel CLI installed"
+        return 0
+    fi
+    return 1
+}
+
+# Link project to Vercel if not already linked.
+ensure_vercel_linked() {
+    if [ -f .vercel/project.json ]; then return 0; fi
+
+    echo ""
+    echo -e "  ${BLUE}Linking project to Vercel...${NC}"
+    echo -e "  ${YELLOW}Follow the prompts below:${NC}"
+    echo ""
+    $VERCEL_CMD link
+    [ -f .vercel/project.json ]
 }
 
 # Push all non-placeholder env vars from .env to Vercel.
-vercel_env_push_all() {
-    if [ -z "$VERCEL_CMD" ]; then
-        warn "Vercel CLI not available, skipping env push"
-        return 1
-    fi
+vercel_env_push() {
+    if [ -z "$VERCEL_CMD" ] || [ ! -f .env ]; then return 1; fi
 
     local count=0
     while IFS='=' read -r key value; do
-        # Skip comments and empty lines
         [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
-        # Skip placeholder values
-        [[ "$value" == "your_"* ]] && continue
-        # Skip empty values
+        [[ "$value" == "your_"* || "$value" == "your-"* ]] && continue
         [ -z "$value" ] && continue
 
-        vercel_env_push "$key" "$value" && count=$((count + 1))
+        $VERCEL_CMD env rm "$key" production preview development -y 2>/dev/null
+        echo "$value" | $VERCEL_CMD env add "$key" production preview development 2>/dev/null
+        count=$((count + 1))
     done < .env
 
-    success "Pushed $count environment variable(s) to Vercel"
+    success "Pushed $count env var(s) to Vercel"
 }
+
+# Full deploy flow: link → env push → build & deploy
+vercel_deploy() {
+    local mode="${1:-prod}"
+
+    if ! ensure_vercel; then
+        fail "Vercel CLI is required for deployment"
+        return 1
+    fi
+
+    if ! ensure_vercel_linked; then
+        fail "Failed to link project to Vercel"
+        return 1
+    fi
+
+    # Push .env vars to Vercel if the file has content
+    if [ -f .env ] && grep -qE "^[A-Z]" .env 2>/dev/null; then
+        echo ""
+        echo -e "  ${BLUE}Pushing environment variables...${NC}"
+        vercel_env_push
+    fi
+
+    echo ""
+    if [ "$mode" = "prod" ]; then
+        echo -e "  ${BLUE}Deploying to production...${NC}"
+        echo ""
+        DEPLOY_URL=$($VERCEL_CMD --prod 2>&1 | grep -oE 'https://[^ ]+' | tail -1)
+    else
+        echo -e "  ${BLUE}Creating preview deployment...${NC}"
+        echo ""
+        DEPLOY_URL=$($VERCEL_CMD 2>&1 | grep -oE 'https://[^ ]+' | tail -1)
+    fi
+
+    if [ -n "$DEPLOY_URL" ]; then
+        echo ""
+        success "Deployed: $DEPLOY_URL"
+        echo ""
+        echo -e "  ${BOLD}From now on, just push to GitHub — Vercel auto-builds.${NC}"
+        return 0
+    else
+        fail "Deployment may have failed — check Vercel dashboard"
+        return 1
+    fi
+}
+
