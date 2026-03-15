@@ -85,6 +85,63 @@ confirm() {
     [[ "$reply" =~ ^[Yy]$ ]]
 }
 
+# Arrow-key selector. Usage: select_option "Prompt" "opt1" "opt2" ...
+# Sets SELECT_RESULT to the chosen value.
+select_option() {
+    local prompt="$1"; shift
+    local options=("$@")
+    local count=${#options[@]}
+    local selected=0
+
+    # Hide cursor
+    tput civis 2>/dev/null
+
+    # Print prompt and options
+    echo -e "  ${BOLD}${prompt}${NC}"
+    for i in "${!options[@]}"; do
+        if [ "$i" -eq "$selected" ]; then
+            echo -e "  ${GREEN}▸ ${options[$i]}${NC}"
+        else
+            echo -e "    ${options[$i]}"
+        fi
+    done
+
+    # Read arrow keys
+    while true; do
+        read -rsn1 key
+        case "$key" in
+            $'\x1b')  # ESC sequence
+                read -rsn2 arrow
+                case "$arrow" in
+                    '[A') selected=$(( (selected - 1 + count) % count )) ;;  # Up
+                    '[B') selected=$(( (selected + 1) % count )) ;;          # Down
+                esac
+                ;;
+            '')  # Enter
+                break
+                ;;
+        esac
+
+        # Redraw options (move cursor up)
+        for (( i=0; i<count; i++ )); do
+            tput cuu1 2>/dev/null
+            tput el 2>/dev/null
+        done
+        for i in "${!options[@]}"; do
+            if [ "$i" -eq "$selected" ]; then
+                echo -e "  ${GREEN}▸ ${options[$i]}${NC}"
+            else
+                echo -e "    ${options[$i]}"
+            fi
+        done
+    done
+
+    # Show cursor
+    tput cnorm 2>/dev/null
+
+    SELECT_RESULT="${options[$selected]}"
+}
+
 # ─── Validation helpers ─────────────────────────────────────────────
 
 validate_url() {

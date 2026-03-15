@@ -9,7 +9,7 @@
 # After that: just push to GitHub for auto-deploy
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "$SCRIPT_DIR/lib/common.sh"
+source "$SCRIPT_DIR/common.sh"
 
 MODE="${1:-prod}"
 

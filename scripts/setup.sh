@@ -7,7 +7,7 @@
 # Edit blog.config.ts to customize.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "$SCRIPT_DIR/lib/common.sh"
+source "$SCRIPT_DIR/common.sh"
 
 banner "Obsidian Blog Kit"
 
@@ -90,9 +90,13 @@ if ns: print(ns[0]['id'])
     fi
 fi
 
-# ─── 4. Generate blog.config.ts ─────────────────────────────────────
+# ─── 4. Language & Generate blog.config.ts ────────────────────────────
 
 if [ ! -f src/config/blog.config.ts ]; then
+    echo ""
+    select_option "Language" "English" "한국어"
+    [ "$SELECT_RESULT" = "한국어" ] && LOCALE="ko" || LOCALE="en"
+
     # Escape single quotes for TypeScript string literals
     AUTHOR_NAME=$(echo "${GIT_USER:-Author Name}" | sed "s/'/\\\\'/g")
     AUTHOR_EMAIL=$(echo "${GIT_EMAIL}" | sed "s/'/\\\\'/g")
@@ -111,7 +115,7 @@ const config = {
   // ─── Site ──────────────────────────────────────────────────────────
   title: 'My Blog',
   description: 'A blog about technology',
-  locale: 'ko',
+  locale: '${LOCALE}',
   siteUrl: '',
   siteLogo: '',
   siteBanner: '',
@@ -163,7 +167,7 @@ echo ""
 if [ -d "blog/📝 posts" ] && [ -d ".obsidian" ]; then
     success "Obsidian vault ready"
 else
-    QUIET=true bash "$SCRIPT_DIR/init-content.sh"
+    QUIET=true LOCALE="${LOCALE:-en}" bash "$SCRIPT_DIR/content.sh"
     success "Obsidian vault created"
 fi
 

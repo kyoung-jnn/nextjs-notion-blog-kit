@@ -8,11 +8,12 @@
 #   pnpm blog:content:init
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "$SCRIPT_DIR/lib/common.sh"
+source "$SCRIPT_DIR/common.sh"
 
 BLOG_DIR="blog"
 TODAY=$(date +%Y-%m-%d)
 QUIET=${QUIET:-false}
+LOCALE=${LOCALE:-en}
 
 # Suppress output in quiet mode (called from setup.sh)
 if [ "$QUIET" = true ]; then
@@ -188,7 +189,8 @@ success "Blog post template"
 # ─── 9. Sample Post ──────────────────────────────────────────────────
 
 if [ ! -f "$BLOG_DIR/📝 posts/hello-world.md" ]; then
-    cat > "$BLOG_DIR/📝 posts/hello-world.md" << SAMPLE_EOF
+    if [ "$LOCALE" = "ko" ]; then
+        cat > "$BLOG_DIR/📝 posts/hello-world.md" << SAMPLE_EOF
 ---
 title: "Hello World"
 date: $TODAY
@@ -212,7 +214,8 @@ Obsidian 블로그 키트에 오신 것을 환영합니다!
 1. Obsidian에서 \`Ctrl/Cmd+N\`으로 새 노트 생성
 2. \`Ctrl/Cmd+T\`로 **blog-post** 템플릿 적용
 3. \`📝 posts/\` 폴더에 저장
-4. frontmatter의 \`status\`를 \`publish\`로 변경하면 배포됩니다
+4. frontmatter의 \`status\`를 \`publish\`로 변경
+5. GitHub에 Push하면 사이트가 자동으로 빌드됩니다
 
 ### 지원되는 마크다운 기능
 
@@ -229,8 +232,8 @@ function greet(name: string): string {
 | 기능 | 지원 |
 |------|------|
 | 제목 (h1-h6) | O |
-| 코드 블록 | O |
-| 테이블 | O |
+| 코드 블록 (Shiki) | O |
+| 테이블 (GFM) | O |
 | 이미지 | O |
 | 수식 (KaTeX) | O |
 
@@ -248,28 +251,105 @@ function greet(name: string): string {
 
 이 샘플 포스트를 수정하거나 삭제하고, 자신만의 글을 작성해보세요!
 SAMPLE_EOF
+    else
+        cat > "$BLOG_DIR/📝 posts/hello-world.md" << SAMPLE_EOF
+---
+title: "Hello World"
+date: $TODAY
+slug: hello-world
+status: publish
+thumbnail:
+description: "Your first blog post, written in Obsidian and powered by Next.js."
+tags: [blog, obsidian]
+---
 
+# Hello World
+
+Welcome to the Obsidian Blog Kit!
+
+## Getting Started
+
+This blog turns **markdown files** written in Obsidian into static pages built by Next.js.
+
+### How to Write a Post
+
+1. Create a new note in Obsidian (\`Ctrl/Cmd+N\`)
+2. Insert the **blog-post** template (\`Ctrl/Cmd+T\`)
+3. Save to the \`📝 posts/\` folder
+4. Set \`status: publish\` in frontmatter
+5. Push to GitHub — your site rebuilds automatically
+
+### Supported Markdown Features
+
+**Bold**, *italic*, ~~strikethrough~~, \`inline code\`
+
+> Blockquotes are supported too.
+
+\`\`\`typescript
+function greet(name: string): string {
+  return "Hello, " + name + "!"
+}
+\`\`\`
+
+| Feature | Supported |
+|---------|-----------|
+| Headings (h1-h6) | Yes |
+| Code blocks (Shiki) | Yes |
+| Tables (GFM) | Yes |
+| Images | Yes |
+| Math (KaTeX) | Yes |
+
+### Math
+
+Inline math: \$E = mc^2\$
+
+Block math:
+
+\$\$
+\\sum_{i=1}^{n} x_i = x_1 + x_2 + \\cdots + x_n
+\$\$
+
+---
+
+Edit or delete this sample post, and start writing your own!
+SAMPLE_EOF
+    fi
     success "Sample post (📝 posts/hello-world.md)"
 else
     success "Sample post already exists (skipped)"
 fi
 
 # ─── 10. Blog Dashboard ──────────────────────────────────────────────
+# Dataview queries are language-agnostic (column headers stay English for consistency)
 
-cat > "$BLOG_DIR/📊 Dashboard.md" << 'DASHBOARD_EOF'
+if [ "$LOCALE" = "ko" ]; then
+    DASH_INFO="> [!info] Dataview 플러그인 필요\n> 아래 테이블은 **Dataview** 커뮤니티 플러그인이 필요합니다.\n> Settings → Community Plugins → Browse → \`Dataview\` 설치 후 활성화하세요."
+    DASH_ALL="전체 글 목록"
+    DASH_PUB="발행된 글"
+    DASH_DRAFT="작성 중 (Draft)"
+    DASH_STATS="통계"
+    DASH_COUNT="length(rows) + \"개 글\""
+else
+    DASH_INFO="> [!info] Dataview plugin required\n> The tables below require the **Dataview** community plugin.\n> Settings → Community Plugins → Browse → Install \`Dataview\` and enable it."
+    DASH_ALL="All Posts"
+    DASH_PUB="Published"
+    DASH_DRAFT="Drafts"
+    DASH_STATS="Stats"
+    DASH_COUNT="length(rows) + \" post(s)\""
+fi
+
+cat > "$BLOG_DIR/📊 Dashboard.md" << DASHBOARD_EOF
 ---
 cssclasses: [dashboard]
 ---
 
 # Blog Dashboard
 
-> [!info] Dataview 플러그인 필요
-> 아래 테이블은 **Dataview** 커뮤니티 플러그인이 필요합니다.
-> Settings → Community Plugins → Browse → `Dataview` 설치 후 활성화하세요.
+$(echo -e "$DASH_INFO")
 
-## 전체 글 목록
+## $DASH_ALL
 
-```dataview
+\`\`\`dataview
 TABLE WITHOUT ID
   file.link AS "title",
   thumbnail AS "thumbnail",
@@ -277,11 +357,11 @@ TABLE WITHOUT ID
   choice(status = "publish", "🟢 publish", "🟡 draft") AS "status"
 FROM "blog/📝 posts"
 SORT date DESC
-```
+\`\`\`
 
-## 발행된 글
+## $DASH_PUB
 
-```dataview
+\`\`\`dataview
 TABLE WITHOUT ID
   file.link AS "title",
   thumbnail AS "thumbnail",
@@ -290,11 +370,11 @@ TABLE WITHOUT ID
 FROM "blog/📝 posts"
 WHERE status = "publish"
 SORT date DESC
-```
+\`\`\`
 
-## 작성 중 (Draft)
+## $DASH_DRAFT
 
-```dataview
+\`\`\`dataview
 TABLE WITHOUT ID
   file.link AS "title",
   date AS "date",
@@ -302,36 +382,37 @@ TABLE WITHOUT ID
 FROM "blog/📝 posts"
 WHERE status = "draft"
 SORT date DESC
-```
+\`\`\`
 
-## 통계
+## $DASH_STATS
 
-```dataview
-LIST WITHOUT ID "총 " + length(rows) + "개 글"
+\`\`\`dataview
+LIST WITHOUT ID $DASH_COUNT
 FROM "blog/📝 posts"
 GROUP BY true
-```
+\`\`\`
 
-```dataview
-LIST WITHOUT ID status + ": " + length(rows) + "개"
+\`\`\`dataview
+LIST WITHOUT ID status + ": " + length(rows)
 FROM "blog/📝 posts"
 GROUP BY status
-```
+\`\`\`
 
-```dataview
+\`\`\`dataview
 LIST WITHOUT ID tag + " (" + length(rows) + ")"
 FROM "blog/📝 posts"
 FLATTEN tags AS tag
 GROUP BY tag
 SORT length(rows) DESC
-```
+\`\`\`
 DASHBOARD_EOF
 
 success "Blog dashboard (📊 Dashboard.md)"
 
 # ─── 11. Frontmatter Reference ───────────────────────────────────────
 
-cat > "$BLOG_DIR/📖 FRONTMATTER.md" << 'REF_EOF'
+if [ "$LOCALE" = "ko" ]; then
+    cat > "$BLOG_DIR/📖 FRONTMATTER.md" << 'REF_EOF'
 # Frontmatter Reference
 
 Blog post `.md` 파일의 YAML frontmatter 필드 참조입니다.
@@ -341,7 +422,7 @@ Blog post `.md` 파일의 YAML frontmatter 필드 참조입니다.
 | 필드 | 타입 | 설명 | 예시 |
 |------|------|------|------|
 | `title` | string | 포스트 제목 | `"Hello World"` |
-| `date` | string | 발행일 (YYYY-MM-DD) | `2026-03-10` |
+| `date` | string | 발행일 (YYYY-MM-DD) | `2026-03-16` |
 | `status` | string | 발행 상태 | `publish` 또는 `draft` |
 
 ## 선택 필드
@@ -358,7 +439,7 @@ Blog post `.md` 파일의 YAML frontmatter 필드 참조입니다.
 ```yaml
 ---
 title: "Next.js로 블로그 만들기"
-date: 2026-03-10
+date: 2026-03-16
 slug: nextjs-blog
 status: publish
 thumbnail: /images/cover.jpg
@@ -374,6 +455,51 @@ tags: [nextjs, blog, obsidian]
 - `description`을 비우면 본문 첫 160자에서 자동 추출됩니다
 - 이미지는 Obsidian에서 붙여넣기 시 `public/images/`에 자동 저장됩니다
 REF_EOF
+else
+    cat > "$BLOG_DIR/📖 FRONTMATTER.md" << 'REF_EOF'
+# Frontmatter Reference
+
+YAML frontmatter fields for blog post `.md` files.
+
+## Required Fields
+
+| Field | Type | Description | Example |
+|-------|------|-------------|---------|
+| `title` | string | Post title | `"Hello World"` |
+| `date` | string | Publication date (YYYY-MM-DD) | `2026-03-16` |
+| `status` | string | Publish state | `publish` or `draft` |
+
+## Optional Fields
+
+| Field | Type | Description | Example |
+|-------|------|-------------|---------|
+| `slug` | string | URL path (auto-generated from filename if empty) | `hello-world` |
+| `thumbnail` | string | Thumbnail image path | `/images/cover.jpg` |
+| `description` | string | SEO description (auto-extracted from content if empty) | `"My first post"` |
+| `tags` | list | Post tags | `[blog, nextjs]` |
+
+## Example
+
+```yaml
+---
+title: "Building a Blog with Next.js"
+date: 2026-03-16
+slug: nextjs-blog
+status: publish
+thumbnail: /images/cover.jpg
+description: "How I built a blog with Next.js and Obsidian"
+tags: [nextjs, blog, obsidian]
+---
+```
+
+## Notes
+
+- Posts with `status: draft` are only visible in development
+- Empty `slug` is auto-generated from filename (e.g., `my-post.md` → `my-post`)
+- Empty `description` is auto-extracted from the first 160 characters
+- Images pasted in Obsidian auto-save to `public/images/`
+REF_EOF
+fi
 
 success "Frontmatter reference (📖 FRONTMATTER.md)"
 
