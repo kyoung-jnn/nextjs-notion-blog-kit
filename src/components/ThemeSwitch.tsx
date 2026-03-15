@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
-import Icon from './Icon';
+import Icon from '@/components/Icon';
 
 export const THEME = {
   light: 'light',

@@ -54,7 +54,9 @@ function RootLayout({ children }: { children: ReactNode }) {
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteJsonLd).replace(/<\/script>/gi, '<\\/script>'),
+          }}
         />
       </head>
       <body>

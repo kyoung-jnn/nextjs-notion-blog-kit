@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import IconButton from './IconButton';
+import IconButton from '@/components/IconButton';
 
 interface Props {
   totalPage: number;

@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react';
 
-import Icon from './Icon';
+import Icon from '@/components/Icon';
 
 interface Props extends ComponentProps<'button'> {
   name: ComponentProps<typeof Icon>['name'];

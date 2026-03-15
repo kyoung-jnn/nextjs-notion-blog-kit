@@ -18,9 +18,13 @@ function Comment() {
   const handleMessage = useCallback((event: MessageEvent) => {
     if (event.origin !== 'https://giscus.app') return;
 
-    const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-    if (data?.giscus?.error) {
-      setError(true);
+    try {
+      const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      if (data?.giscus?.error) {
+        setError(true);
+      }
+    } catch {
+      // Ignore non-JSON messages from other sources
     }
   }, []);
 

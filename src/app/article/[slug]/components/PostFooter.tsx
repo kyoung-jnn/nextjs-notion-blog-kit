@@ -1,4 +1,8 @@
-import Comment from './Comment';
+'use client';
+
+import dynamic from 'next/dynamic';
+
+const Comment = dynamic(() => import('@/app/article/[slug]/components/Comment'), { ssr: false });
 
 function PostFooter() {
   return (

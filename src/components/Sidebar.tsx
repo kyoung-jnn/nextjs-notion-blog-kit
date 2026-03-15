@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 
-import BackButton from './BackButton';
+import BackButton from '@/components/BackButton';
 
 function Sidebar({ children }: PropsWithChildren) {
   return (

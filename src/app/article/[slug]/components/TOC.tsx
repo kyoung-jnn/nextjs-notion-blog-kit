@@ -18,15 +18,14 @@ function TOC() {
 
   useEffect(() => {
     const elements = document.querySelectorAll<HTMLElement>(
-      '.notion-render-parent h2, .notion-render-parent h3, .notion-render-parent h4',
+      '.markdown-render h2, .markdown-render h3, .markdown-render h4',
     );
 
     const collected: Heading[] = [];
     elements.forEach((el) => {
+      const id = el.id;
       const text = el.textContent?.trim() ?? '';
-      if (!text) return;
-      const id = text.replace(/\s+/g, '-');
-      el.id = id;
+      if (!text || !id) return;
       collected.push({ id, text, tag: el.tagName });
     });
 

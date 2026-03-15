@@ -4,9 +4,9 @@ import { useState, MouseEvent, useEffect } from 'react';
 
 import Link from 'next/link';
 
+import IconButton from '@/components/IconButton';
 import { MENU_LIST } from '@/config';
 
-import IconButton from './IconButton';
 
 function MobileMenu() {
   const [hasNav, setHasNav] = useState(false);

@@ -9,6 +9,10 @@ type Props = {
   updatedAt: string;
 };
 
+function safeJsonLd(obj: unknown): string {
+  return JSON.stringify(obj).replace(/<\/script>/gi, '<\\/script>');
+}
+
 function JsonLD({ slug, title, description, image, date, updatedAt }: Props) {
   const url = `${SITE_CONFIG.siteUrl}/article/${slug}`;
   const publishedAt = new Date(date).toISOString();
@@ -63,11 +67,11 @@ function JsonLD({ slug, title, description, image, date, updatedAt }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(articleJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
       />
     </>
   );

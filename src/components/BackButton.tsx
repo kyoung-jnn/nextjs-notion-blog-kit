@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-import IconButton from './IconButton';
+import IconButton from '@/components/IconButton';
 
 function BackButton() {
   const router = useRouter();

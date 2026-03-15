@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from 'next/image';
 
-import GalleryCaption from './GalleryCaption';
+import GalleryCaption from '@/app/gallery/components/GalleryCaption';
 
 interface Props {
   src: StaticImageData;

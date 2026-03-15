@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import { StaticImageData } from 'next/image';
 
-import { METADATA_CONFIG, OPEN_GRAPH_CONFIG } from '@/config';
 
-import GalleryPhoto from './components/GalleryPhoto';
-import GalleryVideo from './components/GalleryVideo';
-import GALLERY_LIST from './database';
+import GalleryPhoto from '@/app/gallery/components/GalleryPhoto';
+import GalleryVideo from '@/app/gallery/components/GalleryVideo';
+import GALLERY_LIST from '@/app/gallery/database';
+import { METADATA_CONFIG, OPEN_GRAPH_CONFIG } from '@/config';
 
 export const metadata: Metadata = {
   ...METADATA_CONFIG,

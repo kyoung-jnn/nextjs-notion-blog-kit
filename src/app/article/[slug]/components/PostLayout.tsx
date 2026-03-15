@@ -2,12 +2,12 @@ import { PropsWithChildren } from 'react';
 
 import Image from 'next/image';
 
+
+import PostActions from '@/app/article/[slug]/components/PostActions';
+import PostFooter from '@/app/article/[slug]/components/PostFooter';
+import TOC from '@/app/article/[slug]/components/TOC';
 import Sidebar from '@/components/Sidebar';
 import { dateToStringWithDash } from '@/utils';
-
-import PostActions from './PostActions';
-import PostFooter from './PostFooter';
-import TOC from './TOC';
 
 interface Props {
   title: string;
@@ -34,8 +34,8 @@ function PostLayout({ title, date, thumbnail, children }: PropsWithChildren<Prop
             {updatedAt}
           </time>
           {thumbnail && (
-            <figure className="m-0 mt-2.5">
-              <Image src={thumbnail} alt="post thumbnail" fill priority />
+            <figure className="relative m-0 mt-2.5 aspect-video w-full overflow-hidden rounded-lg">
+              <Image src={thumbnail} alt="post thumbnail" fill priority className="object-cover" />
             </figure>
           )}
         </header>

@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react';
 
-import { IconName, svg } from './svg';
+import { IconName, svg } from '@/components/Icon/svg';
 
 interface Props extends ComponentProps<'svg'> {
   name: IconName;
