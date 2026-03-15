@@ -1,27 +1,23 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { getPost, getPosts } from '@/api/notion';
+import JsonLD from '@/app/article/[slug]/components/JsonLD';
 import PostLayout from '@/app/article/[slug]/components/PostLayout';
-import NotionRenderer from '@/components/NotionRender';
+import MarkdownRender from '@/components/MarkdownRender';
 import { METADATA_CONFIG, METADATA_TWITTER_CONFIG, OPEN_GRAPH_CONFIG, SITE_CONFIG } from '@/config';
-import { extractDescription } from '@/utils';
+import { getAllPosts, getPostBySlug } from '@/lib/content';
 
-import JsonLD from './components/JsonLD';
 
 type Params = { slug: string };
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
   const params = await props.params;
   const currentSlug = decodeURIComponent(params.slug);
-  const posts = await getPosts();
-  const post = posts?.find(({ slug }) => slug === currentSlug);
+  const post = await getPostBySlug(currentSlug);
 
   if (!post) return {};
 
-  const { title, date, thumbnail } = post;
-  const recordMap = await getPost(post.id);
-  const description = extractDescription(recordMap) || SITE_CONFIG.description;
+  const { title, date, thumbnail, description } = post;
   const url = `${SITE_CONFIG.siteUrl}/article/${currentSlug}`;
 
   return {
@@ -49,20 +45,17 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
 }
 
 export async function generateStaticParams() {
-  const posts = await getPosts();
+  const posts = await getAllPosts();
   return posts.map(({ slug }) => ({ slug }));
 }
 
 export default async function PostDetailPage({ params }: { params: Promise<Params> }) {
   const slug = decodeURIComponent((await params).slug);
-  const posts = await getPosts();
-  const post = posts?.find(({ slug: postSlug }) => postSlug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) notFound();
 
-  const { id, title, date, thumbnail } = post;
-  const recordMap = await getPost(id);
-  const description = extractDescription(recordMap) || SITE_CONFIG.description;
+  const { title, date, thumbnail, description, html } = post;
 
   return (
     <>
@@ -75,7 +68,7 @@ export default async function PostDetailPage({ params }: { params: Promise<Param
         {...(thumbnail && { image: thumbnail })}
       />
       <PostLayout title={title} date={date} thumbnail={thumbnail}>
-        <NotionRenderer recordMap={recordMap} />
+        <MarkdownRender html={html} />
       </PostLayout>
     </>
   );

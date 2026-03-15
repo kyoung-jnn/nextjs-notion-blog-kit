@@ -43,4 +43,10 @@ next-env.d.ts
 # cursor
 .cursor
 
+# Obsidian (workspace is user-specific)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/graph.json
+.obsidian/cache
+
 # End of https://www.toptal.com/developers/gitignore/api/nextjs

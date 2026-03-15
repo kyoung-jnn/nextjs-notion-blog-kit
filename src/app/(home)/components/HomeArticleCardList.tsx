@@ -1,9 +1,9 @@
-import { getPosts } from '@/api/notion';
 import ArticleCardList from '@/components/ArticleCardList';
 import { HOME_POSTS } from '@/constants';
+import { getAllPosts } from '@/lib/content';
 
 async function HomeArticleCardList() {
-  const posts = await getPosts();
+  const posts = await getAllPosts();
   const latestPosts = posts.slice(0, HOME_POSTS);
 
   return (

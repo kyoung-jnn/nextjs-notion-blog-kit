@@ -1,0 +1,17 @@
+{
+  "autoSaveInterval": 0,
+  "autoPushInterval": 0,
+  "autoPullInterval": 0,
+  "commitMessage": "publish: {{date}}",
+  "autoCommitMessage": "auto: {{date}}",
+  "pushOnBackup": true,
+  "pullBeforePush": true,
+  "disablePush": false,
+  "syncMethod": "merge",
+  "showStatusBar": true,
+  "updateSubmodules": false,
+  "gitPath": "",
+  "basePath": "",
+  "differentIntervalCommitAndPush": false,
+  "changedFilesInStatusBar": true
+}

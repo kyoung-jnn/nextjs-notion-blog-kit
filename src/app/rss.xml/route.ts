@@ -1,13 +1,12 @@
 import RSS from 'rss';
 
-import { getPost, getPosts } from '@/api/notion';
 import { SITE_CONFIG } from '@/config';
-import { extractDescription } from '@/utils';
+import { getAllPosts } from '@/lib/content';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
 
 export async function GET() {
-  const posts = await getPosts();
+  const posts = await getAllPosts();
 
   const feed = new RSS({
     title: SITE_CONFIG.title,
@@ -18,21 +17,14 @@ export async function GET() {
     language: SITE_CONFIG.locale,
     categories: ['Technologies'],
     copyright: `All rights reserved ${new Date().getFullYear()} ${SITE_CONFIG.author.localeName}`,
-    generator: 'nextjs-notion-blog-rss-generate',
+    generator: 'nextjs-obsidian-blog-rss',
     pubDate: new Date(),
   });
 
-  const postDescriptions = await Promise.all(
-    posts.map(async (post) => {
-      const recordMap = await getPost(post.id);
-      return extractDescription(recordMap) || post.title;
-    }),
-  );
-
-  posts.forEach((post, index) => {
+  posts.forEach((post) => {
     feed.item({
       title: post.title,
-      description: postDescriptions[index],
+      description: post.description,
       url: `${SITE_CONFIG.siteUrl}/article/${post.slug}`,
       author: SITE_CONFIG.author.localeName,
       date: new Date(post.date),

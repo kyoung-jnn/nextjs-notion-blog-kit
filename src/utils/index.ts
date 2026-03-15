@@ -1,3 +1,2 @@
-export { dateToStringWithDash } from './dateToStringWithDash';
-export { extractDescription } from './extractDescription';
-export { slugify } from './slugify';
+export { dateToStringWithDash } from '@/utils/dateToStringWithDash';
+export { slugify } from '@/utils/slugify';

@@ -1,10 +1,10 @@
 import Link from 'next/link';
 
 import ArticleCard from '@/components/ArticleCard';
-import { PostProperty } from '@/types/notion';
+import { PostMeta } from '@/types/post';
 
 interface Props {
-  posts: PostProperty[];
+  posts: PostMeta[];
 }
 
 function ArticleCardList({ posts }: Props) {

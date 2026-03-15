@@ -1,11 +1,11 @@
 import { MetadataRoute } from 'next';
 
-import { getPosts } from '@/api/notion';
 import { SITE_CONFIG } from '@/config';
 import { POSTS_PER_PAGE } from '@/constants';
+import { getAllPosts } from '@/lib/content';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getPosts();
+  const posts = await getAllPosts();
   const totalPageCount = Math.ceil(posts.length / POSTS_PER_PAGE);
 
   const defaultSitemap: MetadataRoute.Sitemap = [
