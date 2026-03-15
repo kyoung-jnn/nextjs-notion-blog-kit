@@ -1,6 +1,4 @@
-![nextjs notion blog kit](https://github.com/user-attachments/assets/dbfdd093-6637-4fa2-b4ea-9201ad8c2c49)
-
-# Next.js Notion Blog Kit
+# Next.js Obsidian Blog Kit
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
@@ -9,105 +7,133 @@
 
 [English](README.md) | 한국어
 
-> Notion에서 글쓰기. 자유로운 커스터마이징. 몇 분 만에 배포.
+> Obsidian에서 글쓰기. GitHub에 Push. 블로그 완성.
 
 ## 주요 기능
 
-- **Notion CMS** — Notion에서 바로 포스트 작성 및 관리
-- **원클릭 배포** — 명령어 하나로 설정, 하나로 배포
-- **퍼포먼스 최적화** — 정적 생성, 코드 스플리팅, 이미지 최적화
-- **SEO Full 지원** — Sitemap, RSS 피드, JSON-LD 구조화 데이터, Open Graph
-- **라이트/다크 모드** — Radix Colors 기반 테마, 콘텐츠와 댓글까지 연동
+- **Obsidian CMS** — 로컬 마크다운으로 글 작성, Notion 스타일 대시보드로 관리
+- **제로 설정** — `pnpm blog:setup` 하나로 모든 설정 자동 감지
+- **퍼포먼스 최적화** — 정적 생성, 코드 스플리팅, Shiki 구문 강조
+- **SEO 완전 지원** — Sitemap, RSS 피드, JSON-LD, Open Graph
+- **라이트/다크 모드** — Radix Colors 기반 테마
 
 ## 시작하기
 
-### 1. Notion CMS 만들기
+### 1. 저장소 생성
 
-1. [Notion 블로그 데이터베이스 템플릿](https://kyoung-jnn.notion.site/256d55b883778070ab14e9ca4b56f037) 열기
-2. **"복제"** 버튼을 클릭하여 데이터베이스를 내 워크스페이스에 복사
-3. **"공유"** → **"웹에서 공유"** 토글 켜기
-4. URL에서 Page ID 복사 (`?v=` 앞 문자열)
-
-> **Tip:** `⌘+L` (Mac) 또는 `Ctrl+L` (Windows)을 누르면 URL을 바로 선택할 수 있습니다.
->
-> **예시 URL:** `https://notion.site/256d55b883778070ab14e9ca4b56f037?v=...` → Page ID: `256d55b883778070ab14e9ca4b56f037`
-
-### 2. 템플릿으로 저장소 생성
-
-이 페이지 상단의 **"Use this template"** 버튼을 클릭하여 저장소를 생성하세요.
-
-### 3. 설정 마법사 실행
+이 페이지 상단의 **"Use this template"** 클릭 후:
 
 ```bash
-git clone https://github.com/yourusername/your-blog-repo.git
-cd your-blog-repo
+git clone https://github.com/yourusername/your-blog.git
+cd your-blog
 pnpm blog:setup
 ```
 
-마법사가 환경 변수, 사이트 설정, 댓글 시스템, Vercel 연결을 안내합니다.
+끝. Git 설정(작성자, 이메일, GitHub URL, Giscus)을 자동 감지하고 Obsidian vault를 초기화합니다.
+
+### 2. Obsidian에서 열기
+
+프로젝트 폴더를 Obsidian vault로 열고, 커뮤니티 플러그인 2개를 설치하세요:
+
+- **Dataview** — Notion 스타일 테이블 뷰로 글 관리
+- **Obsidian Git** — Obsidian에서 바로 GitHub Push
+
+### 3. 글쓰기 & 배포
+
+1. **📊 Dashboard.md** 열어서 전체 글 목록 확인
+2. 새 노트 생성 → **blog-post** 템플릿 적용 (`Ctrl/Cmd+T`)
+3. **blog/📝 posts/** 폴더에 글 작성
+4. frontmatter에서 `status: publish` 설정
+5. GitHub에 Push → Vercel이 자동으로 빌드
 
 ### 4. 배포
+
+Setup 마지막에 배포 여부를 물어봅니다. 또는 언제든:
 
 ```bash
 pnpm blog:deploy
 ```
 
-### 5. Revalidate 버튼 설정
+첫 실행 시 Vercel 프로젝트 연결 + 환경 변수 Push를 자동으로 처리합니다. 이후에는 `main` 브랜치에 Push할 때마다 자동 리빌드됩니다.
 
-Notion 블로그 템플릿에서 **Revalidate** 버튼 클릭 → URL 편집 → 아래 주소 입력:
+## 프로젝트 구조
 
 ```
-https://yourdomain.com/article/api?token=YOUR_TOKEN
+<project-root>/              ← Obsidian Vault
+├── .obsidian/                # Vault 설정 (자동 구성)
+├── blog/
+│   ├── 📝 posts/             # 블로그 글 (.md)
+│   ├── 📋 templates/         # 포스트 템플릿
+│   ├── 📊 Dashboard.md       # 글 관리 대시보드
+│   └── 📖 FRONTMATTER.md     # Frontmatter 참조
+├── public/images/            # 이미지 첨부 (Obsidian이 자동 저장)
+├── src/                      # Next.js 소스 코드
+└── .env                      # 사이트 설정
 ```
 
-이제 Notion에서 직접 블로그를 업데이트할 수 있습니다 — 글을 작성하고 버튼을 클릭하세요.
+## Frontmatter 스키마
+
+```yaml
+---
+title: "포스트 제목"
+date: 2026-03-14
+slug: post-title              # 선택 — 파일명에서 자동 생성
+status: publish               # publish 또는 draft
+thumbnail: /images/cover.jpg  # 선택
+description: "SEO 설명"       # 선택 — 본문에서 자동 추출
+tags: [nextjs, blog]          # 선택
+---
+```
+
+| 필드          | 타입   | 필수 | 설명                                            |
+| ------------- | ------ | ---- | ----------------------------------------------- |
+| **title**     | string | Yes  | 포스트 제목                                     |
+| **date**      | date   | Yes  | 발행일 (YYYY-MM-DD)                             |
+| **status**    | string | Yes  | `publish` 또는 `draft`                          |
+| **slug**      | string | No   | URL 경로 (비어있으면 파일명에서 자동 생성)       |
+| **thumbnail** | string | No   | 이미지 경로 (예: `/images/cover.jpg`)           |
+| **description** | string | No | SEO 설명 (비어있으면 본문에서 자동 추출)        |
+| **tags**      | list   | No   | 포스트 태그                                     |
 
 ## 스크립트
 
-| 명령어                     | 설명               |
-| -------------------------- | ------------------ |
-| `pnpm dev`                 | 개발 서버 시작     |
-| `pnpm build`               | 프로덕션 빌드      |
-| `pnpm blog:setup`          | 대화형 설정 마법사 |
-| `pnpm blog:deploy`         | 프로덕션 배포      |
-| `pnpm blog:deploy:preview` | 프리뷰 배포        |
+| 명령어                   | 설명               |
+| ------------------------ | ------------------ |
+| `pnpm dev`               | 개발 서버 시작     |
+| `pnpm build`             | 프로덕션 빌드      |
+| `pnpm blog:setup`        | 제로 설정          |
+| `pnpm blog:deploy`       | Vercel 배포        |
+| `pnpm blog:doctor`       | 진단 & 상태 확인   |
 
 ## 설정
 
-| 파일                          | 용도                                                                |
-| ----------------------------- | ------------------------------------------------------------------- |
-| `.env`                        | `NOTION_PAGE` (필수), `TOKEN_FOR_REVALIDATE` (선택)                 |
-| `src/config/siteConfig.ts`    | 제목, 작성자, URL, 소셜 링크                                        |
-| `src/config/commentConfig.ts` | Giscus 댓글 ID ([giscus.app](https://giscus.app/))                  |
-| `src/styles/global.css`       | 테마 색상 ([Radix UI Gray](https://www.radix-ui.com/colors) 스케일) |
+모든 설정은 `blog.config.ts` 하나에서 관리합니다. `pnpm blog:setup` 실행 후 수정:
 
-## Notion 데이터베이스 스키마
-
-| 속성          | 타입      | 필수 | 설명                 |
-| ------------- | --------- | ---- | -------------------- |
-| **title**     | 제목      | Yes  | 포스트 제목          |
-| **slug**      | 텍스트    | No   | 커스텀 URL 슬러그 (비어있으면 제목에서 자동 생성) |
-| **date**      | 날짜      | Yes  | 게시 날짜            |
-| **status**    | 선택      | Yes  | `publish` or `draft` |
-| **thumbnail** | 파일      | No   | 대표 이미지          |
-| **tags**      | 다중 선택 | No   | 포스트 카테고리/태그 |
-
-## 배포
-
-**CLI (권장):**
-
-```bash
-pnpm blog:deploy          # 프로덕션
-pnpm blog:deploy:preview  # 프리뷰
+```ts
+// blog.config.ts
+const config = {
+  title: 'My Blog',
+  url: 'https://myblog.vercel.app',
+  author: { name: '홍길동', ... },
+  giscus: { repo: 'user/repo', ... },
+  navigation: [{ href: '/article/list/1', name: 'articles', description: 'all posts' }],
+}
 ```
 
-**Vercel 대시보드:** GitHub에 푸시 → [Vercel](https://vercel.com)에서 임포트 → 환경 변수 추가 → 배포
+파일 하나. 타입 안전. 환경변수 불필요.
 
-**온디맨드 Revalidation:** Notion 대시보드에서 **Revalidate** 버튼 클릭, 또는:
+## 작동 원리
 
-```bash
-curl "https://yourdomain.com/article/api?token=YOUR_TOKEN"
 ```
+Obsidian (글쓰기) → Git push → Vercel (자동 빌드) → 정적 사이트
+```
+
+1. **작성** — `blog/📝 posts/`에 YAML frontmatter가 포함된 `.md` 파일 생성
+2. **Push** — Obsidian Git 플러그인 또는 터미널에서 `git push`
+3. **빌드** — Vercel이 Push를 감지하고 `next build` 실행
+4. **서빙** — Next.js가 `fs`로 마크다운을 읽어 Shiki + KaTeX로 정적 HTML 생성
+
+Obsidian에서 이미지를 붙여넣으면 `public/images/`에 자동 저장되고, 빌드 시 경로가 자동 변환됩니다.
 
 ## 기여하기
 
@@ -115,4 +141,4 @@ curl "https://yourdomain.com/article/api?token=YOUR_TOKEN"
 
 ## 라이선스
 
-이 프로젝트는 MIT 라이선스로 배포됩니다 - 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+MIT 라이선스 — 자세한 내용은 [LICENSE](LICENSE)를 참조하세요.
