@@ -7,6 +7,7 @@ import matter from 'gray-matter';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
 import remarkGfm from 'remark-gfm';
@@ -47,17 +48,69 @@ function extractDescription(content: string, maxLength = 160): string {
   return (lastSpace > maxLength * 0.7 ? truncated.slice(0, lastSpace) : truncated) + '...';
 }
 
+// Allow KaTeX, syntax highlighting, and heading links while blocking scripts
+const sanitizeSchema = {
+  ...defaultSchema,
+  tagNames: [
+    ...(defaultSchema.tagNames || []),
+    'math',
+    'semantics',
+    'mrow',
+    'mi',
+    'mo',
+    'mn',
+    'msup',
+    'msub',
+    'mfrac',
+    'mover',
+    'munder',
+    'mtable',
+    'mtr',
+    'mtd',
+    'annotation',
+    'figure',
+    'figcaption',
+  ],
+  attributes: {
+    ...defaultSchema.attributes,
+    '*': [...(defaultSchema.attributes?.['*'] || []), 'className'],
+    span: [...(defaultSchema.attributes?.['span'] || []), 'className', 'style', 'dataTheme'],
+    pre: [
+      ...(defaultSchema.attributes?.['pre'] || []),
+      'className',
+      'style',
+      'dataTheme',
+      'dataLanguage',
+    ],
+    code: [
+      ...(defaultSchema.attributes?.['code'] || []),
+      'className',
+      'style',
+      'dataTheme',
+      'dataLanguage',
+      'dataLineNumbers',
+    ],
+    figure: ['className', 'dataRehypePrettyCodeFigure'],
+    figcaption: ['className', 'dataRehypePrettyCodeTitle'],
+    a: [...(defaultSchema.attributes?.['a'] || []), 'className', 'ariaHidden', 'tabIndex'],
+    math: ['xmlns', 'display'],
+    annotation: ['encoding'],
+  },
+};
+
 // Processor is stateless — safe to reuse across calls (Shiki initializes once)
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
   .use(remarkMath)
+  // allowDangerousHtml: raw HTML in markdown is permitted here; rehype-sanitize below strips unsafe content
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeKatex)
   .use(rehypePrettyCode, { theme: 'github-dark' })
   .use(rehypeSlug)
   .use(rehypeAutolinkHeadings, { behavior: 'wrap' })
-  .use(rehypeStringify, { allowDangerousHtml: true });
+  .use(rehypeSanitize, sanitizeSchema)
+  .use(rehypeStringify);
 
 function getPostFiles(): string[] {
   if (!fs.existsSync(POSTS_DIR)) return [];
