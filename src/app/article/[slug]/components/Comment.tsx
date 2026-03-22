@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes';
 
 import Giscus, { Repo, Theme } from '@giscus/react';
 
-import { COMMENT_CONFIG } from '@/config';
+import { COMMENT_CONFIG, SITE_CONFIG } from '@/config';
 
 const isConfigured = Boolean(COMMENT_CONFIG.repoId && COMMENT_CONFIG.categoryId);
 
@@ -59,7 +59,7 @@ function Comment() {
         mapping="pathname"
         reactionsEnabled="1"
         emitMetadata="0"
-        lang="en"
+        lang={SITE_CONFIG.locale || 'en'}
         loading="lazy"
       />
     </div>
