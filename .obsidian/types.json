@@ -1,0 +1,7 @@
+{
+  "types": {
+    "date": "date",
+    "published": "checkbox",
+    "tags": "tags"
+  }
+}

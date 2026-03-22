@@ -49,4 +49,19 @@ next-env.d.ts
 .obsidian/graph.json
 .obsidian/cache
 
+# Make.md (plugin-generated cache)
+.makemd/
+.space/
+.spaces/
+
+# Obsidian trash
+.trash/
+
+# Obsidian plugin binaries (auto-downloaded)
+.obsidian/plugins/*/main.js
+.obsidian/plugins/*/styles.css
+
+# Make.md vault artifact
+Vault.md
+
 # End of https://www.toptal.com/developers/gitignore/api/nextjs

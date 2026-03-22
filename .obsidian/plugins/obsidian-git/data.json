@@ -2,16 +2,19 @@
   "autoSaveInterval": 0,
   "autoPushInterval": 0,
   "autoPullInterval": 0,
-  "commitMessage": "publish: {{date}}",
-  "autoCommitMessage": "auto: {{date}}",
+  "commitMessage": "📝 publish: {{numFiles}} file(s) — {{date}}",
+  "autoCommitMessage": "✏️ draft: {{numFiles}} file(s) — {{date}}",
+  "listChangedFilesInMessageBody": true,
   "pushOnBackup": true,
   "pullBeforePush": true,
   "disablePush": false,
   "syncMethod": "merge",
   "showStatusBar": true,
   "updateSubmodules": false,
-  "gitPath": "",
+  "changedFilesInStatusBar": true,
+  "showedMobileNotice": true,
+  "autoBackupAfterFileChange": false,
   "basePath": "",
   "differentIntervalCommitAndPush": false,
-  "changedFilesInStatusBar": true
+  "autoPullOnBoot": true
 }

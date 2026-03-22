@@ -1,22 +1,10 @@
 {
   "attachmentFolderPath": "public/images",
   "newFileLocation": "folder",
-  "newFileFolderPath": "blog/📝 posts",
+  "newFileFolderPath": "posts",
   "useMarkdownLinks": true,
   "showLineCount": true,
   "strictLineBreaks": true,
   "propertiesInDocument": "visible",
-  "livePreview": true,
-  "userIgnoreFilters": [
-    "node_modules/",
-    ".next/",
-    "src/",
-    ".git/",
-    "scripts/",
-    ".env*",
-    "*.config.*",
-    "tsconfig.json",
-    "pnpm-lock.yaml",
-    "package.json"
-  ]
+  "livePreview": true
 }

@@ -1,1 +1,5 @@
-{}
+{
+  "accentColor": "#808080",
+  "baseFontSize": 16,
+  "translucency": true
+}
