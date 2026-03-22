@@ -7,6 +7,8 @@
 
 English | [한국어](README.ko.md)
 
+<img width="1200" height="627" alt="nextjs obsidian blog kit" src="https://github.com/user-attachments/assets/97d27f51-35fd-4e8c-ac64-a3e627109ec7" />
+
 > Write in Obsidian. Push to GitHub. Blog is live.
 
 ## Features
