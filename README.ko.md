@@ -35,15 +35,16 @@ pnpm blog:setup
 
 ### 2. Obsidian에서 열기
 
-프로젝트 폴더를 Obsidian vault로 열고, 커뮤니티 플러그인 2개를 설치하세요:
+프로젝트 폴더를 Obsidian vault로 열면 커뮤니티 플러그인이 이미 설치되어 있습니다
 
 - **Dataview** — Notion 스타일 테이블 뷰로 글 관리
 - **Obsidian Git** — Obsidian에서 바로 GitHub Push
+- **Templater** — 새 노트 생성 시 블로그 템플릿 자동 적용
 
 ### 3. 글쓰기 & 배포
 
 1. **dashboard.md** 클릭하여 Dashboard 확인
-2. 새 노트 생성 → **blog-post** 템플릿 적용 (`Ctrl/Cmd+T`)
+2. 새 노트 생성 (`Ctrl/Cmd+N`) — 템플릿 자동 적용
 3. **posts/** 폴더에 글 작성
 4. frontmatter에서 `published` 토글 켜기
 5. GitHub에 Push → Vercel이 자동으로 빌드
@@ -76,25 +77,23 @@ pnpm blog:deploy
 
 ```yaml
 ---
-title: '포스트 제목'
 date: 2026-03-14
-slug: post-title # 선택 — 파일명에서 자동 생성
 published: true # Obsidian에서 토글
-thumbnail: /images/cover.jpg # 선택
 tags: [nextjs, blog] # 선택
+slug: post-title # 선택 — 파일명에서 자동 생성
+thumbnail: /images/cover.jpg # 선택
 ---
 ```
 
 | 필드          | 타입    | 필수 | 설명                                       |
 | ------------- | ------- | ---- | ------------------------------------------ |
-| **title**     | string  | Yes  | 포스트 제목                                |
 | **date**      | date    | Yes  | 발행일 (YYYY-MM-DD)                        |
 | **published** | boolean | Yes  | 발행 토글 (`true` / `false`)               |
+| **tags**      | list    | No   | 포스트 태그                                |
 | **slug**      | string  | No   | URL 경로 (비어있으면 파일명에서 자동 생성) |
 | **thumbnail** | string  | No   | 이미지 경로 (예: `/images/cover.jpg`)      |
-| **tags**      | list    | No   | 포스트 태그                                |
 
-> `description` meta tag는 본문 첫 160자에서 자동 추출됩니다.
+> `title`은 파일명에서 자동 사용됩니다. `description`은 본문 첫 160자에서 자동 추출됩니다.
 
 ## 스크립트
 

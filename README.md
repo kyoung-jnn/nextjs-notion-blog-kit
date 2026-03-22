@@ -35,15 +35,16 @@ That's it. Setup auto-detects your Git config (author, email, GitHub URL, Giscus
 
 ### 2. Open in Obsidian
 
-Open this project folder as an Obsidian vault. Install two community plugins:
+Open this project folder as an Obsidian vault. Community plugins are pre-installed
 
 - **Dataview** — Notion-like table view for managing posts
 - **Obsidian Git** — Push to GitHub directly from Obsidian
+- **Templater** — Auto-applies blog-post template on new note creation
 
 ### 3. Write & Publish
 
 1. Click **dashboard.md** to open Dashboard
-2. Create a new note → Insert **blog-post** template (`Ctrl/Cmd+T`)
+2. Create a new note (`Ctrl/Cmd+N`) — template is auto-applied
 3. Write your post in **posts/**
 4. Toggle `published` on in frontmatter
 5. Push to GitHub → Vercel auto-builds your site
@@ -76,25 +77,23 @@ First run auto-links your project to Vercel and pushes env vars. After that, eve
 
 ```yaml
 ---
-title: 'My Post Title'
 date: 2026-03-14
-slug: my-post-title # Optional — auto-generated from filename
 published: true # Toggle in Obsidian
-thumbnail: /images/cover.jpg # Optional
 tags: [nextjs, blog] # Optional
+slug: my-post-title # Optional — auto-generated from filename
+thumbnail: /images/cover.jpg # Optional
 ---
 ```
 
 | Field         | Type    | Required | Description                                      |
 | ------------- | ------- | -------- | ------------------------------------------------ |
-| **title**     | string  | Yes      | Post title                                       |
 | **date**      | date    | Yes      | Publication date (YYYY-MM-DD)                    |
 | **published** | boolean | Yes      | Publish toggle (`true` / `false`)                |
+| **tags**      | list    | No       | Post tags                                        |
 | **slug**      | string  | No       | URL path (auto-generated from filename if empty) |
 | **thumbnail** | string  | No       | Image path (e.g., `/images/cover.jpg`)           |
-| **tags**      | list    | No       | Post tags                                        |
 
-> `description` meta tag is auto-extracted from the first 160 characters of content.
+> `title` is derived from the filename. `description` is auto-extracted from the first 160 characters.
 
 ## Scripts
 
