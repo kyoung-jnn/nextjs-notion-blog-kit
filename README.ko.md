@@ -21,6 +21,15 @@
 
 ## 시작하기
 
+### 사전 준비
+
+- [Node.js](https://nodejs.org/) v18 이상
+- [pnpm](https://pnpm.io/) — `corepack enable`으로 활성화
+- [Git](https://git-scm.com/)
+- [Obsidian](https://obsidian.md/) (데스크톱 앱)
+- [GitHub CLI](https://cli.github.com/) (선택 — Giscus 댓글 자동 설정)
+- [Vercel](https://vercel.com/) 계정 (배포 시 필요)
+
 ### 1. 저장소 생성
 
 이 페이지 상단의 **"Use this template"** 클릭 후:
@@ -70,7 +79,7 @@ pnpm blog:deploy
 │   └── templates/            # 포스트 템플릿 (숨김)
 ├── public/images/            # 이미지 첨부 (Obsidian이 자동 저장)
 ├── src/                      # Next.js 소스 코드
-└── .env                      # 사이트 설정
+└── src/config/blog.config.ts # 블로그 설정 (setup으로 생성)
 ```
 
 ## Frontmatter 스키마
