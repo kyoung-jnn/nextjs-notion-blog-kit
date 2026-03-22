@@ -7,7 +7,9 @@
 
 [English](README.md) | 한국어
 
-> Obsidian에서 글쓰기. GitHub에 Push. 블로그 완성.
+<img width="1200" height="627" alt="nextjs obsidian blog kit" src="https://github.com/user-attachments/assets/97d27f51-35fd-4e8c-ac64-a3e627109ec7" />
+
+> Obsidian에서 글쓰기. GitHub에 Push. 블로그 완성!
 
 ## 주요 기능
 
@@ -40,10 +42,10 @@ pnpm blog:setup
 
 ### 3. 글쓰기 & 배포
 
-1. **📊 Dashboard.md** 열어서 전체 글 목록 확인
+1. **dashboard.md** 클릭하여 Dashboard 확인
 2. 새 노트 생성 → **blog-post** 템플릿 적용 (`Ctrl/Cmd+T`)
-3. **blog/📝 posts/** 폴더에 글 작성
-4. frontmatter에서 `status: publish` 설정
+3. **posts/** 폴더에 글 작성
+4. frontmatter에서 `published` 토글 켜기
 5. GitHub에 Push → Vercel이 자동으로 빌드
 
 ### 4. 배포
@@ -61,11 +63,10 @@ pnpm blog:deploy
 ```
 <project-root>/              ← Obsidian Vault
 ├── .obsidian/                # Vault 설정 (자동 구성)
-├── blog/
-│   ├── 📝 posts/             # 블로그 글 (.md)
-│   ├── 📋 templates/         # 포스트 템플릿
-│   ├── 📊 Dashboard.md       # 글 관리 대시보드
-│   └── 📖 FRONTMATTER.md     # Frontmatter 참조
+├── dashboard.md              # Dashboard (Obsidian 홈페이지)
+├── posts/
+│   ├── *.md                  # 블로그 글
+│   └── templates/            # 포스트 템플릿 (숨김)
 ├── public/images/            # 이미지 첨부 (Obsidian이 자동 저장)
 ├── src/                      # Next.js 소스 코드
 └── .env                      # 사이트 설정
@@ -75,35 +76,35 @@ pnpm blog:deploy
 
 ```yaml
 ---
-title: "포스트 제목"
+title: '포스트 제목'
 date: 2026-03-14
-slug: post-title              # 선택 — 파일명에서 자동 생성
-status: publish               # publish 또는 draft
-thumbnail: /images/cover.jpg  # 선택
-description: "SEO 설명"       # 선택 — 본문에서 자동 추출
-tags: [nextjs, blog]          # 선택
+slug: post-title # 선택 — 파일명에서 자동 생성
+published: true # Obsidian에서 토글
+thumbnail: /images/cover.jpg # 선택
+tags: [nextjs, blog] # 선택
 ---
 ```
 
-| 필드          | 타입   | 필수 | 설명                                            |
-| ------------- | ------ | ---- | ----------------------------------------------- |
-| **title**     | string | Yes  | 포스트 제목                                     |
-| **date**      | date   | Yes  | 발행일 (YYYY-MM-DD)                             |
-| **status**    | string | Yes  | `publish` 또는 `draft`                          |
-| **slug**      | string | No   | URL 경로 (비어있으면 파일명에서 자동 생성)       |
-| **thumbnail** | string | No   | 이미지 경로 (예: `/images/cover.jpg`)           |
-| **description** | string | No | SEO 설명 (비어있으면 본문에서 자동 추출)        |
-| **tags**      | list   | No   | 포스트 태그                                     |
+| 필드          | 타입    | 필수 | 설명                                       |
+| ------------- | ------- | ---- | ------------------------------------------ |
+| **title**     | string  | Yes  | 포스트 제목                                |
+| **date**      | date    | Yes  | 발행일 (YYYY-MM-DD)                        |
+| **published** | boolean | Yes  | 발행 토글 (`true` / `false`)               |
+| **slug**      | string  | No   | URL 경로 (비어있으면 파일명에서 자동 생성) |
+| **thumbnail** | string  | No   | 이미지 경로 (예: `/images/cover.jpg`)      |
+| **tags**      | list    | No   | 포스트 태그                                |
+
+> `description` meta tag는 본문 첫 160자에서 자동 추출됩니다.
 
 ## 스크립트
 
-| 명령어                   | 설명               |
-| ------------------------ | ------------------ |
-| `pnpm dev`               | 개발 서버 시작     |
-| `pnpm build`             | 프로덕션 빌드      |
-| `pnpm blog:setup`        | 제로 설정          |
-| `pnpm blog:deploy`       | Vercel 배포        |
-| `pnpm blog:doctor`       | 진단 & 상태 확인   |
+| 명령어             | 설명             |
+| ------------------ | ---------------- |
+| `pnpm dev`         | 개발 서버 시작   |
+| `pnpm build`       | 프로덕션 빌드    |
+| `pnpm blog:setup`  | 제로 설정        |
+| `pnpm blog:deploy` | Vercel 배포      |
+| `pnpm blog:doctor` | 진단 & 상태 확인 |
 
 ## 설정
 
@@ -128,7 +129,7 @@ const config = {
 Obsidian (글쓰기) → Git push → Vercel (자동 빌드) → 정적 사이트
 ```
 
-1. **작성** — `blog/📝 posts/`에 YAML frontmatter가 포함된 `.md` 파일 생성
+1. **작성** — `posts/`에 YAML frontmatter가 포함된 `.md` 파일 생성
 2. **Push** — Obsidian Git 플러그인 또는 터미널에서 `git push`
 3. **빌드** — Vercel이 Push를 감지하고 `next build` 실행
 4. **서빙** — Next.js가 `fs`로 마크다운을 읽어 Shiki + KaTeX로 정적 HTML 생성

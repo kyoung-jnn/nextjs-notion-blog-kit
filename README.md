@@ -42,10 +42,10 @@ Open this project folder as an Obsidian vault. Install two community plugins:
 
 ### 3. Write & Publish
 
-1. Open **📊 Dashboard.md** to see all posts
+1. Click **dashboard.md** to open Dashboard
 2. Create a new note → Insert **blog-post** template (`Ctrl/Cmd+T`)
-3. Write your post in **blog/📝 posts/**
-4. Set `status: publish` in frontmatter
+3. Write your post in **posts/**
+4. Toggle `published` on in frontmatter
 5. Push to GitHub → Vercel auto-builds your site
 
 ### 4. Deploy
@@ -63,11 +63,10 @@ First run auto-links your project to Vercel and pushes env vars. After that, eve
 ```
 <project-root>/              ← Obsidian Vault
 ├── .obsidian/                # Vault settings (auto-configured)
-├── blog/
-│   ├── 📝 posts/             # Your blog posts (.md)
-│   ├── 📋 templates/         # Post template
-│   ├── 📊 Dashboard.md       # Post management dashboard
-│   └── 📖 FRONTMATTER.md     # Frontmatter reference
+├── dashboard.md              # Dashboard (Obsidian homepage)
+├── posts/
+│   ├── *.md                  # Your blog posts
+│   └── templates/            # Post template (hidden)
 ├── public/images/            # Image attachments (auto-saved by Obsidian)
 ├── src/                      # Next.js source code
 └── .env                      # Site configuration
@@ -77,35 +76,35 @@ First run auto-links your project to Vercel and pushes env vars. After that, eve
 
 ```yaml
 ---
-title: "My Post Title"
+title: 'My Post Title'
 date: 2026-03-14
-slug: my-post-title          # Optional — auto-generated from filename
-status: publish               # publish or draft
-thumbnail: /images/cover.jpg  # Optional
-description: "SEO description" # Optional — auto-extracted from content
-tags: [nextjs, blog]          # Optional
+slug: my-post-title # Optional — auto-generated from filename
+published: true # Toggle in Obsidian
+thumbnail: /images/cover.jpg # Optional
+tags: [nextjs, blog] # Optional
 ---
 ```
 
-| Field         | Type   | Required | Description                                          |
-| ------------- | ------ | -------- | ---------------------------------------------------- |
-| **title**     | string | Yes      | Post title                                           |
-| **date**      | date   | Yes      | Publication date (YYYY-MM-DD)                        |
-| **status**    | string | Yes      | `publish` or `draft`                                 |
-| **slug**      | string | No       | URL path (auto-generated from filename if empty)     |
-| **thumbnail** | string | No       | Image path (e.g., `/images/cover.jpg`)               |
-| **description** | string | No    | SEO description (auto-extracted from content if empty) |
-| **tags**      | list   | No       | Post tags                                            |
+| Field         | Type    | Required | Description                                      |
+| ------------- | ------- | -------- | ------------------------------------------------ |
+| **title**     | string  | Yes      | Post title                                       |
+| **date**      | date    | Yes      | Publication date (YYYY-MM-DD)                    |
+| **published** | boolean | Yes      | Publish toggle (`true` / `false`)                |
+| **slug**      | string  | No       | URL path (auto-generated from filename if empty) |
+| **thumbnail** | string  | No       | Image path (e.g., `/images/cover.jpg`)           |
+| **tags**      | list    | No       | Post tags                                        |
+
+> `description` meta tag is auto-extracted from the first 160 characters of content.
 
 ## Scripts
 
-| Command                  | Description                |
-| ------------------------ | -------------------------- |
-| `pnpm dev`               | Start development server   |
-| `pnpm build`             | Production build           |
-| `pnpm blog:setup`        | Zero-config setup          |
-| `pnpm blog:deploy`       | Deploy to Vercel           |
-| `pnpm blog:doctor`       | Diagnostics & health check |
+| Command            | Description                |
+| ------------------ | -------------------------- |
+| `pnpm dev`         | Start development server   |
+| `pnpm build`       | Production build           |
+| `pnpm blog:setup`  | Zero-config setup          |
+| `pnpm blog:deploy` | Deploy to Vercel           |
+| `pnpm blog:doctor` | Diagnostics & health check |
 
 ## Configuration
 
@@ -130,7 +129,7 @@ One file. Type-safe. No environment variables needed.
 Obsidian (write) → Git push → Vercel (auto-build) → Static site
 ```
 
-1. **Write** — Create `.md` files in `blog/📝 posts/` with YAML frontmatter
+1. **Write** — Create `.md` files in `posts/` with YAML frontmatter
 2. **Push** — Use Obsidian Git plugin or `git push` from terminal
 3. **Build** — Vercel detects the push and runs `next build`
 4. **Serve** — Next.js reads markdown via `fs`, generates static HTML with Shiki + KaTeX
