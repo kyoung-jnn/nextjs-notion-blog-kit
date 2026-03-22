@@ -1,15 +1,13 @@
-import { defineConfig } from 'eslint/config';
-
-import globals from 'globals';
 import js from '@eslint/js';
-
-import tsParser from '@typescript-eslint/parser';
+import nextPlugin from '@next/eslint-plugin-next';
 import tseslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import { defineConfig } from 'eslint/config';
+import prettier from 'eslint-config-prettier';
+import importPlugin from 'eslint-plugin-import';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import importPlugin from 'eslint-plugin-import';
-import prettier from 'eslint-config-prettier';
-import nextPlugin from '@next/eslint-plugin-next';
+import globals from 'globals';
 
 const STATUS = {
   OFF: 'off',
@@ -21,7 +19,7 @@ export default defineConfig([
   { ignores: ['node_modules', '.next', '.obsidian'] },
   js.configs.recommended,
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    files: ['**/*.{js,jsx,mjs,ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
