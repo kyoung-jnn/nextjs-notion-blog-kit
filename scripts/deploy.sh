@@ -25,12 +25,12 @@ else
 fi
 
 # Pre-flight
-if [ ! -d "blog/📝 posts" ]; then
+if [ ! -d "posts" ]; then
     fail "Blog not set up. Run 'pnpm blog:setup' first."
     exit 1
 fi
 
-POST_COUNT=$(find "blog/📝 posts" -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+POST_COUNT=$(find "posts" -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
 success "$POST_COUNT post(s) found"
 
 # Deploy

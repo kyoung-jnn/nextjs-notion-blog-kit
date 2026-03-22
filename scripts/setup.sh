@@ -164,7 +164,7 @@ fi
 # ─── 5. Obsidian vault ──────────────────────────────────────────────
 
 echo ""
-if [ -d "blog/📝 posts" ] && [ -d ".obsidian" ]; then
+if [ -d "posts" ] && [ -d ".obsidian" ] && [ -f "dashboard.md" ]; then
     success "Obsidian vault ready"
 else
     QUIET=true LOCALE="${LOCALE:-en}" bash "$SCRIPT_DIR/content.sh"
@@ -188,6 +188,6 @@ echo ""
 echo -e "  ${BLUE}pnpm dev${NC}               Start dev server"
 echo -e "  ${BLUE}pnpm blog:deploy${NC}       Deploy to Vercel"
 echo -e "  ${BLUE}Edit src/config/blog.config.ts${NC}  Customize your blog"
-echo -e "  ${BLUE}Open in Obsidian${NC}       This folder → install Dataview & Obsidian Git"
-echo -e "  ${BLUE}📊 Dashboard.md${NC}        Manage posts"
+echo -e "  ${BLUE}Open in Obsidian${NC}       This folder → Make.md Navigator"
+echo -e "  ${BLUE}dashboard.md${NC}           Click to open Dashboard"
 echo ""

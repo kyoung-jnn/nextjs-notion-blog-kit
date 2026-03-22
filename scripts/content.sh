@@ -2,15 +2,16 @@
 # ─── Obsidian Blog Vault Initializer ─────────────────────────────────
 # Sets up the project root as an Obsidian vault with blog content
 # structure, templates, and a sample post.
+# Optimized for Make.md plugin (Notion-like experience).
 #
 # Usage:
-#   bash scripts/init-content.sh
-#   pnpm blog:content:init
+#   bash scripts/content.sh
+#   Called by: pnpm blog:setup
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-BLOG_DIR="blog"
+POSTS_DIR="posts"
 TODAY=$(date +%Y-%m-%d)
 QUIET=${QUIET:-false}
 LOCALE=${LOCALE:-en}
@@ -44,66 +45,90 @@ fi
 
 # ─── 1. Directory Structure ──────────────────────────────────────────
 
-mkdir -p "$BLOG_DIR/📝 posts"
-mkdir -p "$BLOG_DIR/📋 templates"
+mkdir -p "$POSTS_DIR"
+mkdir -p "$POSTS_DIR/templates"
 mkdir -p "public/images"
 mkdir -p ".obsidian/plugins/dataview"
 mkdir -p ".obsidian/plugins/obsidian-git"
+mkdir -p ".obsidian/plugins/make-md"
 
 success "Directory structure created"
 
 # ─── 2. Obsidian App Settings ────────────────────────────────────────
-# Vault is project root; images go to public/images/ for Next.js
 
 cat > ".obsidian/app.json" << 'OBSIDIAN_EOF'
 {
   "attachmentFolderPath": "public/images",
   "newFileLocation": "folder",
-  "newFileFolderPath": "blog/📝 posts",
+  "newFileFolderPath": "posts",
   "useMarkdownLinks": true,
   "showLineCount": true,
   "strictLineBreaks": true,
   "propertiesInDocument": "visible",
-  "livePreview": true,
-  "userIgnoreFilters": [
-    "node_modules/",
-    ".next/",
-    "src/",
-    ".git/",
-    "scripts/",
-    ".env*",
-    "*.config.*",
-    "tsconfig.json",
-    "pnpm-lock.yaml",
-    "package.json"
-  ]
+  "livePreview": true
 }
 OBSIDIAN_EOF
 
-success "Obsidian app settings (images → public/images/)"
+success "Obsidian app settings"
 
 # ─── 3. Core Plugins ─────────────────────────────────────────────────
+# Disable file-explorer — Make.md Navigator replaces it
 
 cat > ".obsidian/core-plugins.json" << 'OBSIDIAN_EOF'
+{
+  "file-explorer": false,
+  "global-search": true,
+  "switcher": false,
+  "graph": false,
+  "backlink": false,
+  "outgoing-link": false,
+  "tag-pane": true,
+  "page-preview": false,
+  "daily-notes": false,
+  "templates": true,
+  "note-composer": false,
+  "command-palette": true,
+  "slash-command": false,
+  "editor-status": true,
+  "markdown-importer": false,
+  "zk-prefixer": false,
+  "random-note": false,
+  "outline": true,
+  "word-count": true,
+  "slides": false,
+  "audio-recorder": false,
+  "workspaces": false,
+  "file-recovery": false,
+  "publish": false,
+  "sync": false,
+  "canvas": false,
+  "footnotes": false,
+  "properties": true,
+  "bookmarks": true,
+  "bases": false,
+  "webviewer": false
+}
+OBSIDIAN_EOF
+
+success "Core plugins configured (file-explorer disabled → Make.md Navigator)"
+
+# ─── 4. Community Plugins ────────────────────────────────────────────
+
+cat > ".obsidian/community-plugins.json" << 'OBSIDIAN_EOF'
 [
-  "file-explorer",
-  "global-search",
-  "tag-pane",
-  "properties",
-  "editor-status",
-  "word-count",
-  "outline",
-  "templates"
+  "dataview",
+  "obsidian-git",
+  "make-md"
 ]
 OBSIDIAN_EOF
 
-success "Core plugins configured"
+success "Community plugins registered"
 
-# ─── 4. Templates Plugin Settings ────────────────────────────────────
+# ─── 5. Templates Plugin Settings ────────────────────────────────────
 
 cat > ".obsidian/templates.json" << 'OBSIDIAN_EOF'
 {
-  "folder": "blog/📋 templates",
+  "folder": "posts/templates",
   "dateFormat": "YYYY-MM-DD",
   "timeFormat": "HH:mm"
 }
@@ -111,42 +136,46 @@ OBSIDIAN_EOF
 
 success "Templates plugin configured"
 
-# ─── 5. Appearance ───────────────────────────────────────────────────
+# ─── 6. Appearance ───────────────────────────────────────────────────
 
 cat > ".obsidian/appearance.json" << 'OBSIDIAN_EOF'
 {
-  "accentColor": "",
-  "interfaceFontSize": 16,
-  "textFontSize": 16,
-  "baseFontSize": 16
+  "accentColor": "#808080",
+  "baseFontSize": 16,
+  "translucency": true
 }
 OBSIDIAN_EOF
 
 success "Appearance settings"
 
-# ─── 6. Obsidian Git Plugin Settings ─────────────────────────────────
-# Pre-configure so users just need to install the plugin
+# ─── 7. Obsidian Git Plugin ──────────────────────────────────────────
 
 cat > ".obsidian/plugins/obsidian-git/data.json" << 'OBSIDIAN_EOF'
 {
   "autoSaveInterval": 0,
   "autoPushInterval": 0,
   "autoPullInterval": 0,
-  "commitMessage": "publish: {{date}}",
-  "autoCommitMessage": "auto: {{date}}",
+  "commitMessage": "📝 publish: {{numFiles}} file(s) — {{date}}",
+  "autoCommitMessage": "✏️ draft: {{numFiles}} file(s) — {{date}}",
+  "listChangedFilesInMessageBody": true,
   "pushOnBackup": true,
   "pullBeforePush": true,
   "disablePush": false,
   "syncMethod": "merge",
   "showStatusBar": true,
   "updateSubmodules": false,
-  "changedFilesInStatusBar": true
+  "changedFilesInStatusBar": true,
+  "showedMobileNotice": true,
+  "autoBackupAfterFileChange": false,
+  "basePath": "",
+  "differentIntervalCommitAndPush": false,
+  "autoPullOnBoot": true
 }
 OBSIDIAN_EOF
 
 success "Obsidian Git plugin settings"
 
-# ─── 7. Dataview Plugin Settings ─────────────────────────────────────
+# ─── 8. Dataview Plugin ──────────────────────────────────────────────
 
 cat > ".obsidian/plugins/dataview/data.json" << 'OBSIDIAN_EOF'
 {
@@ -169,16 +198,181 @@ OBSIDIAN_EOF
 
 success "Dataview plugin settings"
 
-# ─── 8. Blog Post Template ───────────────────────────────────────────
+# ─── 9. Make.md Plugin ───────────────────────────────────────────────
+# Notion-like experience: Navigator, Flow editor, folder notes, banners
 
-cat > "$BLOG_DIR/📋 templates/blog-post.md" << 'TEMPLATE_EOF'
+cat > ".obsidian/plugins/make-md/data.json" << 'MAKEMD_EOF'
+{
+  "newNotePlaceholder": "Untitled",
+  "defaultInitialization": false,
+  "navigatorEnabled": true,
+  "filePreviewOnHover": false,
+  "blinkEnabled": true,
+  "datePickerTime": false,
+  "imageThumbnails": false,
+  "noteThumbnails": false,
+  "spacesMDBInHidden": true,
+  "cacheIndex": true,
+  "spacesRightSplit": false,
+  "contextEnabled": true,
+  "spaceViewEnabled": true,
+  "saveAllContextToFrontmatter": false,
+  "autoOpenFileContext": false,
+  "activeView": "posts",
+  "hideFrontmatter": false,
+  "activeSpace": "",
+  "defaultDateFormat": "YYYY-MM-DD",
+  "defaultTimeFormat": "HH:mm",
+  "spacesEnabled": true,
+  "syncFormulaToFrontmatter": true,
+  "spacesPerformance": false,
+  "currentWaypoint": 0,
+  "enableFolderNote": false,
+  "folderIndentationLines": true,
+  "revealActiveFile": false,
+  "spacesStickers": true,
+  "spaceRowHeight": 29,
+  "mobileSpaceRowHeight": 40,
+  "bannerHeight": 200,
+  "spacesDisablePatch": false,
+  "folderNoteInsideFolder": true,
+  "folderNoteName": "",
+  "sidebarTabs": true,
+  "showRibbon": true,
+  "vaultSelector": true,
+  "deleteFileOption": "system-trash",
+  "expandedSpaces": [
+    "/",
+    "posts"
+  ],
+  "expandFolderOnClick": true,
+  "spacesFolder": ".spaces",
+  "suppressedWarnings": [],
+  "spaceSubFolder": ".space",
+  "hiddenFiles": [
+    "node_modules",
+    ".next",
+    "src",
+    ".git",
+    "scripts",
+    "public",
+    ".env",
+    ".env.example",
+    ".gitignore",
+    ".claude",
+    ".husky",
+    ".obsidian",
+    ".obsidianignore",
+    ".makemd",
+    ".space",
+    ".spaces",
+    ".vscode",
+    ".nvmrc",
+    "Tags",
+    "eslint.config.mjs",
+    "next-env.d.ts",
+    "next-sitemap.config.js",
+    "next.config.mjs",
+    "postcss.config.mjs",
+    "prettier.config.mjs",
+    "package.json",
+    "pnpm-lock.yaml",
+    "tsconfig.json",
+    "LICENSE",
+    "README.md",
+    "README.ko.md",
+    "posts/templates",
+    "tsconfig.tsbuildinfo"
+  ],
+  "hiddenExtensions": [
+    ".mdb",
+    "_assets",
+    "_blocks",
+    ".base",
+    ".gitkeep"
+  ],
+  "newFileLocation": "folder",
+  "newFileFolderPath": "posts",
+  "inlineBacklinks": false,
+  "inlineContext": true,
+  "inlineBacklinksExpanded": false,
+  "inlineContextExpanded": true,
+  "inlineContextProperties": false,
+  "inlineContextSectionsExpanded": true,
+  "banners": true,
+  "inlineContextNameLayout": "vertical",
+  "spacesUseAlias": false,
+  "fmKeyAlias": "aliases",
+  "fmKeyBanner": "banner",
+  "fmKeyColor": "color",
+  "fmKeyBannerOffset": "banner_y",
+  "fmKeySticker": "sticker",
+  "openSpacesOnLaunch": true,
+  "indexSVG": false,
+  "readableLineWidth": true,
+  "autoAddContextsToSubtags": true,
+  "releaseNotesPrompt": 0,
+  "enableDefaultSpaces": true,
+  "showSpacePinIcon": true,
+  "experimental": false,
+  "systemName": "Blog",
+  "defaultSpaceTemplate": "",
+  "selectedKit": "default",
+  "actionMaxSteps": 100,
+  "contextPagination": 25,
+  "skipFolders": [
+    "node_modules",
+    ".next",
+    "src",
+    ".git",
+    "scripts",
+    ".claude",
+    ".husky",
+    ".vscode"
+  ],
+  "skipFolderNames": [],
+  "enhancedLogs": false,
+  "basics": true,
+  "basicsSettings": {
+    "flowMenuEnabled": true,
+    "markSans": false,
+    "makeMenuPlaceholder": true,
+    "mobileMakeBar": false,
+    "mobileSidepanel": false,
+    "inlineStyler": true,
+    "inlineStylerColors": true,
+    "inlineStylerSelectedPalette": "",
+    "editorFlow": true,
+    "internalLinkClickFlow": true,
+    "internalLinkSticker": true,
+    "editorFlowStyle": "minimal",
+    "menuTriggerChar": "/",
+    "inlineStickerMenu": true,
+    "emojiTriggerChar": ":",
+    "flowState": false
+  },
+  "firstLaunch": false,
+  "notesPreview": false,
+  "editStickerInSidebar": true,
+  "overrideNativeMenu": false,
+  "onboardingCompleted": true,
+  "contextCreateUseModal": false,
+  "homepagePath": "",
+  "mobileMakeHeader": false
+}
+MAKEMD_EOF
+
+success "Make.md plugin (Notion-like: Navigator, Flow, folder notes)"
+
+# ─── 10. Blog Post Template ──────────────────────────────────────────
+
+cat > "$POSTS_DIR/templates/blog-post.md" << 'TEMPLATE_EOF'
 ---
 title: "{{title}}"
 date: {{date}}
 slug:
-status: draft
+published: false
 thumbnail:
-description:
 tags: []
 ---
 
@@ -186,18 +380,17 @@ TEMPLATE_EOF
 
 success "Blog post template"
 
-# ─── 9. Sample Post ──────────────────────────────────────────────────
+# ─── 11. Sample Post ─────────────────────────────────────────────────
 
-if [ ! -f "$BLOG_DIR/📝 posts/hello-world.md" ]; then
+if [ ! -f "$POSTS_DIR/hello-world.md" ]; then
     if [ "$LOCALE" = "ko" ]; then
-        cat > "$BLOG_DIR/📝 posts/hello-world.md" << SAMPLE_EOF
+        cat > "$POSTS_DIR/hello-world.md" << SAMPLE_EOF
 ---
 title: "Hello World"
 date: $TODAY
 slug: hello-world
-status: publish
+published: true
 thumbnail:
-description: "Obsidian으로 작성한 첫 번째 블로그 포스트입니다."
 tags: [blog, obsidian]
 ---
 
@@ -213,8 +406,8 @@ Obsidian 블로그 키트에 오신 것을 환영합니다!
 
 1. Obsidian에서 \`Ctrl/Cmd+N\`으로 새 노트 생성
 2. \`Ctrl/Cmd+T\`로 **blog-post** 템플릿 적용
-3. \`📝 posts/\` 폴더에 저장
-4. frontmatter의 \`status\`를 \`publish\`로 변경
+3. \`posts/\` 폴더에 저장
+4. frontmatter의 \`published\` 토글 켜기
 5. GitHub에 Push하면 사이트가 자동으로 빌드됩니다
 
 ### 지원되는 마크다운 기능
@@ -252,14 +445,13 @@ function greet(name: string): string {
 이 샘플 포스트를 수정하거나 삭제하고, 자신만의 글을 작성해보세요!
 SAMPLE_EOF
     else
-        cat > "$BLOG_DIR/📝 posts/hello-world.md" << SAMPLE_EOF
+        cat > "$POSTS_DIR/hello-world.md" << SAMPLE_EOF
 ---
 title: "Hello World"
 date: $TODAY
 slug: hello-world
-status: publish
+published: true
 thumbnail:
-description: "Your first blog post, written in Obsidian and powered by Next.js."
 tags: [blog, obsidian]
 ---
 
@@ -275,8 +467,8 @@ This blog turns **markdown files** written in Obsidian into static pages built b
 
 1. Create a new note in Obsidian (\`Ctrl/Cmd+N\`)
 2. Insert the **blog-post** template (\`Ctrl/Cmd+T\`)
-3. Save to the \`📝 posts/\` folder
-4. Set \`status: publish\` in frontmatter
+3. Save to the \`posts/\` folder
+4. Toggle \`published\` on in frontmatter
 5. Push to GitHub — your site rebuilds automatically
 
 ### Supported Markdown Features
@@ -314,61 +506,54 @@ Block math:
 Edit or delete this sample post, and start writing your own!
 SAMPLE_EOF
     fi
-    success "Sample post (📝 posts/hello-world.md)"
+    success "Sample post (posts/hello-world.md)"
 else
     success "Sample post already exists (skipped)"
 fi
 
-# ─── 10. Blog Dashboard ──────────────────────────────────────────────
-# Dataview queries are language-agnostic (column headers stay English for consistency)
+# ─── 12. Dashboard (project root) ────────────────────────────────────
+# Dashboard — opens on Obsidian launch via homepagePath
 
 if [ "$LOCALE" = "ko" ]; then
-    DASH_INFO="> [!info] Dataview 플러그인 필요\n> 아래 테이블은 **Dataview** 커뮤니티 플러그인이 필요합니다.\n> Settings → Community Plugins → Browse → \`Dataview\` 설치 후 활성화하세요."
     DASH_ALL="전체 글 목록"
-    DASH_PUB="발행된 글"
-    DASH_DRAFT="작성 중 (Draft)"
+    DASH_DRAFT="작성 중"
     DASH_STATS="통계"
     DASH_COUNT="length(rows) + \"개 글\""
+    DASH_QUICK="빠른 시작"
+    DASH_QUICK_1="새 노트 생성 → \`Ctrl/Cmd+N\`"
+    DASH_QUICK_2="템플릿 적용 → \`Ctrl/Cmd+T\` → **blog-post**"
+    DASH_QUICK_3="\`published\` 토글 켜기 → Git Push"
 else
-    DASH_INFO="> [!info] Dataview plugin required\n> The tables below require the **Dataview** community plugin.\n> Settings → Community Plugins → Browse → Install \`Dataview\` and enable it."
     DASH_ALL="All Posts"
-    DASH_PUB="Published"
     DASH_DRAFT="Drafts"
     DASH_STATS="Stats"
     DASH_COUNT="length(rows) + \" post(s)\""
+    DASH_QUICK="Quick Start"
+    DASH_QUICK_1="Create new note → \`Ctrl/Cmd+N\`"
+    DASH_QUICK_2="Apply template → \`Ctrl/Cmd+T\` → **blog-post**"
+    DASH_QUICK_3="Toggle \`published\` on → Git Push"
 fi
 
-cat > "$BLOG_DIR/📊 Dashboard.md" << DASHBOARD_EOF
+cat > "dashboard.md" << DASHBOARD_EOF
 ---
-cssclasses: [dashboard]
+sticker: lucide//layout-dashboard
 ---
 
-# Blog Dashboard
+## $DASH_QUICK
 
-$(echo -e "$DASH_INFO")
+- $DASH_QUICK_1
+- $DASH_QUICK_2
+- $DASH_QUICK_3
 
 ## $DASH_ALL
 
 \`\`\`dataview
 TABLE WITHOUT ID
   file.link AS "title",
-  thumbnail AS "thumbnail",
-  date AS "date",
-  choice(status = "publish", "🟢 publish", "🟡 draft") AS "status"
-FROM "blog/📝 posts"
-SORT date DESC
-\`\`\`
-
-## $DASH_PUB
-
-\`\`\`dataview
-TABLE WITHOUT ID
-  file.link AS "title",
-  thumbnail AS "thumbnail",
-  date AS "date",
+  dateformat(date, "yyyy-MM-dd") AS "date",
+  choice(published, "🟢 published", "🟡 draft") AS "status",
   join(tags, ", ") AS "tags"
-FROM "blog/📝 posts"
-WHERE status = "publish"
+FROM "posts" AND -"posts/templates"
 SORT date DESC
 \`\`\`
 
@@ -377,10 +562,10 @@ SORT date DESC
 \`\`\`dataview
 TABLE WITHOUT ID
   file.link AS "title",
-  date AS "date",
+  dateformat(date, "yyyy-MM-dd") AS "date",
   join(tags, ", ") AS "tags"
-FROM "blog/📝 posts"
-WHERE status = "draft"
+FROM "posts" AND -"posts/templates"
+WHERE !published
 SORT date DESC
 \`\`\`
 
@@ -388,122 +573,28 @@ SORT date DESC
 
 \`\`\`dataview
 LIST WITHOUT ID $DASH_COUNT
-FROM "blog/📝 posts"
+FROM "posts" AND -"posts/templates"
 GROUP BY true
 \`\`\`
 
 \`\`\`dataview
-LIST WITHOUT ID status + ": " + length(rows)
-FROM "blog/📝 posts"
-GROUP BY status
+LIST WITHOUT ID choice(published, "published", "draft") + ": " + length(rows)
+FROM "posts" AND -"posts/templates"
+GROUP BY published
 \`\`\`
 
 \`\`\`dataview
 LIST WITHOUT ID tag + " (" + length(rows) + ")"
-FROM "blog/📝 posts"
+FROM "posts" AND -"posts/templates"
 FLATTEN tags AS tag
 GROUP BY tag
 SORT length(rows) DESC
 \`\`\`
 DASHBOARD_EOF
 
-success "Blog dashboard (📊 Dashboard.md)"
+success "Dashboard (dashboard.md)"
 
-# ─── 11. Frontmatter Reference ───────────────────────────────────────
-
-if [ "$LOCALE" = "ko" ]; then
-    cat > "$BLOG_DIR/📖 FRONTMATTER.md" << 'REF_EOF'
-# Frontmatter Reference
-
-Blog post `.md` 파일의 YAML frontmatter 필드 참조입니다.
-
-## 필수 필드
-
-| 필드 | 타입 | 설명 | 예시 |
-|------|------|------|------|
-| `title` | string | 포스트 제목 | `"Hello World"` |
-| `date` | string | 발행일 (YYYY-MM-DD) | `2026-03-16` |
-| `status` | string | 발행 상태 | `publish` 또는 `draft` |
-
-## 선택 필드
-
-| 필드 | 타입 | 설명 | 예시 |
-|------|------|------|------|
-| `slug` | string | URL 경로 (비어있으면 파일명 사용) | `hello-world` |
-| `thumbnail` | string | 썸네일 이미지 경로 | `/images/cover.jpg` |
-| `description` | string | SEO 설명 (비어있으면 본문에서 추출) | `"첫 번째 포스트"` |
-| `tags` | list | 태그 목록 | `[blog, nextjs]` |
-
-## 예시
-
-```yaml
----
-title: "Next.js로 블로그 만들기"
-date: 2026-03-16
-slug: nextjs-blog
-status: publish
-thumbnail: /images/cover.jpg
-description: "Next.js와 Obsidian을 활용한 블로그 구축기"
-tags: [nextjs, blog, obsidian]
----
-```
-
-## 주의사항
-
-- `status: draft`인 글은 개발 환경에서만 표시됩니다
-- `slug`을 비우면 파일명에서 자동 생성됩니다 (예: `my-post.md` → `my-post`)
-- `description`을 비우면 본문 첫 160자에서 자동 추출됩니다
-- 이미지는 Obsidian에서 붙여넣기 시 `public/images/`에 자동 저장됩니다
-REF_EOF
-else
-    cat > "$BLOG_DIR/📖 FRONTMATTER.md" << 'REF_EOF'
-# Frontmatter Reference
-
-YAML frontmatter fields for blog post `.md` files.
-
-## Required Fields
-
-| Field | Type | Description | Example |
-|-------|------|-------------|---------|
-| `title` | string | Post title | `"Hello World"` |
-| `date` | string | Publication date (YYYY-MM-DD) | `2026-03-16` |
-| `status` | string | Publish state | `publish` or `draft` |
-
-## Optional Fields
-
-| Field | Type | Description | Example |
-|-------|------|-------------|---------|
-| `slug` | string | URL path (auto-generated from filename if empty) | `hello-world` |
-| `thumbnail` | string | Thumbnail image path | `/images/cover.jpg` |
-| `description` | string | SEO description (auto-extracted from content if empty) | `"My first post"` |
-| `tags` | list | Post tags | `[blog, nextjs]` |
-
-## Example
-
-```yaml
----
-title: "Building a Blog with Next.js"
-date: 2026-03-16
-slug: nextjs-blog
-status: publish
-thumbnail: /images/cover.jpg
-description: "How I built a blog with Next.js and Obsidian"
-tags: [nextjs, blog, obsidian]
----
-```
-
-## Notes
-
-- Posts with `status: draft` are only visible in development
-- Empty `slug` is auto-generated from filename (e.g., `my-post.md` → `my-post`)
-- Empty `description` is auto-extracted from the first 160 characters
-- Images pasted in Obsidian auto-save to `public/images/`
-REF_EOF
-fi
-
-success "Frontmatter reference (📖 FRONTMATTER.md)"
-
-# ─── 12. public/images/.gitkeep ──────────────────────────────────────
+# ─── 13. public/images/.gitkeep ──────────────────────────────────────
 
 touch public/images/.gitkeep
 success "public/images/ directory"
@@ -517,7 +608,7 @@ if [ "$QUIET" != true ]; then
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     echo -e "  ${BLUE}pnpm dev${NC}             Start dev server"
-    echo -e "  ${BLUE}Open in Obsidian${NC}     This folder → install Dataview & Obsidian Git"
-    echo -e "  ${BLUE}📊 Dashboard.md${NC}      Manage posts"
+    echo -e "  ${BLUE}Open in Obsidian${NC}     This folder → Make.md Navigator"
+    echo -e "  ${BLUE}dashboard.md${NC}         Click to open Dashboard"
     echo ""
 fi

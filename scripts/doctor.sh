@@ -77,11 +77,11 @@ echo ""
 echo -e "${BOLD}Content${NC}"
 echo ""
 
-if [ -d "blog/📝 posts" ]; then
-    POST_COUNT=$(find "blog/📝 posts" -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+if [ -d "posts" ]; then
+    POST_COUNT=$(find "posts" -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
     success "Posts: $POST_COUNT post(s)"
 else
-    fail "blog/📝 posts/ not found — run 'pnpm blog:setup'"
+    fail "posts/ not found — run 'pnpm blog:setup'"
     ERRORS=$((ERRORS + 1))
 fi
 
