@@ -30,7 +30,10 @@ success "pnpm v$(pnpm -v)"
 
 if [ ! -d node_modules ] || [ package.json -nt node_modules ]; then
     echo -e "\n  ${BLUE}Installing dependencies...${NC}"
-    pnpm install --silent 2>/dev/null
+    if ! pnpm install --silent; then
+        fail "Failed to install dependencies — check network and try again"
+        exit 1
+    fi
 fi
 success "Dependencies ready"
 
@@ -66,7 +69,7 @@ if [ -n "$GITHUB_REPO" ] && command -v gh &> /dev/null && gh auth status &> /dev
 
     if [ $? -eq 0 ] && [ -n "$GRAPHQL" ]; then
         HAS_DISC=$(echo "$GRAPHQL" | grep -o '"hasDiscussionsEnabled":[a-z]*' | cut -d':' -f2)
-        if [ "$HAS_DISC" = "false" ]; then
+        if [ "$HAS_DISC" = "false" ] && [ "$CI" != "true" ] && confirm "Enable GitHub Discussions for Giscus comments?"; then
             gh repo edit "$GITHUB_REPO" --enable-discussions 2>/dev/null
             GRAPHQL=$(gh api graphql -f query='
                 query($o: String!, $r: String!) {
@@ -91,6 +94,11 @@ if ns: print(ns[0]['id'])
 fi
 
 # ─── 4. Language & Generate blog.config.ts ────────────────────────────
+
+# Copy from example if config doesn't exist yet
+if [ ! -f src/config/blog.config.ts ] && [ -f src/config/blog.config.example.ts ]; then
+    cp src/config/blog.config.example.ts src/config/blog.config.ts
+fi
 
 if [ ! -f src/config/blog.config.ts ]; then
     echo ""

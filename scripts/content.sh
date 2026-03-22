@@ -273,7 +273,7 @@ cat > ".obsidian/plugins/make-md/data.json" << 'MAKEMD_EOF'
     "Tags",
     "eslint.config.mjs",
     "next-env.d.ts",
-    "next-sitemap.config.js",
+
     "next.config.mjs",
     "postcss.config.mjs",
     "prettier.config.mjs",
