@@ -51,6 +51,7 @@ mkdir -p "public/images"
 mkdir -p ".obsidian/plugins/dataview"
 mkdir -p ".obsidian/plugins/obsidian-git"
 mkdir -p ".obsidian/plugins/make-md"
+mkdir -p ".obsidian/plugins/templater-obsidian"
 
 success "Directory structure created"
 
@@ -118,7 +119,8 @@ cat > ".obsidian/community-plugins.json" << 'OBSIDIAN_EOF'
 [
   "dataview",
   "obsidian-git",
-  "make-md"
+  "make-md",
+  "templater-obsidian"
 ]
 OBSIDIAN_EOF
 
@@ -357,20 +359,62 @@ cat > ".obsidian/plugins/make-md/data.json" << 'MAKEMD_EOF'
   "overrideNativeMenu": false,
   "onboardingCompleted": true,
   "contextCreateUseModal": false,
-  "homepagePath": "",
+  "homepagePath": "dashboard.md",
   "mobileMakeHeader": false
 }
 MAKEMD_EOF
 
 success "Make.md plugin (Notion-like: Navigator, Flow, folder notes)"
 
-# ─── 10. Blog Post Template ──────────────────────────────────────────
+# ─── 10. Templater Plugin ────────────────────────────────────────────
+# Auto-apply blog-post template when creating new notes in posts/
+
+cat > ".obsidian/plugins/templater-obsidian/manifest.json" << 'TEMPLATER_EOF'
+{
+  "id": "templater-obsidian",
+  "name": "Templater",
+  "version": "2.18.1",
+  "minAppVersion": "1.5.0",
+  "description": "Create and use templates",
+  "author": "SilentVoid",
+  "authorUrl": "https://github.com/SilentVoid13",
+  "helpUrl": "https://silentvoid13.github.io/Templater/",
+  "isDesktopOnly": false
+}
+TEMPLATER_EOF
+
+cat > ".obsidian/plugins/templater-obsidian/data.json" << 'TEMPLATER_EOF'
+{
+  "command_timeout": 5,
+  "templates_folder": "posts/templates",
+  "templates_pairs": [],
+  "trigger_on_file_creation": true,
+  "auto_jump_to_cursor": true,
+  "enable_system_commands": false,
+  "shell_path": "",
+  "user_scripts_folder": "",
+  "enable_folder_templates": true,
+  "folder_templates": [
+    {
+      "folder": "posts",
+      "template": "posts/templates/blog-post.md"
+    }
+  ],
+  "syntax_highlighting": true,
+  "syntax_triggering": true,
+  "enabled_templates_hotkey_file_creation": [],
+  "context_menu": true
+}
+TEMPLATER_EOF
+
+success "Templater plugin (auto-apply template in posts/)"
+
+# ─── 11. Blog Post Template (Templater syntax) ──────────────────────────────────────────
 
 cat > "$POSTS_DIR/templates/blog-post.md" << 'TEMPLATE_EOF'
 ---
-title: "{{title}}"
-date: {{date}}
-slug:
+date: <% tp.date.now("YYYY-MM-DD") %>
+slug:  # optional — auto-generated from filename
 published: false
 thumbnail:
 tags: []
@@ -380,37 +424,43 @@ TEMPLATE_EOF
 
 success "Blog post template"
 
-# ─── 11. Sample Post ─────────────────────────────────────────────────
+# ─── 12. Sample Post ─────────────────────────────────────────────────
 
-if [ ! -f "$POSTS_DIR/hello-world.md" ]; then
+if [ ! -f "$POSTS_DIR/Hello Blog.md" ]; then
     if [ "$LOCALE" = "ko" ]; then
-        cat > "$POSTS_DIR/hello-world.md" << SAMPLE_EOF
+        cat > "$POSTS_DIR/Hello Blog.md" << SAMPLE_EOF
 ---
-title: "Hello World"
 date: $TODAY
-slug: hello-world
-published: true
-thumbnail:
-tags: [blog, obsidian]
+published: false
+tags: [blog]
 ---
-
-# Hello World
 
 Obsidian 블로그 키트에 오신 것을 환영합니다!
 
-## 시작하기
+## 글 작성 방법
 
-이 블로그는 **Obsidian**에서 작성한 마크다운 파일을 Next.js가 빌드 시 읽어 정적 페이지로 생성합니다.
+1. \`Ctrl/Cmd+N\`으로 새 노트 생성 (템플릿 자동 적용)
+2. frontmatter의 \`published\` 토글 켜기
+3. \`Ctrl+P\` → **Obsidian Git: Push** (또는 터미널에서 \`git push\`)
+4. Vercel이 자동으로 빌드 & 배포
 
-### 글 작성 방법
+## Frontmatter
 
-1. Obsidian에서 \`Ctrl/Cmd+N\`으로 새 노트 생성
-2. \`Ctrl/Cmd+T\`로 **blog-post** 템플릿 적용
-3. \`posts/\` 폴더에 저장
-4. frontmatter의 \`published\` 토글 켜기
-5. GitHub에 Push하면 사이트가 자동으로 빌드됩니다
+| 필드        | 타입    | 필수 | 설명                              |
+| ----------- | ------- | ---- | --------------------------------- |
+| \`date\`      | string  | Yes  | 발행일 (YYYY-MM-DD)              |
+| \`published\` | boolean | Yes  | 발행 토글                         |
+| \`tags\`      | list    | No   | 태그 목록                         |
+| \`slug\`      | string  | No   | URL 경로 (비어있으면 파일명 사용) |
+| \`thumbnail\` | string  | No   | 썸네일 이미지 경로                |
 
-### 지원되는 마크다운 기능
+> [!tip] 자동 처리
+> - \`title\`은 파일명에서 자동 사용
+> - \`description\` meta tag는 본문 첫 160자에서 자동 추출
+> - \`slug\` 비우면 파일명에서 자동 생성
+> - 이미지 붙여넣기 시 \`public/images/\`에 자동 저장
+
+## 지원되는 마크다운
 
 **굵게**, *기울임*, ~~취소선~~, \`인라인 코드\`
 
@@ -422,13 +472,13 @@ function greet(name: string): string {
 }
 \`\`\`
 
-| 기능 | 지원 |
-|------|------|
-| 제목 (h1-h6) | O |
-| 코드 블록 (Shiki) | O |
-| 테이블 (GFM) | O |
-| 이미지 | O |
-| 수식 (KaTeX) | O |
+| 기능              | 지원 |
+| ----------------- | ---- |
+| 제목 (h1-h6)      | O    |
+| 코드 블록 (Shiki) | O    |
+| 테이블 (GFM)      | O    |
+| 이미지            | O    |
+| 수식 (KaTeX)      | O    |
 
 ### 수식
 
@@ -445,33 +495,39 @@ function greet(name: string): string {
 이 샘플 포스트를 수정하거나 삭제하고, 자신만의 글을 작성해보세요!
 SAMPLE_EOF
     else
-        cat > "$POSTS_DIR/hello-world.md" << SAMPLE_EOF
+        cat > "$POSTS_DIR/Hello Blog.md" << SAMPLE_EOF
 ---
-title: "Hello World"
 date: $TODAY
-slug: hello-world
-published: true
-thumbnail:
-tags: [blog, obsidian]
+published: false
+tags: [blog]
 ---
-
-# Hello World
 
 Welcome to the Obsidian Blog Kit!
 
-## Getting Started
+## How to Write
 
-This blog turns **markdown files** written in Obsidian into static pages built by Next.js.
+1. Create a new note (\`Ctrl/Cmd+N\`) — template is auto-applied
+2. Toggle \`published\` on in frontmatter
+3. \`Ctrl+P\` → **Obsidian Git: Push** (or \`git push\` from terminal)
+4. Vercel auto-builds & deploys
 
-### How to Write a Post
+## Frontmatter
 
-1. Create a new note in Obsidian (\`Ctrl/Cmd+N\`)
-2. Insert the **blog-post** template (\`Ctrl/Cmd+T\`)
-3. Save to the \`posts/\` folder
-4. Toggle \`published\` on in frontmatter
-5. Push to GitHub — your site rebuilds automatically
+| Field       | Type    | Required | Description                             |
+| ----------- | ------- | -------- | --------------------------------------- |
+| \`date\`      | string  | Yes      | Publication date (YYYY-MM-DD)           |
+| \`published\` | boolean | Yes      | Publish toggle                          |
+| \`tags\`      | list    | No       | Tag list                                |
+| \`slug\`      | string  | No       | URL path (auto-generated from filename) |
+| \`thumbnail\` | string  | No       | Thumbnail image path                    |
 
-### Supported Markdown Features
+> [!tip] Auto-handled
+> - \`title\` is auto-derived from the filename
+> - \`description\` meta tag is auto-extracted from the first 160 characters
+> - \`slug\` is auto-generated from filename if empty
+> - Pasted images are auto-saved to \`public/images/\`
+
+## Supported Markdown
 
 **Bold**, *italic*, ~~strikethrough~~, \`inline code\`
 
@@ -483,13 +539,13 @@ function greet(name: string): string {
 }
 \`\`\`
 
-| Feature | Supported |
-|---------|-----------|
-| Headings (h1-h6) | Yes |
-| Code blocks (Shiki) | Yes |
-| Tables (GFM) | Yes |
-| Images | Yes |
-| Math (KaTeX) | Yes |
+| Feature            | Supported |
+| ------------------ | --------- |
+| Headings (h1-h6)   | Yes       |
+| Code blocks (Shiki) | Yes      |
+| Tables (GFM)       | Yes       |
+| Images             | Yes       |
+| Math (KaTeX)       | Yes       |
 
 ### Math
 
@@ -506,95 +562,43 @@ Block math:
 Edit or delete this sample post, and start writing your own!
 SAMPLE_EOF
     fi
-    success "Sample post (posts/hello-world.md)"
+    success "Sample post (posts/Hello Blog.md)"
 else
     success "Sample post already exists (skipped)"
 fi
 
-# ─── 12. Dashboard (project root) ────────────────────────────────────
+# ─── 13. Dashboard (project root) ────────────────────────────────────
 # Dashboard — opens on Obsidian launch via homepagePath
 
-if [ "$LOCALE" = "ko" ]; then
-    DASH_ALL="전체 글 목록"
-    DASH_DRAFT="작성 중"
-    DASH_STATS="통계"
-    DASH_COUNT="length(rows) + \"개 글\""
-    DASH_QUICK="빠른 시작"
-    DASH_QUICK_1="새 노트 생성 → \`Ctrl/Cmd+N\`"
-    DASH_QUICK_2="템플릿 적용 → \`Ctrl/Cmd+T\` → **blog-post**"
-    DASH_QUICK_3="\`published\` 토글 켜기 → Git Push"
-else
-    DASH_ALL="All Posts"
-    DASH_DRAFT="Drafts"
-    DASH_STATS="Stats"
-    DASH_COUNT="length(rows) + \" post(s)\""
-    DASH_QUICK="Quick Start"
-    DASH_QUICK_1="Create new note → \`Ctrl/Cmd+N\`"
-    DASH_QUICK_2="Apply template → \`Ctrl/Cmd+T\` → **blog-post**"
-    DASH_QUICK_3="Toggle \`published\` on → Git Push"
-fi
-
-cat > "dashboard.md" << DASHBOARD_EOF
+cat > "dashboard.md" << 'DASHBOARD_EOF'
 ---
-sticker: lucide//layout-dashboard
+sticker: emoji//1f4cb
 ---
 
-## $DASH_QUICK
+> [!note]- Write & Deploy
+> ### Write
+> 1. \`Ctrl/Cmd+N\` to create a new post (template auto-applied)
+> 2. Toggle \`published\` checkbox when ready
+>
+> ### Deploy
+> - **From Obsidian** — \`Ctrl+P\` → \`Obsidian Git: Commit\` → \`Obsidian Git: Push\`
+> - **From terminal** — \`git add . && git commit -m "publish" && git push\`
+> - Vercel rebuilds automatically on every push to \`main\`
 
-- $DASH_QUICK_1
-- $DASH_QUICK_2
-- $DASH_QUICK_3
-
-## $DASH_ALL
-
-\`\`\`dataview
+```dataview
 TABLE WITHOUT ID
   file.link AS "title",
   dateformat(date, "yyyy-MM-dd") AS "date",
-  choice(published, "🟢 published", "🟡 draft") AS "status",
+  choice(published, "🟢", "🟡") AS "status",
   join(tags, ", ") AS "tags"
 FROM "posts" AND -"posts/templates"
 SORT date DESC
-\`\`\`
-
-## $DASH_DRAFT
-
-\`\`\`dataview
-TABLE WITHOUT ID
-  file.link AS "title",
-  dateformat(date, "yyyy-MM-dd") AS "date",
-  join(tags, ", ") AS "tags"
-FROM "posts" AND -"posts/templates"
-WHERE !published
-SORT date DESC
-\`\`\`
-
-## $DASH_STATS
-
-\`\`\`dataview
-LIST WITHOUT ID $DASH_COUNT
-FROM "posts" AND -"posts/templates"
-GROUP BY true
-\`\`\`
-
-\`\`\`dataview
-LIST WITHOUT ID choice(published, "published", "draft") + ": " + length(rows)
-FROM "posts" AND -"posts/templates"
-GROUP BY published
-\`\`\`
-
-\`\`\`dataview
-LIST WITHOUT ID tag + " (" + length(rows) + ")"
-FROM "posts" AND -"posts/templates"
-FLATTEN tags AS tag
-GROUP BY tag
-SORT length(rows) DESC
-\`\`\`
+```
 DASHBOARD_EOF
 
 success "Dashboard (dashboard.md)"
 
-# ─── 13. public/images/.gitkeep ──────────────────────────────────────
+# ─── 14. public/images/.gitkeep ──────────────────────────────────────
 
 touch public/images/.gitkeep
 success "public/images/ directory"
