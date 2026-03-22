@@ -57,10 +57,6 @@ next-env.d.ts
 # Obsidian trash
 .trash/
 
-# Obsidian plugin binaries (auto-downloaded)
-.obsidian/plugins/*/main.js
-.obsidian/plugins/*/styles.css
-
 # Make.md vault artifact
 Vault.md
 

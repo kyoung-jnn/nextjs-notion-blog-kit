@@ -18,7 +18,7 @@ const STATUS = {
 };
 
 export default defineConfig([
-  { ignores: ['node_modules', '.next'] },
+  { ignores: ['node_modules', '.next', '.obsidian'] },
   js.configs.recommended,
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
