@@ -80,11 +80,13 @@ function formatDate(date: string | Date | undefined): string {
   return date.toString();
 }
 
-function parseFrontmatter(data: PostFrontmatter, content: string, fileSlug: string): PostMeta {
+function parseFrontmatter(data: PostFrontmatter, content: string, fileName: string): PostMeta {
+  const fileTitle = path.basename(fileName, '.md');
+  const fileSlug = slugify(fileTitle) || fileTitle;
   return {
-    title: data.title || fileSlug,
+    title: data.title || fileTitle,
     date: formatDate(data.date),
-    slug: data.slug || slugify(data.title || '') || fileSlug,
+    slug: data.slug || fileSlug,
     published: data.published === true,
     thumbnail: data.thumbnail,
     description: data.description || extractDescription(content),
@@ -99,8 +101,7 @@ const _getAllPosts = async (): Promise<PostMeta[]> => {
     const filePath = path.join(POSTS_DIR, fileName);
     const raw = fs.readFileSync(filePath, 'utf-8');
     const { data, content } = matter(raw);
-    const fileSlug = path.basename(fileName, '.md');
-    return parseFrontmatter(data as PostFrontmatter, content, fileSlug);
+    return parseFrontmatter(data as PostFrontmatter, content, fileName);
   });
 
   const filtered = posts.filter((post) =>
@@ -119,8 +120,7 @@ const _getPostBySlug = async (slug: string): Promise<Post | null> => {
     const filePath = path.join(POSTS_DIR, fileName);
     const raw = fs.readFileSync(filePath, 'utf-8');
     const { data, content } = matter(raw);
-    const fileSlug = path.basename(fileName, '.md');
-    const meta = parseFrontmatter(data as PostFrontmatter, content, fileSlug);
+    const meta = parseFrontmatter(data as PostFrontmatter, content, fileName);
 
     if (meta.slug !== slug) continue;
 

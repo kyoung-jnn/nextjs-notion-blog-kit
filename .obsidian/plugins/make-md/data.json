@@ -39,11 +39,7 @@
   "deleteFileOption": "system-trash",
   "expandedSpaces": [
     "posts",
-    "//posts/templates",
-    "\n",
     "/",
-    "home",
-    "//home",
     "//posts"
   ],
   "expandFolderOnClick": true,
@@ -116,7 +112,7 @@
   "enableDefaultSpaces": true,
   "showSpacePinIcon": true,
   "experimental": false,
-  "systemName": "Blog",
+  "systemName": "blog",
   "defaultSpaceTemplate": "",
   "selectedKit": "default",
   "actionMaxSteps": 100,
@@ -158,6 +154,6 @@
   "overrideNativeMenu": false,
   "onboardingCompleted": true,
   "contextCreateUseModal": false,
-  "homepagePath": "",
+  "homepagePath": "dashboard.md",
   "mobileMakeHeader": false
 }
