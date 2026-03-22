@@ -15,12 +15,10 @@ import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 
-import { Post, PostMeta, Status } from '@/types/post';
+import { Post, PostMeta } from '@/types/post';
 import { slugify } from '@/utils';
 
-const POSTS_DIR = path.join(process.cwd(), 'blog', '📝 posts');
-
-const VALID_STATUSES: Status[] = ['publish', 'draft'];
+const POSTS_DIR = path.join(process.cwd(), 'posts');
 
 function transformImagePaths(content: string): string {
   return content.replace(
@@ -70,7 +68,7 @@ interface PostFrontmatter {
   title?: string;
   date?: string | Date;
   slug?: string;
-  status?: string;
+  published?: boolean;
   thumbnail?: string;
   description?: string;
   tags?: string[];
@@ -83,13 +81,11 @@ function formatDate(date: string | Date | undefined): string {
 }
 
 function parseFrontmatter(data: PostFrontmatter, content: string, fileSlug: string): PostMeta {
-  const status = VALID_STATUSES.includes(data.status as Status) ? (data.status as Status) : 'draft';
-
   return {
     title: data.title || fileSlug,
     date: formatDate(data.date),
     slug: data.slug || slugify(data.title || '') || fileSlug,
-    status,
+    published: data.published === true,
     thumbnail: data.thumbnail,
     description: data.description || extractDescription(content),
     tags: data.tags || [],
@@ -108,7 +104,7 @@ const _getAllPosts = async (): Promise<PostMeta[]> => {
   });
 
   const filtered = posts.filter((post) =>
-    process.env.NODE_ENV === 'production' ? post.status === 'publish' : true,
+    process.env.NODE_ENV === 'production' ? post.published : true,
   );
 
   return filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

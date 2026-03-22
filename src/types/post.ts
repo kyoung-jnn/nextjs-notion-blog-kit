@@ -1,10 +1,8 @@
-export type Status = 'publish' | 'draft';
-
 export interface PostMeta {
   title: string;
   date: string;
   slug: string;
-  status: Status;
+  published: boolean;
   thumbnail?: string;
   description: string;
   tags: string[];
