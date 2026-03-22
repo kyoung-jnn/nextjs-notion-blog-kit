@@ -69,6 +69,11 @@ set_env_var() {
 # Prompt with current/default value shown. Returns default on empty input.
 prompt_with_default() {
     local prompt="$1" default="$2" result
+    # Non-interactive: use default
+    if [ "$CI" = "true" ] || [ ! -t 0 ]; then
+        echo "$default"
+        return
+    fi
     if [ -n "$default" ]; then
         read -p "  $prompt [$default]: " result
         echo "${result:-$default}"
@@ -81,6 +86,10 @@ prompt_with_default() {
 # y/n confirmation. Returns 0 for yes, 1 for no.
 confirm() {
     local prompt="$1" reply
+    # Non-interactive: default to no
+    if [ "$CI" = "true" ] || [ ! -t 0 ]; then
+        return 1
+    fi
     read -p "  $prompt (y/n): " reply
     [[ "$reply" =~ ^[Yy]$ ]]
 }
@@ -92,6 +101,12 @@ select_option() {
     local options=("$@")
     local count=${#options[@]}
     local selected=0
+
+    # Non-interactive mode: use first option as default
+    if [ "$CI" = "true" ] || [ ! -t 0 ]; then
+        SELECT_RESULT="${options[0]}"
+        return
+    fi
 
     # Hide cursor
     tput civis 2>/dev/null
