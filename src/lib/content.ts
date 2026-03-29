@@ -3,6 +3,7 @@ import { cache } from 'react';
 import fs from 'fs';
 import path from 'path';
 
+import { transformerCopyButton } from '@rehype-pretty/transformers';
 import matter from 'gray-matter';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
@@ -95,6 +96,7 @@ const sanitizeSchema = {
     'annotation',
     'figure',
     'figcaption',
+    'button',
   ],
   attributes: {
     ...defaultSchema.attributes,
@@ -117,6 +119,7 @@ const sanitizeSchema = {
     ],
     figure: ['className', 'dataRehypePrettyCodeFigure'],
     figcaption: ['className', 'dataRehypePrettyCodeTitle'],
+    button: [...(defaultSchema.attributes?.['button'] || []), 'className', 'data', 'ariaLabel'],
     a: [...(defaultSchema.attributes?.['a'] || [])],
     img: [...(defaultSchema.attributes?.['img'] || []), 'width', 'height'],
     math: ['xmlns', 'display'],
@@ -133,7 +136,10 @@ const processor = unified()
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeRaw)
   .use(rehypeKatex)
-  .use(rehypePrettyCode, { theme: 'github-dark' })
+  .use(rehypePrettyCode, {
+    theme: 'kanagawa-dragon',
+    transformers: [transformerCopyButton({ visibility: 'hover', feedbackDuration: 2000 })],
+  })
   .use(rehypeSlug)
   .use(rehypeSanitize, sanitizeSchema)
   .use(rehypeStringify);
