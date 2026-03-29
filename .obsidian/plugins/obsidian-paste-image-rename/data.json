@@ -1,0 +1,10 @@
+{
+  "imageNamePattern": "{{fileName}}",
+  "dupNumberAtStart": false,
+  "dupNumberDelimiter": "-",
+  "dupNumberAlways": true,
+  "autoRename": true,
+  "handleAllAttachments": true,
+  "excludeExtensionPattern": "md|ts|tsx|js|jsx|json|css",
+  "disableRenameNotice": false
+}

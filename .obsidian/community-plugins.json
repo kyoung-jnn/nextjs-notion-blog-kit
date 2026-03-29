@@ -2,5 +2,6 @@
   "dataview",
   "obsidian-git",
   "make-md",
-  "templater-obsidian"
+  "templater-obsidian",
+  "obsidian-paste-image-rename"
 ]

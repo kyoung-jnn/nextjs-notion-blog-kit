@@ -1,0 +1,15 @@
+/* Dataview table — shrink title column */
+.dataview.table-view-table th:first-child,
+.dataview.table-view-table td:first-child {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dataview table — date column min-width */
+.dataview.table-view-table th:nth-child(2),
+.dataview.table-view-table td:nth-child(2) {
+  min-width: 100px;
+  white-space: nowrap;
+}
