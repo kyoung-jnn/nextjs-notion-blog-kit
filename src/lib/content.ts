@@ -6,6 +6,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
+import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
@@ -20,11 +21,36 @@ import { slugify } from '@/utils';
 
 const POSTS_DIR = path.join(process.cwd(), 'posts');
 
+const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp|svg|avif|bmp|ico)$/i;
+
 function transformImagePaths(content: string): string {
-  return content.replace(
+  // ../public/images/foo.jpg → /images/foo.jpg
+  content = content.replace(
     /(?:\.\.\/)+public\/images\/([^\s"')]+)/g,
     (_, filename) => `/images/${path.basename(filename)}`,
   );
+
+  // ![alt](filename.ext) — bare filename pasted by Obsidian → /images/filename.ext
+  content = content.replace(/!\[([^\]]*)\]\(([^/][^\s"')]+)\)/g, (match, alt, src) => {
+    if (!IMAGE_EXTENSIONS.test(src)) return match;
+    return `![${alt}](/images/${src})`;
+  });
+
+  // Obsidian image resize: ![alt|600](path) or ![alt|600x400](path) → <img> with width/height
+  content = content.replace(/!\[([^|\]]*)\|(\d+(?:x\d+)?)\]\(([^)]+)\)/g, (_, alt, size, src) => {
+    const [width, height] = size.split('x');
+    const heightAttr = height ? ` height="${height}"` : '';
+    return `<img src="${src}" alt="${alt}" width="${width}"${heightAttr} />`;
+  });
+
+  // Obsidian image resize: ![600](path) — alt is just a number
+  content = content.replace(/!\[(\d+(?:x\d+)?)\]\(([^)]+)\)/g, (_, size, src) => {
+    const [width, height] = size.split('x');
+    const heightAttr = height ? ` height="${height}"` : '';
+    return `<img src="${src}" alt="" width="${width}"${heightAttr} />`;
+  });
+
+  return content;
 }
 
 function extractDescription(content: string, maxLength = 160): string {
@@ -92,6 +118,7 @@ const sanitizeSchema = {
     figure: ['className', 'dataRehypePrettyCodeFigure'],
     figcaption: ['className', 'dataRehypePrettyCodeTitle'],
     a: [...(defaultSchema.attributes?.['a'] || [])],
+    img: [...(defaultSchema.attributes?.['img'] || []), 'width', 'height'],
     math: ['xmlns', 'display'],
     annotation: ['encoding'],
   },
@@ -104,6 +131,7 @@ const processor = unified()
   .use(remarkMath)
   // allowDangerousHtml: raw HTML in markdown is permitted here; rehype-sanitize below strips unsafe content
   .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeRaw)
   .use(rehypeKatex)
   .use(rehypePrettyCode, { theme: 'github-dark' })
   .use(rehypeSlug)
