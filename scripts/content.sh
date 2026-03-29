@@ -457,6 +457,10 @@ Obsidian 블로그 키트에 오신 것을 환영합니다!
 > - \`slug\` 비우면 파일명에서 자동 생성
 > - 이미지 붙여넣기 시 \`public/images/\`에 자동 저장
 
+## 이미지 예시
+
+![Sample landscape](../public/images/sample.jpg)
+
 ## 지원되는 마크다운
 
 **굵게**, *기울임*, ~~취소선~~, \`인라인 코드\`
@@ -521,6 +525,10 @@ Welcome to the Obsidian Blog Kit!
 > - \`description\` meta tag is auto-extracted from the first 160 characters
 > - \`slug\` is auto-generated from filename if empty
 > - Pasted images are auto-saved to \`public/images/\`
+
+## Image Example
+
+![Sample landscape](../public/images/sample.jpg)
 
 ## Supported Markdown
 

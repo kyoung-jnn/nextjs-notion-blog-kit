@@ -5,7 +5,6 @@ published: false
 thumbnail:
 ---
 Welcome to the Obsidian Blog Kit!
-
 ## How to Write
 
 1. Create a new note (`Ctrl/Cmd+N`) — template is auto-applied
@@ -22,11 +21,15 @@ Welcome to the Obsidian Blog Kit!
 | `slug`      | string  | No       | URL path (auto-generated from filename) |
 | `thumbnail` | string  | No       | Thumbnail image path                    |
 
-> [!tip] Auto-handled
+> Auto-handled
 > - `title` is derived from the filename
 > - `description` meta tag is auto-extracted from the first 160 characters
 > - `slug` is auto-generated from filename if empty
 > - Pasted images are auto-saved to `public/images/`
+
+## Image Example
+
+![Sample landscape](Hello%20Blog-1.jpg)
 
 ## Supported Markdown
 
