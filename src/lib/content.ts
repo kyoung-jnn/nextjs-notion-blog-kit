@@ -4,7 +4,6 @@ import fs from 'fs';
 import path from 'path';
 
 import matter from 'gray-matter';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
@@ -92,7 +91,7 @@ const sanitizeSchema = {
     ],
     figure: ['className', 'dataRehypePrettyCodeFigure'],
     figcaption: ['className', 'dataRehypePrettyCodeTitle'],
-    a: [...(defaultSchema.attributes?.['a'] || []), 'className', 'ariaHidden', 'tabIndex'],
+    a: [...(defaultSchema.attributes?.['a'] || [])],
     math: ['xmlns', 'display'],
     annotation: ['encoding'],
   },
@@ -108,7 +107,6 @@ const processor = unified()
   .use(rehypeKatex)
   .use(rehypePrettyCode, { theme: 'github-dark' })
   .use(rehypeSlug)
-  .use(rehypeAutolinkHeadings, { behavior: 'wrap' })
   .use(rehypeSanitize, sanitizeSchema)
   .use(rehypeStringify);
 
@@ -124,7 +122,6 @@ interface PostFrontmatter {
   published?: boolean;
   thumbnail?: string;
   description?: string;
-  tags?: string[];
 }
 
 function formatDate(date: string | Date | undefined): string {
@@ -143,7 +140,6 @@ function parseFrontmatter(data: PostFrontmatter, content: string, fileName: stri
     published: data.published === true,
     thumbnail: data.thumbnail,
     description: data.description || extractDescription(content),
-    tags: data.tags || [],
   };
 }
 

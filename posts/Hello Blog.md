@@ -3,7 +3,6 @@ date: 2026-03-22
 slug:
 published: false
 thumbnail:
-tags: [blog]
 ---
 Welcome to the Obsidian Blog Kit!
 
@@ -20,7 +19,6 @@ Welcome to the Obsidian Blog Kit!
 | ----------- | ------- | -------- | --------------------------------------- |
 | `date`      | string  | Yes      | Publication date (YYYY-MM-DD)           |
 | `published` | boolean | Yes      | Publish toggle                          |
-| `tags`      | list    | No       | Tag list                                |
 | `slug`      | string  | No       | URL path (auto-generated from filename) |
 | `thumbnail` | string  | No       | Thumbnail image path                    |
 

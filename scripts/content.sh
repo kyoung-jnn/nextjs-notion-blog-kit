@@ -417,7 +417,6 @@ date: <% tp.date.now("YYYY-MM-DD") %>
 slug:  # optional — auto-generated from filename
 published: false
 thumbnail:
-tags: []
 ---
 
 TEMPLATE_EOF
@@ -432,7 +431,6 @@ if [ ! -f "$POSTS_DIR/Hello Blog.md" ]; then
 ---
 date: $TODAY
 published: false
-tags: [blog]
 ---
 
 Obsidian 블로그 키트에 오신 것을 환영합니다!
@@ -450,7 +448,6 @@ Obsidian 블로그 키트에 오신 것을 환영합니다!
 | ----------- | ------- | ---- | --------------------------------- |
 | \`date\`      | string  | Yes  | 발행일 (YYYY-MM-DD)              |
 | \`published\` | boolean | Yes  | 발행 토글                         |
-| \`tags\`      | list    | No   | 태그 목록                         |
 | \`slug\`      | string  | No   | URL 경로 (비어있으면 파일명 사용) |
 | \`thumbnail\` | string  | No   | 썸네일 이미지 경로                |
 
@@ -499,7 +496,6 @@ SAMPLE_EOF
 ---
 date: $TODAY
 published: false
-tags: [blog]
 ---
 
 Welcome to the Obsidian Blog Kit!
@@ -517,7 +513,6 @@ Welcome to the Obsidian Blog Kit!
 | ----------- | ------- | -------- | --------------------------------------- |
 | \`date\`      | string  | Yes      | Publication date (YYYY-MM-DD)           |
 | \`published\` | boolean | Yes      | Publish toggle                          |
-| \`tags\`      | list    | No       | Tag list                                |
 | \`slug\`      | string  | No       | URL path (auto-generated from filename) |
 | \`thumbnail\` | string  | No       | Thumbnail image path                    |
 
@@ -589,8 +584,7 @@ sticker: emoji//1f4cb
 TABLE WITHOUT ID
   file.link AS "title",
   dateformat(date, "yyyy-MM-dd") AS "date",
-  choice(published, "🟢", "🟡") AS "status",
-  join(tags, ", ") AS "tags"
+  choice(published, "🟢", "🟡") AS "status"
 FROM "posts" AND -"posts/templates"
 SORT date DESC
 ```

@@ -15,8 +15,7 @@ sticker: emoji//1f4cb
 TABLE WITHOUT ID
   file.link AS "title",
   dateformat(date, "yyyy-MM-dd") AS "date",
-  choice(published, "🟢", "🟡") AS "status",
-  join(tags, ", ") AS "tags"
+  choice(published, "🟢", "🟡") AS "status"
 FROM "posts" AND -"posts/templates"
 SORT date DESC
 ```
