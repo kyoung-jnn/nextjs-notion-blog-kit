@@ -173,10 +173,34 @@
 
 /* Image */
 .markdown-render img {
+  display: block;
   max-width: 100%;
   height: auto;
   border-radius: 4px;
-  margin: 16px 0;
+  margin: 16px auto;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.markdown-render img:active {
+  opacity: 1;
+}
+
+.markdown-render a:has(> img) {
+  display: contents;
+  text-decoration: none;
+}
+
+.markdown-render a:has(> img):hover,
+.markdown-render a:has(> img):active {
+  opacity: 1;
+}
+
+/* PhotoSwipe overrides */
+.pswp {
+  --pswp-placeholder-bg: transparent;
 }
 
 /* Horizontal Rule */
