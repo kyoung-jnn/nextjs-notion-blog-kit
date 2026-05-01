@@ -128,20 +128,22 @@ const sanitizeSchema = {
 };
 
 // Processor is stateless — safe to reuse across calls (Shiki initializes once)
+// Sanitize runs right after rehype-raw so user-authored HTML is cleaned,
+// while trusted output from rehype-katex / rehype-pretty-code (including
+// the <style> tag injected by transformerCopyButton) passes through untouched.
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
   .use(remarkMath)
-  // allowDangerousHtml: raw HTML in markdown is permitted here; rehype-sanitize below strips unsafe content
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeRaw)
+  .use(rehypeSanitize, sanitizeSchema)
   .use(rehypeKatex)
   .use(rehypePrettyCode, {
     theme: 'kanagawa-dragon',
     transformers: [transformerCopyButton({ visibility: 'hover', feedbackDuration: 2000 })],
   })
   .use(rehypeSlug)
-  .use(rehypeSanitize, sanitizeSchema)
   .use(rehypeStringify);
 
 function getPostFiles(): string[] {
