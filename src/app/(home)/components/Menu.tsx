@@ -7,7 +7,7 @@ const { contacts } = SITE_CONFIG.author;
 
 function Menu() {
   return (
-    <div className="relative max-w-[640px] px-3 py-9">
+    <div className="relative px-3 py-6">
       <section className="flex animate-[fade-left_0.8s_0.2s_forwards] gap-2.5 opacity-0">
         {contacts.email && (
           <Link href={`mailto:${contacts.email}`}>

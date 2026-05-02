@@ -1,0 +1,304 @@
+/*
+ * Blog Style — mirror the nextjs-obsidian-blog-kit reading appearance inside Obsidian.
+ *
+ * Toggle in Obsidian: Settings → Appearance → CSS snippets → enable "blog-style".
+ *
+ * Notes:
+ *  - Targets `.markdown-rendered` (Reading view). Live Preview uses CodeMirror
+ *    classes that don't accept the same selectors; styles below render best in
+ *    Reading view.
+ *  - Code-block syntax highlighting is left to Obsidian's built-in Prism.
+ *    Token colors will not match Shiki's `github-light/github-dark-dimmed`,
+ *    but spacing/font/radius are aligned.
+ *  - Uses Obsidian theme variables (--text-normal, --background-secondary, etc.)
+ *    so dark/light mode follows the active Obsidian theme.
+ */
+
+.markdown-rendered {
+  font-size: 16px;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* Headings — match blog (no border-bottom) */
+.markdown-rendered h1,
+.markdown-rendered h2,
+.markdown-rendered h3,
+.markdown-rendered h4,
+.markdown-rendered h5,
+.markdown-rendered h6 {
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+.markdown-rendered h1 {
+  font-size: 32px;
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+.markdown-rendered h2 {
+  font-size: 26px;
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+
+.markdown-rendered h3 {
+  font-size: 22px;
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+
+.markdown-rendered h4 {
+  font-size: 18px;
+  margin-top: 14px;
+  margin-bottom: 4px;
+}
+
+/* Paragraph */
+.markdown-rendered p {
+  line-height: 1.8;
+  margin: 16px 0;
+}
+
+/* Link */
+.markdown-rendered a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.4s;
+}
+
+.markdown-rendered a:hover {
+  opacity: 0.7;
+}
+
+/* Bold */
+.markdown-rendered strong,
+.markdown-rendered b {
+  font-weight: 600;
+}
+
+/* Blockquote */
+.markdown-rendered blockquote {
+  font-size: 16px;
+  margin: 16px 0;
+  padding: 8px 16px;
+  border-left: 3px solid var(--background-modifier-border);
+  background-color: var(--background-secondary);
+  border-radius: 0 6px 6px 0;
+  color: var(--text-muted);
+}
+
+.markdown-rendered blockquote p {
+  margin: 4px 0;
+  line-height: 1.7;
+}
+
+.markdown-rendered blockquote > :first-child {
+  margin-top: 0;
+}
+
+.markdown-rendered blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-rendered blockquote ul,
+.markdown-rendered blockquote ol {
+  margin: 4px 0;
+}
+
+.markdown-rendered blockquote li {
+  padding: 2px 0;
+}
+
+/* List */
+.markdown-rendered ul,
+.markdown-rendered ol {
+  padding-inline-start: 1.5rem;
+  margin: 12px 0;
+}
+
+.markdown-rendered ul ul,
+.markdown-rendered ol ol,
+.markdown-rendered ul ol,
+.markdown-rendered ol ul {
+  margin: 4px 0;
+}
+
+.markdown-rendered li {
+  padding: 4px 0;
+  line-height: 1.75;
+}
+
+/* Inline code — monotone */
+.markdown-rendered :not(pre) > code {
+  font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  border-radius: 4px;
+  color: var(--text-normal);
+  background-color: var(--background-secondary);
+  padding: 2px 6px;
+  font-weight: 500;
+}
+
+/* Code block */
+.markdown-rendered pre {
+  border-radius: 8px;
+  padding: 18px 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  letter-spacing: -0.2px;
+  background-color: var(--code-background);
+}
+
+.markdown-rendered pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+/* Table — center align + zebra */
+.markdown-rendered table {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 24px auto;
+  border-collapse: collapse;
+  overflow-x: auto;
+  font-size: 15px;
+}
+
+.markdown-rendered th,
+.markdown-rendered td {
+  padding: 10px 14px;
+  border: 1px solid var(--background-modifier-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown-rendered th {
+  background-color: var(--background-secondary);
+  font-weight: 600;
+}
+
+.markdown-rendered tbody tr:nth-child(even) {
+  background-color: var(--background-secondary-alt);
+}
+
+/* Horizontal rule */
+.markdown-rendered hr {
+  margin: 40px 0;
+  border: none;
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+/* Strikethrough */
+.markdown-rendered del {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* Image */
+.markdown-rendered img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 16px auto;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+ * Live Preview (✏️) — CodeMirror 6 line-based selectors.
+ * Mirrors reading-view sizing so writing/reading look consistent.
+ * Note: line-by-line rendering means margins are not as tight as
+ * reading view; minor visual differences are unavoidable.
+ * ────────────────────────────────────────────────────────────── */
+
+/* Headings */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header {
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1 {
+  font-size: 32px;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 {
+  font-size: 26px;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 {
+  font-size: 22px;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-4 {
+  font-size: 18px;
+}
+
+/* Paragraph line-height (applied to non-special lines) */
+.markdown-source-view.mod-cm6 .cm-line {
+  line-height: 1.8;
+}
+
+/* Blockquote — preserve line border + light bg */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-quote {
+  border-left: 3px solid var(--background-modifier-border);
+  padding-left: 16px;
+  background-color: var(--background-secondary);
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Inline code — monotone */
+.markdown-source-view.mod-cm6 .cm-inline-code {
+  font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  border-radius: 4px;
+  color: var(--text-normal);
+  background-color: var(--background-secondary);
+  padding: 2px 6px;
+  font-weight: 500;
+}
+
+/* Code block lines */
+.markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: -0.2px;
+  background-color: var(--code-background);
+}
+
+.markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding-top: 8px;
+}
+
+.markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding-bottom: 8px;
+}
+
+/* List indent — keep tight */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-list-line {
+  line-height: 1.75;
+}
+
+/* Strong/emphasis match reading view */
+.markdown-source-view.mod-cm6 .cm-strong {
+  font-weight: 600;
+}
+
+/* Link — same as reading view */
+.markdown-source-view.mod-cm6 .cm-link,
+.markdown-source-view.mod-cm6 .cm-url {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

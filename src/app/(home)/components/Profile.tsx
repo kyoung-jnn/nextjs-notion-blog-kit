@@ -2,7 +2,7 @@ import { SITE_CONFIG } from '@/config';
 
 function Profile() {
   return (
-    <section className="grid animate-[fade-up_0.6s_forwards] gap-1 px-3 opacity-0">
+    <section className="grid animate-[fade-up_0.6s_forwards] gap-1 p-3 opacity-0">
       <h1 className="text-gray-12 dark:text-gray-12 text-2xl font-bold">
         {SITE_CONFIG.author.enName} • {SITE_CONFIG.author.localeName}
       </h1>

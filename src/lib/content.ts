@@ -11,6 +11,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
+import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import remarkParse from 'remark-parse';
@@ -134,13 +135,17 @@ const sanitizeSchema = {
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
+  .use(remarkBreaks)
   .use(remarkMath)
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeRaw)
   .use(rehypeSanitize, sanitizeSchema)
   .use(rehypeKatex)
   .use(rehypePrettyCode, {
-    theme: 'kanagawa-dragon',
+    theme: {
+      light: 'github-light',
+      dark: 'github-dark-dimmed',
+    },
     transformers: [transformerCopyButton({ visibility: 'hover', feedbackDuration: 2000 })],
   })
   .use(rehypeSlug)

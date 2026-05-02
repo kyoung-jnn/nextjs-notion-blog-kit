@@ -114,6 +114,10 @@
       background-color 0.3s;
   }
 
+  .dark body {
+    background-color: var(--color-gray-1);
+  }
+
   a {
     color: var(--color-gray-12);
   }

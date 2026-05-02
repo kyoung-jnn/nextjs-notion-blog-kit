@@ -20,7 +20,11 @@ function Comment() {
 
     try {
       const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-      if (data?.giscus?.error) {
+      const errMsg: string | undefined = data?.giscus?.error;
+      // "Discussion not found" is expected when this page has no comments yet;
+      // giscus auto-creates the discussion on first interaction. Treat only other
+      // errors (repo misconfig, network failures) as fatal.
+      if (errMsg && !errMsg.toLowerCase().includes('discussion not found')) {
         setError(true);
       }
     } catch {
@@ -56,7 +60,7 @@ function Comment() {
         term="comments"
         theme={commentTheme}
         inputPosition="bottom"
-        mapping="pathname"
+        mapping="title"
         reactionsEnabled="1"
         emitMetadata="0"
         lang={SITE_CONFIG.locale || 'en'}

@@ -46,11 +46,15 @@ export default async function PostListPage({ params }: { params: Promise<Params>
 
   if (allPosts.length === 0) {
     return (
-      <div className="tablet:grid tablet:grid-cols-[180px_664px_180px] tablet:items-start tablet:justify-center relative mt-[60px] flex flex-col gap-2.5">
+      <div className="desktop:grid desktop:grid-cols-[180px_664px_180px] desktop:items-start desktop:justify-center desktop:max-w-none relative mx-auto mt-[60px] flex w-full max-w-[664px] flex-col gap-2.5">
         <Sidebar />
-        <div className="tablet:col-start-2 tablet:col-end-3">
-          <h1 className="m-0 px-3 text-2xl font-bold">Articles</h1>
-          <ArticleCardList posts={[]} />
+        <div className="desktop:col-start-2 desktop:col-end-3">
+          <h1 className="m-0 animate-[fade-up_0.6s_forwards] p-3 text-2xl font-bold opacity-0">
+            Articles
+          </h1>
+          <div className="animate-[fade-left_0.8s_0.2s_forwards] opacity-0">
+            <ArticleCardList posts={[]} />
+          </div>
         </div>
       </div>
     );
@@ -66,11 +70,15 @@ export default async function PostListPage({ params }: { params: Promise<Params>
   );
 
   return (
-    <div className="tablet:grid tablet:grid-cols-[180px_664px_180px] tablet:items-start tablet:justify-center relative mt-[60px] flex flex-col gap-2.5">
+    <div className="desktop:grid desktop:grid-cols-[180px_664px_180px] desktop:items-start desktop:justify-center desktop:max-w-none desktop:px-0 relative mx-auto mt-[60px] flex w-full max-w-[664px] flex-col gap-2.5">
       <Sidebar />
-      <div className="tablet:col-start-2 tablet:col-end-3">
-        <h1 className="m-0 px-3 text-2xl font-bold">Articles</h1>
-        <ArticleCardList posts={pagePosts} />
+      <div className="desktop:col-start-2 desktop:col-end-3">
+        <h1 className="m-0 animate-[fade-up_0.6s_forwards] p-3 text-2xl font-bold opacity-0">
+          Articles
+        </h1>
+        <div className="animate-[fade-left_0.8s_0.2s_forwards] opacity-0">
+          <ArticleCardList posts={pagePosts} />
+        </div>
       </div>
       <Pagination totalPage={totalPage} currentPage={currentPage} />
     </div>

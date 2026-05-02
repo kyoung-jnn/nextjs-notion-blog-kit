@@ -19,7 +19,9 @@ function Pagination({ totalPage, currentPage }: Props) {
           <IconButton name="ArrowLeft" aria-label="prev page button" />
         </Link>
       ) : (
-        <span />
+        <div className="invisible" aria-hidden="true">
+          <IconButton name="ArrowLeft" tabIndex={-1} />
+        </div>
       )}
       <div className="center" aria-label="current page">
         {currentPage} of {totalPage}
@@ -29,7 +31,9 @@ function Pagination({ totalPage, currentPage }: Props) {
           <IconButton name="ArrowRight" aria-label="next page button" />
         </Link>
       ) : (
-        <span />
+        <div className="invisible" aria-hidden="true">
+          <IconButton name="ArrowRight" tabIndex={-1} />
+        </div>
       )}
     </nav>
   );

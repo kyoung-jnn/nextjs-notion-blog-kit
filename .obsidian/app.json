@@ -4,7 +4,7 @@
   "newFileFolderPath": "posts",
   "useMarkdownLinks": true,
   "showLineCount": true,
-  "strictLineBreaks": true,
+  "strictLineBreaks": false,
   "propertiesInDocument": "visible",
   "livePreview": true
 }

@@ -22,31 +22,37 @@
 .markdown-render h6 {
   font-weight: 600;
   letter-spacing: -0.2px;
-  scroll-margin-top: 46px;
+  scroll-margin-top: 64px;
+}
+
+.markdown-render h1 {
+  font-size: 32px;
+  margin-top: 28px;
+  margin-bottom: 12px;
 }
 
 .markdown-render h2 {
   font-size: 26px;
-  margin-top: 30px;
+  margin-top: 24px;
   margin-bottom: 10px;
 }
 
 .markdown-render h3 {
   font-size: 22px;
-  margin-top: 24px;
+  margin-top: 18px;
   margin-bottom: 6px;
 }
 
 .markdown-render h4 {
   font-size: 18px;
-  margin-top: 18px;
+  margin-top: 14px;
   margin-bottom: 4px;
 }
 
 /* Paragraph */
 .markdown-render p {
   line-height: 1.8;
-  margin: 8px 0;
+  margin: 16px 0;
 }
 
 /* Link */
@@ -70,13 +76,37 @@
 .markdown-render blockquote {
   font-size: 16px;
   margin: 16px 0;
-  padding: 12px 20px;
+  padding: 8px 16px;
   border-left: 3px solid var(--color-gray-8);
-  background-color: transparent;
+  background-color: var(--color-gray-3);
+  border-radius: 0 6px 6px 0;
+  color: var(--color-gray-11);
+}
+
+.dark .markdown-render blockquote {
+  background-color: var(--color-gray-4);
 }
 
 .markdown-render blockquote p {
-  margin: 0;
+  margin: 4px 0;
+  line-height: 1.7;
+}
+
+.markdown-render blockquote > :first-child {
+  margin-top: 0;
+}
+
+.markdown-render blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-render blockquote ul,
+.markdown-render blockquote ol {
+  margin: 4px 0;
+}
+
+.markdown-render blockquote li {
+  padding: 2px 0;
 }
 
 /* List */
@@ -84,12 +114,19 @@
 .markdown-render ol {
   padding-inline-start: 1.5rem;
   font-size: inherit;
-  margin: 8px 0;
+  margin: 12px 0;
+}
+
+.markdown-render ul ul,
+.markdown-render ol ol,
+.markdown-render ul ol,
+.markdown-render ol ul {
+  margin: 4px 0;
 }
 
 .markdown-render li {
   padding: 4px 0;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 .markdown-render ul > li {
@@ -103,25 +140,27 @@
 /* Inline code */
 .markdown-render code:not(pre code) {
   font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.85em;
+  font-size: 0.875em;
   border-radius: 4px;
-  color: rgba(0, 0, 0, 0.8);
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 2px 6px;
+  color: var(--color-gray-12);
+  background-color: var(--color-gray-4);
+  padding: 2px 3px;
+  font-weight: 500;
 }
 
 .dark .markdown-render code:not(pre code) {
-  color: rgba(255, 255, 255, 0.9);
-  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-gray-12);
+  background-color: var(--color-gray-5);
 }
 
 /* Code block (rehype-pretty-code) */
 .markdown-render figure[data-rehype-pretty-code-figure] {
+  position: relative;
   margin: 24px 0;
 }
 
 .markdown-render pre {
-  position: relative;
+  position: static;
   border-radius: 8px;
   overflow-x: auto;
   padding: 18px 20px;
@@ -140,6 +179,25 @@
 
 .markdown-render pre [data-line] {
   padding: 0 4px;
+}
+
+/* Shiki dual theme — light is default, dark overrides under .dark class */
+.markdown-render pre,
+.markdown-render pre span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+.dark .markdown-render pre,
+.dark .markdown-render pre span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
 }
 
 /* Code block title */
@@ -212,20 +270,34 @@
 
 /* Table */
 .markdown-render table {
-  width: auto;
-  margin: 10px 0;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 24px auto;
   border-collapse: collapse;
+  overflow-x: auto;
+  font-size: 15px;
 }
 
 .markdown-render th,
 .markdown-render td {
-  padding: 8px 12px;
+  padding: 10px 14px;
   border: 1px solid var(--color-gray-6);
+  text-align: left;
+  vertical-align: top;
 }
 
 .markdown-render th {
   background-color: var(--color-gray-4);
   font-weight: 600;
+}
+
+.markdown-render tbody tr:nth-child(even) {
+  background-color: var(--color-gray-2);
+}
+
+.dark .markdown-render tbody tr:nth-child(even) {
+  background-color: var(--color-gray-4);
 }
 
 /* Image */

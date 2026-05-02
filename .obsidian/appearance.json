@@ -3,6 +3,7 @@
   "baseFontSize": 16,
   "translucency": true,
   "enabledCssSnippets": [
-    "dashboard"
+    "dashboard",
+    "blog-style"
   ]
 }
