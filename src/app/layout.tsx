@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -24,6 +24,15 @@ export const metadata: Metadata = {
   twitter: METADATA_TWITTER_CONFIG,
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#111111' },
+  ],
+};
+
 function RootLayout({ children }: { children: ReactNode }) {
   const websiteJsonLd = {
     '@context': 'https://schema.org',
@@ -36,7 +45,6 @@ function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang={SITE_CONFIG.locale} suppressHydrationWarning>
       <head>
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
         <link
           rel="stylesheet"

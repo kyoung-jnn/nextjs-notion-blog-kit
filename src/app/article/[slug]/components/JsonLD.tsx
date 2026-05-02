@@ -7,13 +7,15 @@ type Props = {
   image?: string;
   date: string;
   updatedAt: string;
+  tags?: string[];
+  category?: string;
 };
 
 function safeJsonLd(obj: unknown): string {
   return JSON.stringify(obj).replace(/<\/script>/gi, '<\\/script>');
 }
 
-function JsonLD({ slug, title, description, image, date, updatedAt }: Props) {
+function JsonLD({ slug, title, description, image, date, updatedAt, tags, category }: Props) {
   const url = `${SITE_CONFIG.siteUrl}/article/${slug}`;
   const publishedAt = new Date(date).toISOString();
   const modifiedAt = new Date(updatedAt || date).toISOString();
@@ -27,6 +29,8 @@ function JsonLD({ slug, title, description, image, date, updatedAt }: Props) {
     ...(image && { image }),
     datePublished: publishedAt,
     dateModified: modifiedAt,
+    ...(tags && tags.length > 0 && { keywords: tags.join(', ') }),
+    ...(category && { articleSection: category }),
 
     author: [{ '@type': 'Person', name: SITE_CONFIG.author.localeName }],
     publisher: {

@@ -163,6 +163,8 @@ interface PostFrontmatter {
   published?: boolean;
   thumbnail?: string;
   description?: string;
+  tags?: string[];
+  category?: string;
 }
 
 function formatDate(date: string | Date | undefined): string {
@@ -181,6 +183,8 @@ function parseFrontmatter(data: PostFrontmatter, content: string, fileName: stri
     published: data.published === true,
     thumbnail: data.thumbnail,
     description: data.description || extractDescription(content),
+    ...(data.tags && data.tags.length > 0 && { tags: data.tags }),
+    ...(data.category && { category: data.category }),
   };
 }
 
@@ -227,3 +231,19 @@ const _getPostBySlug = async (slug: string): Promise<Post | null> => {
 };
 
 export const getPostBySlug = cache(_getPostBySlug);
+
+const _getAdjacentPosts = async (
+  slug: string,
+): Promise<{ prev: PostMeta | null; next: PostMeta | null }> => {
+  const posts = await getAllPosts();
+  const index = posts.findIndex((p) => p.slug === slug);
+  if (index === -1) return { prev: null, next: null };
+  // posts are sorted by date DESC: index 0 is the newest.
+  // "next" (newer) is at index-1, "prev" (older) is at index+1.
+  return {
+    prev: posts[index + 1] ?? null,
+    next: posts[index - 1] ?? null,
+  };
+};
+
+export const getAdjacentPosts = cache(_getAdjacentPosts);

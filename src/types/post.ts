@@ -5,6 +5,8 @@ export interface PostMeta {
   published: boolean;
   thumbnail?: string;
   description: string;
+  tags?: string[];
+  category?: string;
 }
 
 export interface Post extends PostMeta {

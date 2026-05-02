@@ -3,10 +3,10 @@ import { notFound } from 'next/navigation';
 
 import JsonLD from '@/app/article/[slug]/components/JsonLD';
 import PostLayout from '@/app/article/[slug]/components/PostLayout';
+import PostNavigation from '@/app/article/[slug]/components/PostNavigation';
 import MarkdownRender from '@/components/MarkdownRender';
 import { METADATA_CONFIG, METADATA_TWITTER_CONFIG, OPEN_GRAPH_CONFIG, SITE_CONFIG } from '@/config';
-import { getAllPosts, getPostBySlug } from '@/lib/content';
-
+import { getAdjacentPosts, getAllPosts, getPostBySlug } from '@/lib/content';
 
 type Params = { slug: string };
 
@@ -17,13 +17,15 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
 
   if (!post) return {};
 
-  const { title, date, thumbnail, description } = post;
+  const { title, date, thumbnail, description, tags, category } = post;
   const url = `${SITE_CONFIG.siteUrl}/article/${currentSlug}`;
 
   return {
     ...METADATA_CONFIG,
     title,
     description,
+    ...(tags && tags.length > 0 && { keywords: tags }),
+    ...(category && { category }),
     alternates: { canonical: `/article/${currentSlug}` },
     openGraph: {
       ...OPEN_GRAPH_CONFIG,
@@ -33,7 +35,10 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
       publishedTime: date,
       modifiedTime: date,
       type: 'article',
-      ...(thumbnail && { images: thumbnail }),
+      ...(tags && tags.length > 0 && { tags }),
+      ...(thumbnail && {
+        images: [{ url: thumbnail, width: 1200, height: 630, alt: title }],
+      }),
     },
     twitter: {
       ...METADATA_TWITTER_CONFIG,
@@ -55,7 +60,8 @@ export default async function PostDetailPage({ params }: { params: Promise<Param
 
   if (!post) notFound();
 
-  const { title, date, thumbnail, description, html } = post;
+  const { title, date, thumbnail, description, tags, category, html } = post;
+  const { prev, next } = await getAdjacentPosts(slug);
 
   return (
     <>
@@ -66,9 +72,12 @@ export default async function PostDetailPage({ params }: { params: Promise<Param
         date={date}
         updatedAt={date}
         {...(thumbnail && { image: thumbnail })}
+        {...(tags && tags.length > 0 && { tags })}
+        {...(category && { category })}
       />
       <PostLayout title={title} date={date} thumbnail={thumbnail}>
         <MarkdownRender html={html} />
+        <PostNavigation prev={prev} next={next} />
       </PostLayout>
     </>
   );

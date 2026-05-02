@@ -13,16 +13,29 @@ type Params = { pageNum: string };
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
   const params = await props.params;
   const { pageNum } = params;
+  const page = parseInt(pageNum, 10);
+  const isFirstPage = page === 1;
+
+  const title = isFirstPage ? 'Articles' : `Articles - Page ${page}`;
+  const description = isFirstPage
+    ? `${SITE_CONFIG.author.localeName}의 글 목록`
+    : `${SITE_CONFIG.author.localeName}의 글 목록 (페이지 ${page})`;
 
   return {
     ...METADATA_CONFIG,
-    title: 'Articles',
-    alternates: { canonical: `/article/list/${pageNum}` },
+    title,
+    description,
+    // Page 1 is the canonical entry; deeper pages are kept out of the index
+    // to prevent near-duplicate signals from paginated archives.
+    alternates: { canonical: isFirstPage ? '/article/list/1' : `/article/list/${page}` },
+    robots: isFirstPage ? METADATA_CONFIG.robots : { index: false, follow: true },
     openGraph: {
       ...OPEN_GRAPH_CONFIG,
-      url: `${SITE_CONFIG.siteUrl}/article/list/${pageNum}`,
+      title,
+      description,
+      url: `${SITE_CONFIG.siteUrl}/article/list/${page}`,
     },
-    twitter: { ...METADATA_TWITTER_CONFIG },
+    twitter: { ...METADATA_TWITTER_CONFIG, title, description },
   };
 }
 

@@ -6,7 +6,14 @@ export const OPEN_GRAPH_CONFIG: OpenGraph = {
   siteName: blogConfig.title,
   title: blogConfig.title,
   description: blogConfig.description,
-  images: blogConfig.siteBanner,
+  images: [
+    {
+      url: blogConfig.siteBanner,
+      width: 1200,
+      height: 630,
+      alt: blogConfig.title,
+    },
+  ],
   url: blogConfig.siteUrl,
   locale: blogConfig.locale,
   type: 'website',
